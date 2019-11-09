@@ -5,7 +5,8 @@ test_that("classif kerasff works multiclass", {
   tsk = mlr_tasks$get("iris")
   lrn = LearnerClassifkerasff$new()
   lrn$train(tsk)
-  lrn$predict(tsk)
+  p = lrn$predict(tsk)
+  expect_class(p, "PredictionClassif")
 })
 
 test_that("classif kerasff works binaryclass", {
@@ -13,5 +14,6 @@ test_that("classif kerasff works binaryclass", {
   tsk = mlr_tasks$get("german_credit")$select(c("age", "amount"))
   lrn = LearnerClassifkerasff$new()
   lrn$train(tsk)
-  lrn$predict(tsk)
+  p = lrn$predict(tsk)
+  expect_class(p, "PredictionClassif")
 })

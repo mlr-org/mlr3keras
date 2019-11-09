@@ -24,7 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Florian Pfisterer \email{pfistererf@googlemail.com}
+  \item Florian Pfisterer \email{pfistererf@googlemail.com} (0000-0001-0000-0000)
 }
 
 }
