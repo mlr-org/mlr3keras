@@ -32,6 +32,8 @@ for the different classes numbered from 0 to c-1 (for c classes).\preformatted{E
 wts = c(0.5, 1)
 setNames(as.list(wts), seq_len(length(wts)) - 1)
 }
+\item \code{callbacks}: A list of keras callbacks.
+See \code{?callbacks}.
 }
 }
 \section{Construction}{
