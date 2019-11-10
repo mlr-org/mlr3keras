@@ -14,7 +14,31 @@
 #' @description
 #' Feed Forward Neural Network using Keras and Tensorflow.
 #' Calls [keras::fit] from package \CRANpkg{keras}.
-#'
+#' 
+#' Parameters:\cr
+#' Most of the parameters can be obtained from the `keras` 
+#' documentation. Some exceptions are documented here
+#' * `initializer`: An object of class `tensorflow.python.ops.init_ops_v2.Initializer`.
+#'   Keras initializers start with 'initializer_...'
+#' * `optimizer`: Some optimizers and their arguments can be found below.\cr
+#'   Inherits from `tensorflow.python.keras.optimizer_v2`.
+#'   ```
+#'   "sgd"     : optimizer_sgd(lr, momentum, decay = decay),
+#'   "rmsprop" : optimizer_rmsprop(lr, rho, decay = decay),
+#'   "adagrad" : optimizer_adagrad(lr, decay = decay),
+#'   "adam"    : optimizer_adam(lr, beta_1, beta_2, decay = decay),
+#'   "nadam"   : optimizer_nadam(lr, beta_1, beta_2, schedule_decay = decay)
+#'   ```
+#' * `regularizer`: Inherits from `tensorflow.python.keras.regularizers`.
+#' 
+#' * `class_weights`: needs to be a named list of class-weights 
+#'   for the different classes numbered from 0 to c-1 (for c classes).
+#'   ```
+#'   Example:
+#'   wts = c(0.5, 1)
+#'   setNames(as.list(wts), seq_len(length(wts)) - 1)
+#'   ```
+#' 
 #' @template seealso_learner
 #' @templateVar learner_name classif.kerasff
 #' @template example
@@ -24,10 +48,22 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
     initialize = function() {
       ps = ParamSet$new(list(
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
+        ParamUty$new("initializer", default = "initializer_glorot_uniform()", tags = "train"),
+        ParamUty$new("regularizer", default = "regularizer_l1_l2()", tags = "train"),
+        ParamUty$new("optimizer", default = "optimizer_sgd()", tags = "train"),
+        ParamFct$new("activation", default = "relu", tags = "train",
+          levels = c("elu", "relu", "selu", "tanh", "sigmoid","PRelU", "LeakyReLu")),
         ParamInt$new("early_stopping_patience", lower = 0L, default = 2L, tags = "train"),
-        ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train")
+        ParamUty$new("class_weights", default = list(), tags = "train"),
+        ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train"),
+        ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
+        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))  
       ))
-      ps$values = list(epochs = 30L, validation_split = 2/3)
+      ps$values = list(epochs = 30L, activation = "relu",
+       initializer = initializer_glorot_uniform(),
+       optimizer = optimizer_sgd(10^-3),
+       regularizer = regularizer_l1_l2(),
+       validation_split = 2/3, batch_size = 128L)
 
       super$initialize(
         id = "classif.kerasff",
@@ -46,35 +82,12 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
       data = as.matrix(task$data(cols = task$feature_names))
       target = task$data(cols = task$target_names)
 
-      if ("weights" %in% task$properties) {
-        pars$weights = task$weights$weight
-      }
-
       input_shape = ncol(data)
       target_labels = task$class_names
       output_shape = length(target_labels)
 
       # # https://stackoverflow.com/questions/39691902/ordering-of-batch-normalization-and-dropout
       # # Dense -> Act -> [BN] -> [Dropout]
-      # regularizer = regularizer_l1_l2(l1 = l1_reg_layer, l2 = l2_reg_layer)
-      # initializer = switch(init_layer,
-      #   "glorot_normal" = initializer_glorot_normal(),
-      #   "glorot_uniform" = initializer_glorot_uniform(),
-      #   "he_normal" = initializer_he_normal(),
-      #   "he_uniform" = initializer_he_uniform()
-      # )
-      # optimizer = switch(optimizer,
-      #   "sgd" = optimizer_sgd(lr, momentum, decay = decay),
-      #   "rmsprop" = optimizer_rmsprop(lr, rho, decay = decay),
-      #   "adagrad" = optimizer_adagrad(lr, decay = decay),
-      #   "adam" = optimizer_adam(lr, beta_1, beta_2, decay = decay),
-      #   "nadam" = optimizer_nadam(lr, beta_1, beta_2, schedule_decay = decay)
-      # )
-
-      regularizer = NULL
-      initializer = "glorot_uniform"
-      act_layer = "relu"
-      optimizer = "sgd"
 
       # callbacks = c()
       # if (early_stopping_patience > 0)
@@ -94,18 +107,19 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
           layer_dense(
             units = units_layers[i],
             input_shape = input_shape,
-            kernel_regularizer = regularizer,
-            kernel_initializer = initializer,
-            bias_regularizer = regularizer,
-            bias_initializer = initializer)
-        model = model %>% layer_activation(act_layer)
+            kernel_regularizer = pars$regularizer,
+            kernel_initializer = pars$initializer,
+            bias_regularizer = pars$regularizer,
+            bias_initializer = pars$initializer
+          ) %>%
+          layer_activation(pars$activation)
         # if (batchnorm_dropout == "batchnorm") model = model %>% layer_batch_normalization()
         # if (batchnorm_dropout == "dropout") model = model %>% layer_dropout(dropout_rate)
       }
       model = model %>% layer_dense(units = output_shape, activation = 'softmax')
 
       model %>% compile(
-        optimizer = optimizer,
+        optimizer = pars$optimizer,
         loss = "categorical_crossentropy",
         metrics = c('accuracy')
       )
@@ -117,8 +131,10 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
         x = data,
         y = y,
         epochs = as.integer(pars$epochs),
-        batch_size = 128L,
-        validation_split = pars$validation_split)
+        class_weights = pars$class_weights,
+        batch_size = pars$batch_size,
+        validation_split = pars$validation_split,
+        verbose = pars$verbose)
         # callbacks = callbacks)
       return(list(model = model, history = history, target_labels = target_labels))   
     },
@@ -134,9 +150,6 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
         PredictionClassif$new(task = task, response = drop(p))
       } else {
         prob = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
-        # if (length(self$model$target_labels) > 2L) {
-        #   prob = prob[, , 1L]
-        # }
         colnames(prob) = task$class_names
         PredictionClassif$new(task = task, prob = prob)
       }

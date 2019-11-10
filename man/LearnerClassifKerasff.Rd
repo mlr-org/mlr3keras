@@ -9,6 +9,27 @@
 \description{
 Feed Forward Neural Network using Keras and Tensorflow.
 Calls \link[keras:fit]{keras::fit} from package \CRANpkg{keras}.
+
+Parameters:\cr
+Most of the parameters can be obtained from the \code{keras}
+documentation. Some exceptions are documented here
+\itemize{
+\item \code{initializer}: An object of class \code{tensorflow.python.ops.init_ops_v2.Initializer}.
+Keras initializers start with 'initializer_...'
+\item \code{optimizer}: Some optimizers and their arguments can be found below.\cr
+Inherits from \code{tensorflow.python.keras.optimizer_v2}.\preformatted{"sgd"     : optimizer_sgd(lr, momentum, decay = decay),
+"rmsprop" : optimizer_rmsprop(lr, rho, decay = decay),
+"adagrad" : optimizer_adagrad(lr, decay = decay),
+"adam"    : optimizer_adam(lr, beta_1, beta_2, decay = decay),
+"nadam"   : optimizer_nadam(lr, beta_1, beta_2, schedule_decay = decay)
+}
+\item \code{regularizer}: Inherits from \code{tensorflow.python.keras.regularizers}.
+\item \code{class_weights}: needs to be a named list of class-weights
+for the different classes numbered from 0 to c-1 (for c classes).\preformatted{Example:
+wts = c(0.5, 1)
+setNames(as.list(wts), seq_len(length(wts)) - 1)
+}
+}
 }
 \section{Construction}{
 \preformatted{LearnerClassifKerasff$new()
