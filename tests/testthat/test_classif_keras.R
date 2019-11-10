@@ -1,4 +1,4 @@
-context("keras")
+context("keras custom model")
 
 test_that("autotest binary", {
 
@@ -20,7 +20,7 @@ test_that("autotest binary", {
 })
 
 test_that("autotest multiclass", {
-  
+
   model = keras_model_sequential() %>%
   layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
   layer_dense(units = 12L, activation = "relu") %>%
