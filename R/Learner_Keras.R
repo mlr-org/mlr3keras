@@ -12,12 +12,13 @@
 #' ```
 #'
 #' @description
-#' Feed Forward Neural Network using Keras and Tensorflow.
+#' Neural Network using Keras and Tensorflow.
+#' This learner allows for supplying a custom architecture.
 #' Calls [keras::fit] from package \CRANpkg{keras}.
 #' 
 #' Parameters:\cr
-#' Most of the parameters can be obtained from the `keras` 
-#' documentation. Some exceptions are documented here
+#' Most of the parameters can be obtained from the `keras` documentation.
+#' Some exceptions are documented here.
 #' * `model`: A compiled keras model.
 #' * `class_weights`: needs to be a named list of class-weights 
 #'   for the dierent classes numbered from 0 to c-1 (for c classes).
@@ -32,7 +33,19 @@
 #' 
 #' @template seealso_learner
 #' @templateVar learner_name classif.keras
-#' @template example
+#' @examples
+#'  # Define a model
+#'  model = keras_model_sequential() %>%
+#'  layer_dense(units = 12L, input_shape = 4L, activation = "relu") %>%
+#'  layer_dense(units = 12L, activation = "relu") %>%
+#'  layer_dense(units = 3L, activation = "softmax") %>%
+#'    compile(optimizer = optimizer_sgd(),
+#'      loss = "categorical_crossentropy",
+#'      metrics = "accuracy")
+#'  # Create the learner
+#'  learner = LearnerClassifKeras$new()
+#'  learner$param_set$values = list(model = model)
+#'  learner$train(mlr_tasks$get("iris"))
 #' @export
 LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassif,
   public = list(

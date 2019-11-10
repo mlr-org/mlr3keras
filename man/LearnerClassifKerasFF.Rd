@@ -11,8 +11,8 @@ Feed Forward Neural Network using Keras and Tensorflow.
 Calls \link[keras:fit]{keras::fit} from package \CRANpkg{keras}.
 
 Parameters:\cr
-Most of the parameters can be obtained from the \code{keras}
-documentation. Some exceptions are documented here
+Most of the parameters can be obtained from the \code{keras} documentation.
+Some exceptions are documented here.
 \itemize{
 \item \code{layer_units}: An integer vector storing the number of units in each
 consecutive layer. \code{layer_units = c(32L, 32L, 32L)} results in a 3 layer
