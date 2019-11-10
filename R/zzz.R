@@ -1,4 +1,5 @@
 #' @import data.table
+#' @import keras
 #' @import paradox
 #' @import mlr3misc
 #' @importFrom R6 R6Class
@@ -14,6 +15,7 @@
 
 register_mlr3 = function() {
   x = utils::getFromNamespace("mlr_learners", ns = "mlr3")
+  x$add("classif.kerasff", LearnerClassifKerasff)
 }
 
 .onLoad = function(libname, pkgname) {
@@ -27,5 +29,5 @@ register_mlr3 = function() {
   event = packageEvent("mlr3", "onLoad")
   hooks = getHook(event)
   pkgname = vapply(hooks, function(x) environment(x)$pkgname, NA_character_)
-  setHook(event, hooks[pkgname != "mlr3learners"], action = "replace")
+  setHook(event, hooks[pkgname != "mlr3keras"], action = "replace")
 } # nocov end

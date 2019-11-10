@@ -1,19 +1,11 @@
 context("kerasff")
 
-test_that("classif kerasff works multiclass", {
-  library(mlr3)
-  tsk = mlr_tasks$get("iris")
-  lrn = LearnerClassifkerasff$new()
-  lrn$train(tsk)
-  p = lrn$predict(tsk)
-  expect_class(p, "PredictionClassif")
-})
+test_that("autotest", {
+  learner = mlr3::lrn("classif.kerasff")
+  expect_learner(learner)
 
-test_that("classif kerasff works binaryclass", {
-  library(mlr3)
-  tsk = mlr_tasks$get("german_credit")$select(c("age", "amount"))
-  lrn = LearnerClassifkerasff$new()
-  lrn$train(tsk)
-  p = lrn$predict(tsk)
-  expect_class(p, "PredictionClassif")
+  skip_on_os("solaris")
+  learner$param_set$values$epochs = 3L
+  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  expect_true(result, info = result$error)
 })

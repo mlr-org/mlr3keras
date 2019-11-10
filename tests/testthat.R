@@ -1,4 +1,5 @@
-library(testthat)
-library(mlr3)
-
-test_check("mlr3")
+if (requireNamespace("testthat", quietly = TRUE)) {
+  library(testthat)
+  library(mlr3keras)
+  test_check("mlr3keras")
+}

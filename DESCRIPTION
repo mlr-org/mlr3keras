@@ -20,26 +20,17 @@ BugReports: https://github.com/mlr-org/mlr3keras/issues
 Depends:
     R (>= 3.1.0)
 Imports:
-    backports,
-    checkmate (>= 1.9.3),
     data.table,
-    digest,
-    generics (>= 0.0.1),
-    lgr (>= 0.3.0),
-    magrittr, 
-    methods,
-    Metrics,
-    mlbench,
     mlr3,
     mlr3misc (>= 0.1.1),
     paradox,
     R6,
-    reticulate (>= 1.10), 
-    tensorflow (>= 2.0.0),
-    tfruns (>= 1.0),
-    zeallot
+    keras (>= 2.2.0)
 Suggests:
+    checkmate (>= 1.9.3),
     devtools,
+    digest,
+    generics (>= 0.0.1),
     Matrix,
     testthat (>= 2.1.0)
 Encoding: UTF-8

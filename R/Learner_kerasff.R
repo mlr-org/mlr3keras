@@ -6,7 +6,7 @@
 #'
 #' @section Construction:
 #' ```
-#' LearnerClassifkerasff$new()
+#' LearnerClassifKerasff$new()
 #' mlr3::mlr_learners$get("classif.kerasff")
 #' mlr3::lrn("classif.kerasff")
 #' ```
@@ -15,14 +15,17 @@
 #' Feed Forward Neural Network using Keras and Tensorflow.
 #' Calls [keras::fit] from package \CRANpkg{keras}.
 #'
+#' @template seealso_learner
+#' @templateVar learner_name classif.kerasff
+#' @template example
 #' @export
-LearnerClassifkerasff = R6::R6Class("LearnerClassifkerasff", inherit = LearnerClassif,
+LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerClassif,
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
-        ParamInt$new("early_stopping_patience", lower = 0L, default = 2L),
-        ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3)
+        ParamInt$new("early_stopping_patience", lower = 0L, default = 2L, tags = "train"),
+        ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train")
       ))
       ps$values = list(epochs = 30L, validation_split = 2/3)
 
@@ -31,15 +34,14 @@ LearnerClassifkerasff = R6::R6Class("LearnerClassifkerasff", inherit = LearnerCl
         param_set = ps,
         predict_types = c("response", "prob"),
         feature_types = c("integer", "numeric"),
-        properties = c("weights", "twoclass", "multiclass"),
+        properties = c("twoclass", "multiclass"),
         packages = "keras",
-        man = "mlr3learners::mlr_learners_classif.kerasff"
+        man = "mlr3keras::mlr_learners_classif.kerasff"
       )
     },
 
     train_internal = function(task) {
 
-      require("keras")
       pars = self$param_set$get_values(tags = "train")
       data = as.matrix(task$data(cols = task$feature_names))
       target = task$data(cols = task$target_names)
@@ -49,7 +51,7 @@ LearnerClassifkerasff = R6::R6Class("LearnerClassifkerasff", inherit = LearnerCl
       }
 
       input_shape = ncol(data)
-      target_labels = tsk$class_names
+      target_labels = task$class_names
       output_shape = length(target_labels)
 
       # # https://stackoverflow.com/questions/39691902/ordering-of-batch-normalization-and-dropout
@@ -110,7 +112,8 @@ LearnerClassifkerasff = R6::R6Class("LearnerClassifkerasff", inherit = LearnerCl
 
       y = to_categorical(as.integer(target[[task$target_names]]) - 1)
       
-      history = invoke(model$fit, 
+      history = invoke(keras::fit, 
+        object = model,
         x = data,
         y = y,
         epochs = as.integer(pars$epochs),
@@ -126,14 +129,14 @@ LearnerClassifkerasff = R6::R6Class("LearnerClassifkerasff", inherit = LearnerCl
       newdata = as.matrix(task$data(cols = task$feature_names))
 
       if (self$predict_type == "response") {
-        p = invoke(predict_classes, self$model$model, x = newdata, .args = pars)
+        p = invoke(keras::predict_classes, self$model$model, x = newdata, .args = pars)
         p = factor(self$model$target_labels[p + 1])
         PredictionClassif$new(task = task, response = drop(p))
       } else {
-        prob = invoke(predict, self$model$model, x = newdata, .args = pars)
-        if (length(model$target_labels) > 2L) {
-          prob = prob[, , 1L]
-        }
+        prob = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
+        # if (length(self$model$target_labels) > 2L) {
+        #   prob = prob[, , 1L]
+        # }
         colnames(prob) = task$class_names
         PredictionClassif$new(task = task, prob = prob)
       }
