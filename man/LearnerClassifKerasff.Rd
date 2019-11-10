@@ -14,6 +14,9 @@ Parameters:\cr
 Most of the parameters can be obtained from the \code{keras}
 documentation. Some exceptions are documented here
 \itemize{
+\item \code{layer_units}: An integer vector storing the number of units in each
+consecutive layer. \code{layer_units = c(32L, 32L, 32L)} results in a 3 layer
+network with 32 neurons in each layer.
 \item \code{initializer}: An object of class \code{tensorflow.python.ops.init_ops_v2.Initializer}.
 Keras initializers start with 'initializer_...'
 \item \code{optimizer}: Some optimizers and their arguments can be found below.\cr
