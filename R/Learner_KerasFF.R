@@ -16,8 +16,8 @@
 #' Calls [keras::fit] from package \CRANpkg{keras}.
 #' 
 #' Parameters:\cr
-#' Most of the parameters can be obtained from the `keras` 
-#' documentation. Some exceptions are documented here
+#' Most of the parameters can be obtained from the `keras` documentation.
+#' Some exceptions are documented here.
 #' * `layer_units`: An integer vector storing the number of units in each 
 #'   consecutive layer. `layer_units = c(32L, 32L, 32L)` results in a 3 layer 
 #'   network with 32 neurons in each layer. 

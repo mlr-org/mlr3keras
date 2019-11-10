@@ -7,12 +7,13 @@
 \title{Keras Neural Network with custom architecture}
 \format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerClassif]{mlr3::LearnerClassif}.}
 \description{
-Feed Forward Neural Network using Keras and Tensorflow.
+Neural Network using Keras and Tensorflow.
+This learner allows for supplying a custom architecture.
 Calls \link[keras:fit]{keras::fit} from package \CRANpkg{keras}.
 
 Parameters:\cr
-Most of the parameters can be obtained from the \code{keras}
-documentation. Some exceptions are documented here
+Most of the parameters can be obtained from the \code{keras} documentation.
+Some exceptions are documented here.
 \itemize{
 \item \code{model}: A compiled keras model.
 \item \code{class_weights}: needs to be a named list of class-weights
@@ -32,11 +33,18 @@ mlr3::lrn("classif.keras")
 }
 
 \examples{
-learner = mlr3::lrn("classif.keras")
-print(learner)
-
-# available parameters:
-learner$param_set$ids()
+ # Define a model
+ model = keras_model_sequential() \%>\%
+ layer_dense(units = 12L, input_shape = 4L, activation = "relu") \%>\%
+ layer_dense(units = 12L, activation = "relu") \%>\%
+ layer_dense(units = 3L, activation = "softmax") \%>\%
+   compile(optimizer = optimizer_sgd(),
+     loss = "categorical_crossentropy",
+     metrics = "accuracy")
+ # Create the learner
+ learner = LearnerClassifKeras$new()
+ learner$param_set$values = list(model = model)
+ learner$train(mlr_tasks$get("iris"))
 }
 \seealso{
 \link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}
