@@ -103,7 +103,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
       output_shape = length(target_labels)
 
       model = self$model_from_pars(pars, input_shape, output_shape)
-      browser()
+
       model %>% compile(
         optimizer = pars$optimizer,
         loss = "categorical_crossentropy",
@@ -126,7 +126,6 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
     },
 
     predict_internal = function(task) {
-
       pars = self$param_set$get_values(tags = "predict")
       newdata = as.matrix(task$data(cols = task$feature_names))
 
