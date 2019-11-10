@@ -6,7 +6,7 @@
 #'
 #' @section Construction:
 #' ```
-#' LearnerClassifKerasff$new()
+#' LearnerClassifKerasFF$new()
 #' mlr3::mlr_learners$get("classif.kerasff")
 #' mlr3::lrn("classif.kerasff")
 #' ```
@@ -49,7 +49,7 @@
 #' @templateVar learner_name classif.kerasff
 #' @template example
 #' @export
-LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerClassif,
+LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerClassif,
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
@@ -103,7 +103,7 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
       output_shape = length(target_labels)
 
       model = self$model_from_pars(pars, input_shape, output_shape)
-      
+      browser()
       model %>% compile(
         optimizer = pars$optimizer,
         loss = "categorical_crossentropy",

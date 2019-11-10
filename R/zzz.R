@@ -15,7 +15,8 @@
 
 register_mlr3 = function() {
   x = utils::getFromNamespace("mlr_learners", ns = "mlr3")
-  x$add("classif.kerasff", LearnerClassifKerasff)
+  x$add("classif.kerasff", LearnerClassifKerasFF)
+  x$add("classif.keras", LearnerClassifKeras)
 }
 
 .onLoad = function(libname, pkgname) {

@@ -3,11 +3,17 @@
 \name{cb_es}
 \alias{cb_es}
 \alias{cb_lrs}
+\alias{cb_tb}
+\alias{cb_lr_log}
 \title{\code{cb_es}: Early stopping callback}
 \usage{
 cb_es(patience = 3L)
 
 cb_lrs()
+
+cb_tb()
+
+cb_lr_log()
 }
 \arguments{
 \item{patience}{\code{\link{integer}}\cr
@@ -17,4 +23,8 @@ Number of iterations without improvement to wait before stopping.}
 \code{cb_es}: Early stopping callback
 
 \code{cb_lrs}: Learning rate scheduler callback
+
+\code{cb_tb}: Tensorboard callback
+
+\code{cb_lr_log}: Learning rate logger callback
 }

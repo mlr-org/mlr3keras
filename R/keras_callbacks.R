@@ -15,3 +15,19 @@ cb_lrs = function() {
   callback_learning_rate_scheduler(function(epoch, lr) {lr * 1/(1 * epoch)})
 }
 
+#' `cb_tb`: Tensorboard callback
+#' @rdname callbacks
+#' @export
+cb_tb = function() {
+  callback_tensorboard()
+}
+
+#' `cb_lr_log`: Learning rate logger callback
+#' @rdname callbacks
+#' @export
+cb_lr_log = function() {
+  callback_lr_log = function(batch, logs){
+    lr_hist <<- c(lr_hist, k_get_value(model$optimizer$lr))
+  }
+  callback_lambda(on_batch_begin=callback_lr_log)
+}
