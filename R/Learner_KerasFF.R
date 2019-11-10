@@ -6,7 +6,7 @@
 #'
 #' @section Construction:
 #' ```
-#' LearnerClassifKerasff$new()
+#' LearnerClassifKerasFF$new()
 #' mlr3::mlr_learners$get("classif.kerasff")
 #' mlr3::lrn("classif.kerasff")
 #' ```
@@ -18,6 +18,9 @@
 #' Parameters:\cr
 #' Most of the parameters can be obtained from the `keras` 
 #' documentation. Some exceptions are documented here
+#' * `layer_units`: An integer vector storing the number of units in each 
+#'   consecutive layer. `layer_units = c(32L, 32L, 32L)` results in a 3 layer 
+#'   network with 32 neurons in each layer. 
 #' * `initializer`: An object of class `tensorflow.python.ops.init_ops_v2.Initializer`.
 #'   Keras initializers start with 'initializer_...'
 #' * `optimizer`: Some optimizers and their arguments can be found below.\cr
@@ -38,31 +41,44 @@
 #'   wts = c(0.5, 1)
 #'   setNames(as.list(wts), seq_len(length(wts)) - 1)
 #'   ```
+#' * `callbacks`: A list of keras callbacks.
+#'   See `?callbacks`.
+#' 
 #' 
 #' @template seealso_learner
 #' @templateVar learner_name classif.kerasff
 #' @template example
 #' @export
-LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerClassif,
+LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerClassif,
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
+        ParamUty$new("layer_units", default = c(32, 32, 32), tags = "train"),
         ParamUty$new("initializer", default = "initializer_glorot_uniform()", tags = "train"),
         ParamUty$new("regularizer", default = "regularizer_l1_l2()", tags = "train"),
         ParamUty$new("optimizer", default = "optimizer_sgd()", tags = "train"),
         ParamFct$new("activation", default = "relu", tags = "train",
           levels = c("elu", "relu", "selu", "tanh", "sigmoid","PRelU", "LeakyReLu")),
+        ParamLgl$new("use_batchnorm", default = TRUE, tags = "train"),
+        ParamLgl$new("use_dropout", default = TRUE, tags = "train"),
+        ParamDbl$new("dropout", lower = 0, upper = 1, tags = "train"),
+        ParamDbl$new("input_dropout", lower = 0, upper = 1, tags = "train"),
         ParamInt$new("early_stopping_patience", lower = 0L, default = 2L, tags = "train"),
         ParamUty$new("class_weights", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
+        ParamUty$new("callbacks", default = list(), tags = "train"),
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))  
       ))
       ps$values = list(epochs = 30L, activation = "relu",
+       layer_units = c(32, 32, 32),
        initializer = initializer_glorot_uniform(),
        optimizer = optimizer_sgd(10^-3),
        regularizer = regularizer_l1_l2(),
+       use_batchnorm = TRUE,
+       use_dropout = TRUE, dropout = 0.1, input_dropout = 0,
+       callbacks = list(),
        validation_split = 2/3, batch_size = 128L)
 
       super$initialize(
@@ -86,42 +102,12 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
       target_labels = task$class_names
       output_shape = length(target_labels)
 
-      # # https://stackoverflow.com/questions/39691902/ordering-of-batch-normalization-and-dropout
-      # # Dense -> Act -> [BN] -> [Dropout]
-
-      # callbacks = c()
-      # if (early_stopping_patience > 0)
-      #   callbacks = c(callbacks, callback_early_stopping(monitor = 'val_loss', patience = early_stopping_patience))
-      # if (learning_rate_scheduler)
-      #   callbacks = c(callback_learning_rate_scheduler(function(epoch, lr) {lr * 1/(1 * epoch)}))
-
-      layers = 3
-      units_layers = rep(12, 3) # c(units_layer1, units_layer2, units_layer3, units_layer4)
-
-      model = keras_model_sequential()
-      # if (batchnorm_dropout == "dropout")
-      #   model = model %>% layer_dropout(input_dropout_rate, input_shape = input_shape)
-
-      for (i in seq_len(layers)) {
-        model = model %>%
-          layer_dense(
-            units = units_layers[i],
-            input_shape = input_shape,
-            kernel_regularizer = pars$regularizer,
-            kernel_initializer = pars$initializer,
-            bias_regularizer = pars$regularizer,
-            bias_initializer = pars$initializer
-          ) %>%
-          layer_activation(pars$activation)
-        # if (batchnorm_dropout == "batchnorm") model = model %>% layer_batch_normalization()
-        # if (batchnorm_dropout == "dropout") model = model %>% layer_dropout(dropout_rate)
-      }
-      model = model %>% layer_dense(units = output_shape, activation = 'softmax')
+      model = self$model_from_pars(pars, input_shape, output_shape)
 
       model %>% compile(
         optimizer = pars$optimizer,
         loss = "categorical_crossentropy",
-        metrics = c('accuracy')
+        metrics = c("accuracy")
       )
 
       y = to_categorical(as.integer(target[[task$target_names]]) - 1)
@@ -134,13 +120,12 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
         class_weights = pars$class_weights,
         batch_size = pars$batch_size,
         validation_split = pars$validation_split,
-        verbose = pars$verbose)
-        # callbacks = callbacks)
+        verbose = pars$verbose,
+        callbacks = pars$callbacks)
       return(list(model = model, history = history, target_labels = target_labels))   
     },
 
     predict_internal = function(task) {
-
       pars = self$param_set$get_values(tags = "predict")
       newdata = as.matrix(task$data(cols = task$feature_names))
 
@@ -153,6 +138,31 @@ LearnerClassifKerasff = R6::R6Class("LearnerClassifKerasff", inherit = LearnerCl
         colnames(prob) = task$class_names
         PredictionClassif$new(task = task, prob = prob)
       }
+    },
+
+    model_from_pars = function(pars, input_shape, output_shape) {
+      model = keras_model_sequential()
+      if (pars$use_dropout) model = model %>% layer_dropout(pars$input_dropout, input_shape = input_shape)
+
+      # Build hidden layers
+      for (i in seq_len(length(pars$layer_units))) {
+        model = model %>%
+          layer_dense(
+            units = pars$layer_units[i],
+            input_shape = input_shape,
+            kernel_regularizer = pars$regularizer,
+            kernel_initializer = pars$initializer,
+            bias_regularizer = pars$regularizer,
+            bias_initializer = pars$initializer
+          ) %>%
+          layer_activation(pars$activation)
+        # https://stackoverflow.com/questions/39691902/ordering-of-batch-normalization-and-dropout
+        # Dense -> Act -> [BN] -> [Dropout]
+        if (pars$use_batchnorm) model = model %>% layer_batch_normalization()
+        if (pars$use_batchnorm) model = model %>% layer_dropout(pars$dropout)
+      }
+      # Output layer
+      model = model %>% layer_dense(units = output_shape, activation = 'softmax')
     }
   )
 )
