@@ -1,10 +1,13 @@
-# Create the embedding for a dataset.
-# Creates an input for each categorical var, concatenates those,
-# Adds batch-norm to continuous vars etc.
+# Attention: This is WIP and will not yet work!
+#' Create the embedding for a dataset.
+#' Creates an input for each categorical var, concatenates those,
+#' Adds batch-norm to continuous vars etc.
 make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
-  assert_data_frame(data)
+  stop("This is not yet working")
+  assert_task(task)
   assert_numeric(embed_size, null.ok = TRUE)
   assert_number(embed_dropout)
+
   type = BBmisc::vcapply(data, function(x) class(x)[[1]])
   embed_vars = type %in% c("ordered", "factor")
   n_cont = length(type[!embed_vars])
