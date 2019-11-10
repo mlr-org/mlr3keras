@@ -2,9 +2,10 @@
 #' @import keras
 #' @import paradox
 #' @import mlr3misc
+#' @import checkmate
 #' @importFrom R6 R6Class
-#' @importFrom mlr3 mlr_learners LearnerClassif LearnerRegr
-#' 
+#' @importFrom mlr3 mlr_learners LearnerClassif LearnerRegr assert_task
+#' @importFrom stats setNames
 #' @description
 #' More learners are available in the `mlr3learners` repository on Github (\url{https://github.com/mlr3learners}).
 #' There also is a wiki page listing all currently available custom learners (\url{https://github.com/mlr-org/mlr3learners/wiki/Extra-Learners}).
