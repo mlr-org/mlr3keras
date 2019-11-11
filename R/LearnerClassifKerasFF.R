@@ -64,7 +64,6 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         ParamLgl$new("use_dropout", default = TRUE, tags = "train"),
         ParamDbl$new("dropout", lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("input_dropout", lower = 0, upper = 1, tags = "train"),
-        ParamInt$new("early_stopping_patience", lower = 0L, default = 2L, tags = "train"),
         ParamUty$new("class_weights", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
@@ -77,7 +76,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
        optimizer = optimizer_sgd(10^-3),
        regularizer = regularizer_l1_l2(),
        use_batchnorm = TRUE,
-       use_dropout = TRUE, dropout = 0.1, input_dropout = 0,
+       use_dropout = TRUE, dropout = 0, input_dropout = 0,
        callbacks = list(),
        validation_split = 2/3, batch_size = 128L)
 
