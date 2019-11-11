@@ -33,3 +33,6 @@ register_mlr3 = function() {
   pkgname = vapply(hooks, function(x) environment(x)$pkgname, NA_character_)
   setHook(event, hooks[pkgname != "mlr3keras"], action = "replace")
 } # nocov end
+
+# silence R CMD check for callbacks:
+utils::globalVariables("model")

@@ -23,6 +23,6 @@ as a single list element each.
 }
 }
 \examples{
-task = mlr3::mlr_tasks$get("bostonhousing")
+task = mlr3::mlr_tasks$get("boston_housing")
 reshape_task_embedding(task)
 }

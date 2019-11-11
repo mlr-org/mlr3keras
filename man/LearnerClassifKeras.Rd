@@ -34,6 +34,7 @@ mlr3::lrn("classif.keras")
 
 \examples{
  # Define a model
+ library(keras)
  model = keras_model_sequential() \%>\%
  layer_dense(units = 12L, input_shape = 4L, activation = "relu") \%>\%
  layer_dense(units = 12L, activation = "relu") \%>\%
@@ -43,8 +44,8 @@ mlr3::lrn("classif.keras")
      metrics = "accuracy")
  # Create the learner
  learner = LearnerClassifKeras$new()
- learner$param_set$values = list(model = model)
- learner$train(mlr_tasks$get("iris"))
+ learner$param_set$values$model = model
+ learner$train(mlr3::mlr_tasks$get("iris"))
 }
 \seealso{
 \link[mlr3misc:Dictionary]{Dictionary} of \link[mlr3:Learner]{Learners}: \link[mlr3:mlr_learners]{mlr3::mlr_learners}

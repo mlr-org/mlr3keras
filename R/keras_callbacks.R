@@ -26,7 +26,7 @@ cb_tb = function() {
 #' @rdname callbacks
 #' @export
 cb_lr_log = function() {
-  lr_hist <<- numeric()
+  lr_hist = numeric()
   callback_lr_log = function(batch, logs){
     lr_hist <<- c(lr_hist, k_get_value(model$optimizer$lr))
   }

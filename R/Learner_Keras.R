@@ -15,12 +15,12 @@
 #' Neural Network using Keras and Tensorflow.
 #' This learner allows for supplying a custom architecture.
 #' Calls [keras::fit] from package \CRANpkg{keras}.
-#' 
+#'
 #' Parameters:\cr
 #' Most of the parameters can be obtained from the `keras` documentation.
 #' Some exceptions are documented here.
 #' * `model`: A compiled keras model.
-#' * `class_weights`: needs to be a named list of class-weights 
+#' * `class_weights`: needs to be a named list of class-weights
 #'   for the dierent classes numbered from 0 to c-1 (for c classes).
 #'   ```
 #'   Example:
@@ -29,12 +29,13 @@
 #'   ```
 #' * `callbacks`: A list of keras callbacks.
 #'   See `?callbacks`.
-#' 
-#' 
+#'
+#'
 #' @template seealso_learner
 #' @templateVar learner_name classif.keras
 #' @examples
 #'  # Define a model
+#'  library(keras)
 #'  model = keras_model_sequential() %>%
 #'  layer_dense(units = 12L, input_shape = 4L, activation = "relu") %>%
 #'  layer_dense(units = 12L, activation = "relu") %>%
@@ -44,8 +45,8 @@
 #'      metrics = "accuracy")
 #'  # Create the learner
 #'  learner = LearnerClassifKeras$new()
-#'  learner$param_set$values = list(model = model)
-#'  learner$train(mlr_tasks$get("iris"))
+#'  learner$param_set$values$model = model
+#'  learner$train(mlr3::mlr_tasks$get("iris"))
 #' @export
 LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassif,
   public = list(
@@ -57,7 +58,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
-        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))  
+        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
       ))
       ps$values = list(epochs = 30L, callbacks = list(),
         validation_split = 2/3, batch_size = 128L)
@@ -82,8 +83,8 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       assert_class(pars$model, "keras.engine.training.Model")
 
       y = to_categorical(as.integer(target[[task$target_names]]) - 1)
-      
-      history = invoke(keras::fit, 
+
+      history = invoke(keras::fit,
         object = pars$model,
         x = data,
         y = y,
@@ -93,7 +94,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         validation_split = pars$validation_split,
         verbose = pars$verbose,
         callbacks = pars$callbacks)
-      return(list(model = pars$model, history = history, target_labels = task$class_names))   
+      return(list(model = pars$model, history = history, target_labels = task$class_names))
     },
 
     predict_internal = function(task) {
@@ -110,6 +111,6 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         colnames(prob) = task$class_names
         PredictionClassif$new(task = task, prob = prob)
       }
-    }   
+    }
   )
 )

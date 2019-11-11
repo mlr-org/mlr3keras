@@ -10,9 +10,9 @@
 #'   The heuristic is `round(1.6 * n_cat^0.56)` where n_cat is the number of levels.
 #' @param embed_dropout [`numeric`]\cr
 #'   Dropout fraction for the embedding layer.
-#' 
+#'
 #' @examples
-#' task = mlr3::mlr_tasks$get("bostonhousing")
+#' task = mlr3::mlr_tasks$get("boston_housing")
 #' make_embedding(task)
 #' @return A `list` of input tensors and `layer`: the concatenated embeddings.
 #' @export
@@ -29,7 +29,11 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
   embed_vars = typedt[typedt$type %in% c("ordered", "factor", "character"),]$id
   n_cont = nrow(typedt) - length(embed_vars)
 
-  # Embeddings for categorical variables
+  # Embeddings for categorical variables: for each categorical:
+  # - create a layer_input
+  # - create an embedding
+  # - apply dropout
+  # - flatten (FIXME: Is this required?)
   embds = list()
   if (length(embed_vars) > 0) {
     embds = map(.f = function(feat_name) {
@@ -51,6 +55,7 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
   }
 
   # Layer for the continuous variables
+  # - apply batchnorm
   if (n_cont > 0) {
     input = layer_input(shape = n_cont, dtype = "float32", name = "continuous")
     layers = input %>% layer_batch_normalization(input_shape = n_cont, axis = 1)
@@ -66,18 +71,18 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
 }
 
 #' Reshape a Task for use with entity embeddings.
-#' 
+#'
 #' @param task [`Task`]\cr
 #'   A mlr3 [`Task`].
-#' 
+#'
 #' @description
-#' * `logical` variables are treated as integers and converted to 
+#' * `logical` variables are treated as integers and converted to
 #'   `continuous`.
 #' * `continuous` variables are stored in a matrix "continuous"
 #' * `categorical` variables are integer encoded and stored
 #'   as a single list element each.
 #' @examples
-#' task = mlr3::mlr_tasks$get("bostonhousing")
+#' task = mlr3::mlr_tasks$get("boston_housing")
 #' reshape_task_embedding(task)
 #' @return A `list` with slots `data`:the reshaped data and `fct_levels`: the levels corresponding to each factor feature.
 #' @export
@@ -88,24 +93,24 @@ reshape_task_embedding = function(task) {
 }
 
 #' Reshape data for use with entity embeddings.
-#' 
+#'
 #' @param data [`data.table`]\¢r
 #'   data.table containing the features (without target variable).
-#' 
+#'
 #' @description
-#' * `logical` variables are treated as integers and converted to 
+#' * `logical` variables are treated as integers and converted to
 #'   `continuous`.
 #' * `continuous` variables are stored in a matrix "continuous"
 #' * `categorical` variables are integer encoded and stored
 #'   as a single list element each.
-#' @seealso reshape_task_embedding
+#' @family reshape_task_embedding
 #' @export
 reshape_data_embedding = function(data) {
   assert_data_table(data)
 
   types = map_chr(data, function(x) class(x)[[1]])
   embed_vars = names(types)[types %in% c("ordered", "factor", "character")]
-  
+
   fct_levels = NULL
   if (length(embed_vars) > 0)
     fct_levels = map(as.list(data[, embed_vars, with = FALSE]), function(x) levels(x))

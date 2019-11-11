@@ -19,6 +19,4 @@ data.table containing the features (without target variable).}
 as a single list element each.
 }
 }
-\seealso{
-reshape_task_embedding
-}
+\concept{reshape_task_embedding}

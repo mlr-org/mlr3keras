@@ -14,13 +14,13 @@
 #' @description
 #' Feed Forward Neural Network using Keras and Tensorflow.
 #' Calls [keras::fit] from package \CRANpkg{keras}.
-#' 
+#'
 #' Parameters:\cr
 #' Most of the parameters can be obtained from the `keras` documentation.
 #' Some exceptions are documented here.
-#' * `layer_units`: An integer vector storing the number of units in each 
-#'   consecutive layer. `layer_units = c(32L, 32L, 32L)` results in a 3 layer 
-#'   network with 32 neurons in each layer. 
+#' * `layer_units`: An integer vector storing the number of units in each
+#'   consecutive layer. `layer_units = c(32L, 32L, 32L)` results in a 3 layer
+#'   network with 32 neurons in each layer.
 #' * `initializer`: An object of class `tensorflow.python.ops.init_ops_v2.Initializer`.
 #'   Keras initializers start with 'initializer_...'
 #' * `optimizer`: Some optimizers and their arguments can be found below.\cr
@@ -33,8 +33,8 @@
 #'   "nadam"   : optimizer_nadam(lr, beta_1, beta_2, schedule_decay = decay)
 #'   ```
 #' * `regularizer`: Inherits from `tensorflow.python.keras.regularizers`.
-#' 
-#' * `class_weights`: needs to be a named list of class-weights 
+#'
+#' * `class_weights`: needs to be a named list of class-weights
 #'   for the different classes numbered from 0 to c-1 (for c classes).
 #'   ```
 #'   Example:
@@ -43,8 +43,8 @@
 #'   ```
 #' * `callbacks`: A list of keras callbacks.
 #'   See `?callbacks`.
-#' 
-#' 
+#'
+#'
 #' @template seealso_learner
 #' @templateVar learner_name classif.kerasff
 #' @template example
@@ -69,7 +69,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
-        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))  
+        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
       ))
       ps$values = list(epochs = 30L, activation = "relu",
        layer_units = c(32, 32, 32),
@@ -111,8 +111,8 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
       )
 
       y = to_categorical(as.integer(target[[task$target_names]]) - 1)
-      
-      history = invoke(keras::fit, 
+
+      history = invoke(keras::fit,
         object = model,
         x = data,
         y = y,
@@ -122,7 +122,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         validation_split = pars$validation_split,
         verbose = pars$verbose,
         callbacks = pars$callbacks)
-      return(list(model = model, history = history, target_labels = target_labels))   
+      return(list(model = model, history = history, target_labels = target_labels))
     },
 
     predict_internal = function(task) {

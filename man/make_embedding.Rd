@@ -30,6 +30,6 @@ Creates an input for each categorical var, concatenates those,
 Adds batch-norm to continuous vars etc.
 }
 \examples{
-task = mlr3::mlr_tasks$get("bostonhousing")
+task = mlr3::mlr_tasks$get("boston_housing")
 make_embedding(task)
 }
