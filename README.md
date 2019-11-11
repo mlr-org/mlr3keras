@@ -1,10 +1,10 @@
 # mlr3keras
-A clean, object-oriented rewrite of [mlr](https://github.com/mlr-org/mlr).
+An extension for `mlr3` to enable using various `keras` models as learners.
 
+
+[![Build Status](https://travis-ci.org/mlr-org/mlr3keras.svg?branch=master)](https://travis-ci.org/mlr-org/mlr3keras)[![Build status](https://ci.appveyor.com/api/projects/status/m2tuhgdxo8is0nv0?svg=true)](https://ci.appveyor.com/project/mlr-org/mlr3)
 <!--
-[![Build Status](https://travis-ci.org/mlr-org/mlr3.svg?branch=master)](https://travis-ci.org/mlr-org/mlr3)
-[![Build status](https://ci.appveyor.com/api/projects/status/m2tuhgdxo8is0nv0?svg=true)](https://ci.appveyor.com/project/mlr-org/mlr3)
-[![CRAN](https://www.r-pkg.org/badges/version/mlr3)](https://cran.r-project.org/package=mlr3)
+[![CRAN](https://www.r-pkg.org/badges/version/mlr3)](https://cran.r-project.org/package=mlr3keras)
 [![codecov](https://codecov.io/gh/mlr-org/mlr3/branch/master/graph/badge.svg)](https://codecov.io/gh/mlr-org/mlr3)
 -->
 
@@ -13,7 +13,6 @@ A clean, object-oriented rewrite of [mlr](https://github.com/mlr-org/mlr).
 ```r
 remotes::install_github("mlr-org/mlr3keras")
 ```
-
 
 ## Resources
 
