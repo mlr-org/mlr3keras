@@ -5,10 +5,19 @@ before_install:
   - R -q -e 'remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
 install: R -q -e 'tic::install()'
 after_install: R -q -e 'tic::after_install()'
-before_script: R -q -e 'tic::before_script()'
+before_script:
+  - sudo apt-get update
+  - sudo apt-get install python3 python3-pip
+  - pip3 install --upgrade --ignore-installed --user travis virtualenv
+  - R CMD INSTALL .
+  - R -e 'keras::install_keras(tensorflow = Sys.getenv("TENSORFLOW_VERSION"), extra_packages = "IPython")'
+  - R -e 'tensorflow::tf_config()'
+  - R -q -e 'tic::before_script()'
 script: R -q -e 'tic::script()'
 after_success: R -q -e 'tic::after_success()'
-after_failure: R -q -e 'tic::after_failure()'
+after_failure:
+  - Rscript -e 'library(keras); testthat::test_dir("tests/testthat/")'
+  - R -q -e 'tic::after_failure()'
 before_deploy: R -q -e 'tic::before_deploy()'
 deploy:
   provider: script
@@ -48,77 +57,3 @@ matrix:
         - KERAS_BACKEND="tensorflow"
         - KERAS_IMPLEMENTATION="tensorflow"
         - TENSORFLOW_VERSION="default"
-    - name: "Backend: TensorFlow | Implementation: TensorFlow"
-      env:
-        - KERAS_BACKEND="tensorflow"
-        - KERAS_IMPLEMENTATION="tensorflow"
-        - TENSORFLOW_VERSION="default"
-    - name: "Backend: TensorFlow Eager | Implementation: TensorFlow"
-      env:
-        - KERAS_BACKEND="tensorflow"
-        - KERAS_IMPLEMENTATION="tensorflow"
-        - TENSORFLOW_VERSION="default"
-        - TENSORFLOW_EAGER="TRUE"
-    - name: "Backend: TensorFlow | Implementation: TensorFlow 1.12"
-      env:
-        - KERAS_IMPLEMENTATION="tensorflow"
-        - TENSORFLOW_VERSION="1.12.3"
-    - name: "Backend: TensorFlow | Implementation: TensorFlow 1.13"
-      env:
-        - KERAS_IMPLEMENTATION="tensorflow"
-        - TENSORFLOW_VERSION="1.13.2"
-    - name: "Backend: TensorFlow | Implementation: TensorFlow 2.0.0"
-      env:
-        - KERAS_IMPLEMENTATION="tensorflow"
-        - TENSORFLOW_VERSION="2.0.0"
-    - name: "Backend: TensorFlow | Implementation: TensorFlow 1.14"
-      env:
-        - KERAS_IMPLEMENTATION="tensorflow"
-        - TENSORFLOW_VERSION="1.14"
-    - name: "Backend: Tensorflow | Implementation: TensorFlow Nightly"
-      env:
-        - TENSORFLOW_VERSION="nightly"
-    - name: "Backend: Tensorflow Eager | Implementation: Tensorflow Nightly"
-      env:
-        - TENSORFLOW_VERSION="nightly"
-        - TENSORFLOW_EAGER="TRUE"
-    - name: "TensorFlow (release version) with reticulate master"
-      env:
-        - TENSORFLOW_VERSION="1.14"
-      r_github_packages:
-        - rstudio/reticulate
-    - name: "TensorFlow (nightly) with reticulate master"
-      env:
-        - TENSORFLOW_VERSION="nightly"
-      r_github_packages:
-        - rstudio/reticulate
-  allow_failures:
-    - name: "Backend: Tensorflow | Implementation: TensorFlow Nightly"
-      env:
-        - TENSORFLOW_VERSION="nightly"
-    - name: "Backend: Tensorflow Eager | Implementation: Tensorflow Nightly"
-      env:
-        - TENSORFLOW_VERSION="nightly"
-        - TENSORFLOW_EAGER="TRUE"
-    - name: "Backend: TensorFlow Eager | Implementation: TensorFlow"
-      env:
-        - KERAS_BACKEND="tensorflow"
-        - KERAS_IMPLEMENTATION="tensorflow"
-        - TENSORFLOW_VERSION="default"
-        - TENSORFLOW_EAGER="TRUE"
-    - name: "TensorFlow (nightly) with reticulate master"
-      env:
-        - TENSORFLOW_VERSION="nightly"
-      r_github_packages:
-        - rstudio/reticulate
-
-before_script:
-  - sudo apt-get update
-  - sudo apt-get install python3 python3-pip
-  - pip3 install --upgrade --ignore-installed --user travis virtualenv
-  - R CMD INSTALL .
-  - R -e 'keras::install_keras(tensorflow = Sys.getenv("TENSORFLOW_VERSION"), extra_packages = "IPython")'
-  - R -e 'tensorflow::tf_config()'
-  
-after_failure:
-  - Rscript -e 'library(keras); testthat::test_dir("tests/testthat/")'
