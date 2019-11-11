@@ -49,11 +49,6 @@ env:
   - MAKEFLAGS="-j 2"
   - BUILD_PKGDOWN=true
   - _R_CHECK_TESTS_NLINES_=0
-
-matrix:
-  include:
-    - name: "Backend: TensorFlow | Implementation: Keras"
-      env:
-        - KERAS_BACKEND="tensorflow"
-        - KERAS_IMPLEMENTATION="tensorflow"
-        - TENSORFLOW_VERSION="default"
+  - KERAS_BACKEND="tensorflow"
+  - KERAS_IMPLEMENTATION="tensorflow"
+  - TENSORFLOW_VERSION="default"
