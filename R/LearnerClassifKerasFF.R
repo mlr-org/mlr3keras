@@ -14,6 +14,13 @@
 #' @description
 #' Feed Forward Neural Network using Keras and Tensorflow.
 #' Calls [keras::fit] from package \CRANpkg{keras}.
+#' Layers are set up as follows:
+#' * The inputs are connected to a `layer_dropout`, applying the `input_dropout`.
+#'   Afterwards, each `layer_dense()` is followed by a `layer_activation`, and
+#'   depending on hyperparameters by a `layer_batch_normalization` and or a
+#'   `layer_dropout` depending on the architecture hyperparameters.
+#'   This is repeated `length(layer_units)` times, i.e. one
+#'   'dense->activation->batchnorm->dropout' block is appended for each `layer_unit`.
 #'
 #' Parameters:\cr
 #' Most of the parameters can be obtained from the `keras` documentation.
@@ -92,24 +99,21 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
     },
 
     train_internal = function(task) {
-
       pars = self$param_set$get_values(tags = "train")
       data = as.matrix(task$data(cols = task$feature_names))
       target = task$data(cols = task$target_names)
+      y = to_categorical(as.integer(target[[task$target_names]]) - 1)
 
       input_shape = ncol(data)
       target_labels = task$class_names
       output_shape = length(target_labels)
 
       model = self$model_from_pars(pars, input_shape, output_shape)
-
       model %>% compile(
         optimizer = pars$optimizer,
         loss = "categorical_crossentropy",
-        metrics = c("accuracy")
+        metrics = "accuracy"
       )
-
-      y = to_categorical(as.integer(target[[task$target_names]]) - 1)
 
       history = invoke(keras::fit,
         object = model,
