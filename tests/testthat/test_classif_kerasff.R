@@ -8,4 +8,5 @@ test_that("autotest", {
   learner$param_set$values$epochs = 3L
   result = run_autotest(learner, exclude = "(feat_single|sanity)")
   expect_true(result, info = result$error)
+  k_clear_session()
 })

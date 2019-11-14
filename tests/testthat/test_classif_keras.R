@@ -17,6 +17,7 @@ test_that("autotest binary", {
   skip_on_os("solaris")
   result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)")
   expect_true(result, info = result$error)
+  k_clear_session()
 })
 
 test_that("autotest multiclass", {
@@ -36,4 +37,5 @@ test_that("autotest multiclass", {
   skip_on_os("solaris")
   result = run_autotest(learner, exclude = "(feat_single|sanity|binary)")
   expect_true(result, info = result$error)
+  k_clear_session()
 })
