@@ -31,6 +31,4 @@ model = keras_model(embd$input, output) %>%
   )
 
 model$train()
-
-
 ```
