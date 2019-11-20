@@ -55,13 +55,13 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
         ParamUty$new("model", tags = c("train")),
         ParamUty$new("class_weights", default = list(), tags = "train"),
-        ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train"),
+        ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
       ))
       ps$values = list(epochs = 30L, callbacks = list(),
-        validation_split = 2/3, batch_size = 128L)
+        validation_split = 1/3, batch_size = 128L)
 
       super$initialize(
         id = "classif.keras",

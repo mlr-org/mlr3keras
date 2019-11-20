@@ -32,7 +32,9 @@ Suggests:
     digest,
     generics (>= 0.0.1),
     Matrix,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    knitr,
+    rmarkdown
 Encoding: UTF-8
 RdMacros: mlr3misc
 SystemRequirements: Keras >= 2.0 (https://keras.io)
@@ -40,3 +42,4 @@ LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr

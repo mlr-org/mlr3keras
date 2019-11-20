@@ -1,0 +1,36 @@
+---
+title: "entity_embeddings"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{entity_embeddings}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(mlr3keras)
+
+tsk = mlr_tasks$get("boston_housing")
+embd = make_embedding(tsk)
+
+output = embd$layer %>%
+  layer_dense(12, activation = "relu") %>%
+  layer_dense(1, activation = "linear")
+
+model = keras_model(embd$input, output) %>%
+  compile(
+    optimizer = optimizer_adam(),
+    loss = "mse"
+  )
+
+model$train()
+
+
+```

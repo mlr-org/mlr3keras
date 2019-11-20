@@ -1,4 +1,5 @@
 #' Create the embedding for a dataset.
+#'
 #' Creates an input for each categorical var, concatenates those,
 #' Adds batch-norm to continuous vars etc.
 #' @param task [`Task`]\cr
@@ -10,6 +11,8 @@
 #'   The heuristic is `round(1.6 * n_cat^0.56)` where n_cat is the number of levels.
 #' @param embed_dropout [`numeric`]\cr
 #'   Dropout fraction for the embedding layer.
+#'
+#' @reference Guo, Berkhan, 2016 Entity Embeddings of Categorical Variables
 #'
 #' @examples
 #' task = mlr3::mlr_tasks$get("boston_housing")

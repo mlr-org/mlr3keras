@@ -72,7 +72,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         ParamDbl$new("dropout", lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("input_dropout", lower = 0, upper = 1, tags = "train"),
         ParamUty$new("class_weights", default = list(), tags = "train"),
-        ParamDbl$new("validation_split", lower = 0, upper = 1, default = 2/3, tags = "train"),
+        ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
@@ -85,7 +85,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
        use_batchnorm = TRUE,
        use_dropout = TRUE, dropout = 0, input_dropout = 0,
        callbacks = list(),
-       validation_split = 2/3, batch_size = 128L)
+       validation_split = 1/3, batch_size = 128L)
 
       super$initialize(
         id = "classif.kerasff",
@@ -162,7 +162,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         # https://stackoverflow.com/questions/39691902/ordering-of-batch-normalization-and-dropout
         # Dense -> Act -> [BN] -> [Dropout]
         if (pars$use_batchnorm) model = model %>% layer_batch_normalization()
-        if (pars$use_batchnorm) model = model %>% layer_dropout(pars$dropout)
+        if (pars$use_dropout) model = model %>% layer_dropout(pars$dropout)
       }
       # Output layer
       model = model %>% layer_dense(units = output_shape, activation = 'softmax')
