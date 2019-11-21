@@ -31,8 +31,16 @@
 #' * `layer_units`: An integer vector storing the number of units in each
 #'   consecutive layer. `layer_units = c(32L, 32L, 32L)` results in a 3 layer
 #'   network with 32 neurons in each layer.
-#' * `initializer`: An object of class `tensorflow.python.ops.init_ops_v2.Initializer`.
-#'   Keras initializers start with 'initializer_...'
+#'   Can be `integer(0)`, in which case we fit a (multinomial) logistic regression model.
+#'
+#' * `initializer`: Weight and bias initializer.
+#'   ```
+#'   "glorot_uniform"  : initializer_glorot_uniform(seed)
+#'   "glorot_normal"   : initializer_glorot_normal(seed)
+#'   "he_uniform"      : initializer_he_uniform(seed)
+#'   "..."             : see `??keras::initializer`
+#'   ```
+#'
 #' * `optimizer`: Some optimizers and their arguments can be found below.\cr
 #'   Inherits from `tensorflow.python.keras.optimizer_v2`.
 #'   ```
@@ -42,7 +50,13 @@
 #'   "adam"    : optimizer_adam(lr, beta_1, beta_2, decay = decay),
 #'   "nadam"   : optimizer_nadam(lr, beta_1, beta_2, schedule_decay = decay)
 #'   ```
-#' * `regularizer`: Inherits from `tensorflow.python.keras.regularizers`.
+#'
+#' * `regularizer`: Regularizer for keras layers:
+#'   ```
+#'   "l1"      : regularizer_l1(l = 0.01)
+#'   "l2"      : regularizer_l2(l = 0.01)
+#'   "l1_l2"   : regularizer_l1_l2(l1 = 0.01, l2 = 0.01)
+#'   ```
 #'
 #' * `class_weights`: needs to be a named list of class-weights
 #'   for the different classes numbered from 0 to c-1 (for c classes).

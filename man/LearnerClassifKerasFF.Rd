@@ -29,8 +29,12 @@ Some exceptions are documented here.
 \item \code{layer_units}: An integer vector storing the number of units in each
 consecutive layer. \code{layer_units = c(32L, 32L, 32L)} results in a 3 layer
 network with 32 neurons in each layer.
-\item \code{initializer}: An object of class \code{tensorflow.python.ops.init_ops_v2.Initializer}.
-Keras initializers start with 'initializer_...'
+Can be \code{integer(0)}, in which case we fit a (multinomial) logistic regression model.
+\item \code{initializer}: Weight and bias initializer.\preformatted{"glorot_uniform"  : initializer_glorot_uniform(seed)
+"glorot_normal"   : initializer_glorot_normal(seed)
+"he_uniform"      : initializer_he_uniform(seed)
+"..."             : see `??keras::initializer`
+}
 \item \code{optimizer}: Some optimizers and their arguments can be found below.\cr
 Inherits from \code{tensorflow.python.keras.optimizer_v2}.\preformatted{"sgd"     : optimizer_sgd(lr, momentum, decay = decay),
 "rmsprop" : optimizer_rmsprop(lr, rho, decay = decay),
@@ -38,7 +42,10 @@ Inherits from \code{tensorflow.python.keras.optimizer_v2}.\preformatted{"sgd"   
 "adam"    : optimizer_adam(lr, beta_1, beta_2, decay = decay),
 "nadam"   : optimizer_nadam(lr, beta_1, beta_2, schedule_decay = decay)
 }
-\item \code{regularizer}: Inherits from \code{tensorflow.python.keras.regularizers}.
+\item \code{regularizer}: Regularizer for keras layers:\preformatted{"l1"      : regularizer_l1(l = 0.01)
+"l2"      : regularizer_l2(l = 0.01)
+"l1_l2"   : regularizer_l1_l2(l1 = 0.01, l2 = 0.01)
+}
 \item \code{class_weights}: needs to be a named list of class-weights
 for the different classes numbered from 0 to c-1 (for c classes).\preformatted{Example:
 wts = c(0.5, 1)
