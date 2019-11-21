@@ -1,5 +1,5 @@
 Package: mlr3keras
-Title: mlr3 keras extension
+Title: mlr3 Keras extension
 Version: 0.1.0
 Authors@R:
     c(person(given = "Michel",
@@ -32,6 +32,7 @@ Suggests:
     digest,
     generics (>= 0.0.1),
     Matrix,
+    mlr3pipelines,
     testthat (>= 2.1.0),
     knitr,
     rmarkdown

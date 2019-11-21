@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r}
+```{r, eval = FALSE}
 library(mlr3keras)
 
 tsk = mlr_tasks$get("boston_housing")

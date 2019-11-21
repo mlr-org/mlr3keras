@@ -147,6 +147,13 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
     },
 
     model_from_pars = function(pars, input_shape, output_shape) {
+      assert_integerish(pars$layer_units, lower = 1)
+
+      # Not sure whether we should check like this, this breaks with different keras versions
+      # assert_class(pars$initializer, "tensorflow.python.ops.init_ops_v2.Initializer")
+      # assert_class(pars$regularizer, "keras.regularizers.Regularizer")
+      # assert_class(pars$optimizer,   "keras.optimizer_v2.optimizer_v2.OptimizerV2")
+
       model = keras_model_sequential()
       if (pars$use_dropout) model = model %>% layer_dropout(pars$input_dropout, input_shape = input_shape)
 

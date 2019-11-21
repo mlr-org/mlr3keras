@@ -2,9 +2,7 @@
 % Please edit documentation in R/entity_embedding.R
 \name{make_embedding}
 \alias{make_embedding}
-\title{Create the embedding for a dataset.
-Creates an input for each categorical var, concatenates those,
-Adds batch-norm to continuous vars etc.}
+\title{Create the embedding for a dataset.}
 \usage{
 make_embedding(task, embed_size = NULL, embed_dropout = 0)
 }
@@ -25,11 +23,13 @@ Dropout fraction for the embedding layer.}
 A \code{list} of input tensors and \code{layer}: the concatenated embeddings.
 }
 \description{
-Create the embedding for a dataset.
 Creates an input for each categorical var, concatenates those,
 Adds batch-norm to continuous vars etc.
 }
 \examples{
 task = mlr3::mlr_tasks$get("boston_housing")
 make_embedding(task)
+}
+\references{
+Guo, Berkhan, 2016 Entity Embeddings of Categorical Variables
 }

@@ -12,7 +12,7 @@
 #' @param embed_dropout [`numeric`]\cr
 #'   Dropout fraction for the embedding layer.
 #'
-#' @reference Guo, Berkhan, 2016 Entity Embeddings of Categorical Variables
+#' @references Guo, Berkhan, 2016 Entity Embeddings of Categorical Variables
 #'
 #' @examples
 #' task = mlr3::mlr_tasks$get("boston_housing")

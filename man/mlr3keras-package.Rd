@@ -4,7 +4,7 @@
 \name{mlr3keras-package}
 \alias{mlr3keras}
 \alias{mlr3keras-package}
-\title{mlr3keras: mlr3 keras extension}
+\title{mlr3keras: mlr3 Keras extension}
 \description{
 More learners are available in the \code{mlr3learners} repository on Github (\url{https://github.com/mlr3learners}).
 There also is a wiki page listing all currently available custom learners (\url{https://github.com/mlr-org/mlr3learners/wiki/Extra-Learners}).

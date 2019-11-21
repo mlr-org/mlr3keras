@@ -7,7 +7,7 @@ test_that("callback early stopping", {
   lrn$param_set$values$layer_units = 2L
   lrn$param_set$values$callbacks = list(cb_es(3))
   lrn$train(mlr_tasks$get("iris"))
-  assert_true(lrn$model$history$params$epochs > length(lrn$model$history$metrics))
+  expect_true(lrn$model$history$params$epochs > length(lrn$model$history$metrics))
   k_clear_session()
 })
 
