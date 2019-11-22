@@ -80,13 +80,14 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
 #'
 #' @description
 #' * `logical` variables are treated as integers and converted to
-#'   `continuous`.
+#'    either 0 or 1.
 #' * `continuous` variables are stored in a matrix "continuous"
 #' * `categorical` variables are integer encoded and stored
 #'   as a single list element each.
 #' @examples
 #' task = mlr3::mlr_tasks$get("boston_housing")
 #' reshape_task_embedding(task)
+#' @family reshape_task_embedding
 #' @return A `list` with slots `data`:the reshaped data and `fct_levels`: the levels corresponding to each factor feature.
 #' @export
 reshape_task_embedding = function(task) {
@@ -102,7 +103,7 @@ reshape_task_embedding = function(task) {
 #'
 #' @description
 #' * `logical` variables are treated as integers and converted to
-#'   `continuous`.
+#'    either 0 or 1.
 #' * `continuous` variables are stored in a matrix "continuous"
 #' * `categorical` variables are integer encoded and stored
 #'   as a single list element each.

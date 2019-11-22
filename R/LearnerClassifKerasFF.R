@@ -99,8 +99,8 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
        initializer = initializer_glorot_uniform(),
        optimizer = optimizer_sgd(10^-3),
        regularizer = regularizer_l1_l2(),
-       use_batchnorm = TRUE,
-       use_dropout = TRUE, dropout = 0, input_dropout = 0,
+       use_batchnorm = FALSE,
+       use_dropout = FALSE, dropout = 0, input_dropout = 0,
        callbacks = list(),
        validation_split = 1/3, batch_size = 128L)
 
