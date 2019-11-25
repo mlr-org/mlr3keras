@@ -92,16 +92,19 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
-        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
+        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict")),
+        ParamFct$new("loss", default = "categorical_crossentropy", tags = "train",
+          levels = c("binary_crossentropy", "categorical_crossentropy"))
       ))
       ps$values = list(epochs = 30L, activation = "relu",
        layer_units = c(32, 32, 32),
        initializer = initializer_glorot_uniform(),
-       optimizer = optimizer_sgd(10^-3),
+       optimizer = optimizer_adam(lr = 3*10^-4),
        regularizer = regularizer_l1_l2(),
        use_batchnorm = FALSE,
        use_dropout = FALSE, dropout = 0, input_dropout = 0,
        callbacks = list(),
+       loss = "categorical_crossentropy",
        validation_split = 1/3, batch_size = 128L)
 
       super$initialize(
@@ -117,18 +120,22 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
 
     train_internal = function(task) {
       pars = self$param_set$get_values(tags = "train")
+
+      output_shape = length(task$class_names)
+      if (pars$loss == "binary_crossentropy") {
+        if (length(task$class_names) > 2L) stop("binary_crossentropy loss is only available for binary targets")
+        output_shape = 1L
+      }
+
       data = as.matrix(task$data(cols = task$feature_names))
       target = task$data(cols = task$target_names)
       y = to_categorical(as.integer(target[[task$target_names]]) - 1)
+      if (output_shape == 1L) y = y[, 1, drop = FALSE]
 
-      input_shape = ncol(data)
-      target_labels = task$class_names
-      output_shape = length(target_labels)
-
-      model = self$model_from_pars(pars, input_shape, output_shape)
+      model = self$model_from_pars(pars, task$ncol - 1, output_shape)
       model %>% compile(
         optimizer = pars$optimizer,
-        loss = "categorical_crossentropy",
+        loss = pars$loss,
         metrics = "accuracy"
       )
 
@@ -142,19 +149,19 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         validation_split = pars$validation_split,
         verbose = pars$verbose,
         callbacks = pars$callbacks)
-      return(list(model = model, history = history, target_labels = target_labels))
+      return(list(model = model, history = history, target_labels = task$class_names))
     },
 
     predict_internal = function(task) {
       pars = self$param_set$get_values(tags = "predict")
       newdata = as.matrix(task$data(cols = task$feature_names))
-
       if (self$predict_type == "response") {
         p = invoke(keras::predict_classes, self$model$model, x = newdata, .args = pars)
         p = factor(self$model$target_labels[p + 1])
         PredictionClassif$new(task = task, response = drop(p))
       } else {
         prob = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
+        if (ncol(prob) == 1L) prob = cbind(1-prob, prob)
         colnames(prob) = task$class_names
         PredictionClassif$new(task = task, prob = prob)
       }
@@ -189,7 +196,10 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         if (pars$use_dropout) model = model %>% layer_dropout(pars$dropout)
       }
       # Output layer
-      model = model %>% layer_dense(units = output_shape, activation = 'softmax')
+      if (output_shape == 1L)
+        model = model %>% layer_dense(units = output_shape, activation = "sigmoid")
+      else
+        model = model %>% layer_dense(units = output_shape, activation = "softmax")
     }
   )
 )

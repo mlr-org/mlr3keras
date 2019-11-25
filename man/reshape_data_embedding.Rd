@@ -13,10 +13,13 @@ data.table containing the features (without target variable).}
 \description{
 \itemize{
 \item \code{logical} variables are treated as integers and converted to
-\code{continuous}.
+either 0 or 1.
 \item \code{continuous} variables are stored in a matrix "continuous"
 \item \code{categorical} variables are integer encoded and stored
 as a single list element each.
 }
+}
+\seealso{
+Other reshape_task_embedding: \code{\link{reshape_task_embedding}}
 }
 \concept{reshape_task_embedding}

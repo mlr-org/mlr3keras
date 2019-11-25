@@ -16,7 +16,7 @@ A \code{list} with slots \code{data}:the reshaped data and \code{fct_levels}: th
 \description{
 \itemize{
 \item \code{logical} variables are treated as integers and converted to
-\code{continuous}.
+either 0 or 1.
 \item \code{continuous} variables are stored in a matrix "continuous"
 \item \code{categorical} variables are integer encoded and stored
 as a single list element each.
@@ -26,3 +26,7 @@ as a single list element each.
 task = mlr3::mlr_tasks$get("boston_housing")
 reshape_task_embedding(task)
 }
+\seealso{
+Other reshape_task_embedding: \code{\link{reshape_data_embedding}}
+}
+\concept{reshape_task_embedding}
