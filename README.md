@@ -7,6 +7,13 @@ An extension for `mlr3` to enable using various `keras` models as learners.
 [![codecov](https://codecov.io/gh/mlr-org/mlr3/branch/master/graph/badge.svg)](https://codecov.io/gh/mlr-org/mlr3)
 -->
 
+## Status
+`mlr3keras` is in very early stages of development, and currently only partially under development.
+
+ Comments, discussion and issues/bug reports and PR's are **highly** appreciated.
+ 
+ If you want to **contribute**, please propose / discuss adding functionality in an issue in order to avoid unneccessary or duplicate work.
+
 ## Design
 
 This package's purpose for now is to understand the design-decisions required to make `keras` \ `tensorflow` work
