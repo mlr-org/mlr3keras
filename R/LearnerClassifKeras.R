@@ -50,6 +50,7 @@
 #' @export
 LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassif,
   public = list(
+    transforms = list(),
     initialize = function() {
       ps = ParamSet$new(list(
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
@@ -72,20 +73,30 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         packages = "keras",
         man = "mlr3keras::mlr_learners_classif.keras"
       )
+
+      x_transform = function(task, pars) {
+        as.matrix(task$data(cols = task$feature_names))
+      }
+      y_transform = function(task, pars) {
+        target = task$data(cols = task$target_names)
+        y = to_categorical(as.integer(target[[task$target_names]]) - 1)
+        if (pars$model$loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
+        return(y)
+      }
+      self$set_transform("x", x_transform)
+      self$set_transform("y", y_transform)
     },
 
     train_internal = function(task) {
       pars = self$param_set$get_values(tags = "train")
-      data = as.matrix(task$data(cols = task$feature_names))
-      target = task$data(cols = task$target_names)
-
       assert_class(pars$model, "keras.engine.training.Model")
-      y = to_categorical(as.integer(target[[task$target_names]]) - 1)
-      if (pars$model$loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
+
+      x = self$transforms$x(task, pars) 
+      y = self$transforms$y(task, pars)
 
       history = invoke(keras::fit,
         object = pars$model,
-        x = data,
+        x = x,
         y = y,
         epochs = as.integer(pars$epochs),
         class_weights = pars$class_weights,
@@ -98,7 +109,8 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
     predict_internal = function(task) {
       pars = self$param_set$get_values(tags = "predict")
-      newdata = as.matrix(task$data(cols = task$feature_names))
+      newdata = self$transforms$x(task)
+      
       if (self$predict_type == "response") {
         p = invoke(keras::predict_classes, self$model$model, x = newdata, .args = pars)
         p = factor(self$model$target_labels[p + 1])
@@ -109,6 +121,10 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         colnames(prob) = task$class_names
         PredictionClassif$new(task = task, prob = prob)
       }
+    },
+
+    set_transform = function(name, transform) {
+      self$transforms[[name]] = transform
     }
-  )
+  ),
 )
