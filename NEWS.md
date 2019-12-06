@@ -8,7 +8,7 @@
 ## Learners
 * Add regression learner for a custom model
 * Add regression learner for parametrized feedforward model
-* Add tabnet classification learner
+* Add stacked and unstacked tabnet classification and regression learner
 
 
 # mlr3keras 0.1.0

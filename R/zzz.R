@@ -17,6 +17,7 @@ register_mlr3 = function() { #nocov start
   x$add("regr.kerasff", LearnerClassifKerasFF)
   x$add("regr.keras", LearnerClassifKeras)
   x$add("classif.tabnet", LearnerClassifTabNet)
+  x$add("regr.tabnet", LearnerRegrTabNet)
 }
 
 .onLoad = function(libname, pkgname) {
