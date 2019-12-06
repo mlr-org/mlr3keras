@@ -20,7 +20,7 @@
 #' Most of the parameters can be obtained from the `keras` documentation.
 #' Some exceptions are documented here.
 #' * `model`: A compiled keras model.
-#' * `class_weights`: needs to be a named list of class-weights
+#' * `class_weight`: needs to be a named list of class-weights
 #'   for the dierent classes numbered from 0 to c-1 (for c classes).
 #'   ```
 #'   Example:
@@ -55,7 +55,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       ps = ParamSet$new(list(
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
         ParamUty$new("model", tags = c("train")),
-        ParamUty$new("class_weights", default = list(), tags = "train"),
+        ParamUty$new("class_weight", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
@@ -92,28 +92,24 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       assert_class(pars$model, "keras.engine.training.Model")
 
       if(!is.null(pars$low_memory) && pars$low_memory) {
-        pars["low_memory"] <- NULL # Do not pass to keras
-        
         gen <- make_data_generator(
           task = task,
           batch_size = batch_size,
-          x_transform = self$transforms$x,
-          x_transform = self$transforms$y
+          x_transform = function(x) {self$transforms$x(x, pars)},
+          y_transform = function(y) {self$transforms$y(y, pars)}
         )
         
         history = invoke(keras::fit_generator,
                          object = pars$model,
                          generator = gen,
                          epochs = as.integer(pars$epochs),
-                         class_weights = pars$class_weights,
-                         batch_size = pars$batch_size,
-                         validation_split = pars$validation_split,
+                         class_weight = pars$class_weight, 
+                         steps_per_epoch = floor(task$nrow / pars$batch_size),
+                         # not implemented: validation_data can be set up using validation split and mlr
                          verbose = pars$verbose,
                          callbacks = pars$callbacks)
         
       } else {
-        pars["low_memory"] <- NULL # Do not pass to keras
-        
         features <- task$data(cols = task$feature_names)
         target = task$data(cols = task$target_names)[[task$target_names]]
         
@@ -125,7 +121,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
                          x = x,
                          y = y,
                          epochs = as.integer(pars$epochs),
-                         class_weights = pars$class_weights,
+                         class_weight = pars$class_weight,
                          batch_size = pars$batch_size,
                          validation_split = pars$validation_split,
                          verbose = pars$verbose,
@@ -139,12 +135,12 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       
       if(!is.null(pars$low_memory) && pars$low_memory) {
         pars["low_memory"] <- NULL # Do not pass to keras
+        pars["batch_size"] <- NULL # Generator does not take batch size
         
         gen <- make_data_generator(
           task = task,
           batch_size = batch_size,
-          x_transform = self$transforms$x,
-          x_transform = self$transforms$y
+          x_transform = function(x) {self$transforms$x(x, pars)}
         )
         prob = invoke(keras::predict_generator, self$model$model, generator = gen, .args = pars)
         PredictionClassif$new(task = task, prob = prob)

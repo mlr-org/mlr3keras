@@ -58,7 +58,7 @@
 #'   "l1_l2"   : regularizer_l1_l2(l1 = 0.01, l2 = 0.01)
 #'   ```
 #'
-#' * `class_weights`: needs to be a named list of class-weights
+#' * `class_weight`: needs to be a named list of class-weights
 #'   for the different classes numbered from 0 to c-1 (for c classes).
 #'   ```
 #'   Example:
@@ -88,7 +88,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         ParamLgl$new("use_dropout", default = TRUE, tags = "train"),
         ParamDbl$new("dropout", lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("input_dropout", lower = 0, upper = 1, tags = "train"),
-        ParamUty$new("class_weights", default = list(), tags = "train"),
+        ParamUty$new("class_weight", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
@@ -144,7 +144,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF", inherit = LearnerCl
         x = data,
         y = y,
         epochs = as.integer(pars$epochs),
-        class_weights = pars$class_weights,
+        class_weight = pars$class_weight,
         batch_size = pars$batch_size,
         validation_split = pars$validation_split,
         verbose = pars$verbose,

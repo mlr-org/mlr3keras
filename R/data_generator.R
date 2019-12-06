@@ -21,15 +21,21 @@ make_data_generator <- function(
   y_transform=function(y) {y}){
   
   # Data generator function
-  data_generator_fn <-function(task, batch_size) {
+  data_generator_fn <- function(task, batch_size) {
     order_records <- rep(1:task$nrow)
     start <- 1
-    
+
     function() {
       end <- min(start + batch_size - 1, task$nrow) 
       features <- task$data(rows=order_records[start:end], cols = task$feature_names)
-      target <- task$data(rows=order_records[start:end], cols = task$target_names)
-      start <<- start + batch_size
+      target <- task$data(rows=order_records[start:end], cols = task$target_names)[[task$target_names]]
+      if (start + batch_size < task$nrow) {
+        start <<- start + batch_size
+      } else {
+        # The generator is expected to loop over its data indefinitely.
+        order_records <<- rep(1:task$nrow)
+        start <<- 1 
+      }
       
       list(
         x_transform(features),
