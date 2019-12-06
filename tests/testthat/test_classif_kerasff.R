@@ -11,7 +11,6 @@ test_that("autotest", {
   k_clear_session()
 })
 
-
 test_that("can fit logistic regression", {
   skip_on_os("solaris")
   learner = mlr3::lrn("classif.kerasff")
@@ -27,7 +26,6 @@ test_that("can fit logistic regression", {
   expect_class(prd, "PredictionClassif")
   k_clear_session()
 })
-
 
 test_that("works with pipelines", {
   skip_if_not(require("mlr3pipelines"))
@@ -68,12 +66,12 @@ test_that("can fit with binary_crossentropy", {
   pipe$train(mlr_tasks$get("pima"))
 
   expect_list(pipe$state)
-  expect_list(pipe$pipeops$classif.kerasff$state$model)
+  expect_list(pipe$pipeops$classif.keras$state$model)
   prd = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd[[1]], "PredictionClassif")
   expect_true(is.null(prd[[1]]$prob))
 
-  pipe$pipeops$classif.kerasff$learner$predict_type = "prob"
+  pipe$pipeops$classif.keras$learner$predict_type = "prob"
   prd2 = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd2[[1]], "PredictionClassif")
   expect_matrix(prd2[[1]]$prob, nrows = 768L, ncols = 2L)

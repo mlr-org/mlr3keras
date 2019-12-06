@@ -1,4 +1,4 @@
-context("keras custom model")
+context("keras classif custom model")
 
 test_that("autotest binary", {
 
@@ -69,4 +69,3 @@ test_that("can fit with binary_crossentropy", {
   expect_true(all(prd[[1]]$response == prd2[[1]]$response))
   k_clear_session()
 })
-
