@@ -43,7 +43,7 @@ test_that("autotest multiclass", {
 test_that("can fit with binary_crossentropy", {
   skip_if_not(require("mlr3pipelines"))
   po_imp = PipeOpImputeMedian$new()
-  po_lrn = PipeOpLearner$new(lrn("classif.keras"))
+  po_lrn = PipeOpLearner$new(lrn("classif.keras", predict_type = "prob"))
   model = keras_model_sequential() %>%
   layer_dense(units = 12L, input_shape = 8L, activation = "relu") %>%
   layer_dense(units = 12L, activation = "relu") %>%
@@ -60,7 +60,6 @@ test_that("can fit with binary_crossentropy", {
   expect_list(pipe$pipeops$classif.keras$state$model)
   prd = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd[[1]], "PredictionClassif")
-  expect_true(is.null(prd[[1]]$prob))
 
   pipe$pipeops$classif.keras$learner$predict_type = "prob"
   prd2 = pipe$predict(mlr_tasks$get("pima"))
