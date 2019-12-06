@@ -40,7 +40,7 @@ mlr3::lrn("regr.keras")
  layer_dense(units = 1L, activation = "linear") \%>\%
    compile(optimizer = optimizer_sgd(),
      loss = "mean_squared_error",
-     metrics = "rmse")
+     metrics = "mean_squared_error")
  # Create the learner
  learner = LearnerRegrKeras$new()
  learner$param_set$values$model = model

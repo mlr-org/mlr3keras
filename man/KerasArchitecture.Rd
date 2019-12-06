@@ -15,7 +15,7 @@
 
 \item{x_transform}{\code{\link{list}} \cr Function used to transform the data for the model.}
 
-\item{name}{\code{\link{character(1)}} Either 'x' or 'y'.}
+\item{name}{\code{\link{character}} Either 'x' or 'y'.}
 
 \item{transform}{\code{\link{function}} \cr Function to set for the architecture}
 }

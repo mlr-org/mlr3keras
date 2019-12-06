@@ -36,7 +36,7 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
     },
     #' @description 
     #' Setter method for 'x_transform' and 'y_transform'.
-    #' @param name [`character(1)`] Either 'x' or 'y'.
+    #' @param name [`character`] Either 'x' or 'y'.
     #' @param transform [`function`] \cr Function to set for the architecture
     set_transform = function(name, transform) {
       assert_choice(name, c("x", "y"))

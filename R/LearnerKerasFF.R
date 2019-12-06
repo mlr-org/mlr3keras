@@ -109,15 +109,13 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
   )
 )
 
-#' Builds a Keras Feed Forward Neural Network 
-#' @param pars [`list`] \cr
-#'   A list of parameter values from the Learner(Regr|Classif)KerasFF param_set.
-#' @param input_shape [`integer(1)`] \cr
-#'   Number of input units.@return A compiled keras model
-#' @param output_shape  [`integer(1)`] \cr
-#'   Number of output classes. Always 1L for regression.
-#' @template kerasff_description
-#' @return A compiled keras model
+# Builds a Keras Feed Forward Neural Network 
+# @param task [`Task`] \cr
+#   A mlr3 Task.
+# @param pars [`list`] \cr
+#   A list of parameter values from the Learner(Regr|Classif)KerasFF param_set.
+# @template kerasff_description
+# @return A compiled keras model
 build_keras_ff_model = function(task, pars) {
 
   # Get input and output shape for model

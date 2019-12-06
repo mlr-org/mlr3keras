@@ -79,7 +79,7 @@ KerasArchitectureTabNet = R6::R6Class("KerasArchitectureTabNet",
 
 build_keras_tabnet = function(task, pars) {
   requireNamespace("reticulate")
-  require("tensorflow")
+  requireNamespace("tensorflow")
   if(!reticulate::py_module_available("tabnet")) {
     stop("Python module tabnet is not available. In order to install it use 
       keras::install_keras(extra_packages = c('tensorflow-hub', 'tabnet==0.1.4.1').")
@@ -108,9 +108,9 @@ build_keras_tabnet = function(task, pars) {
 make_tf_feature_cols = function(task) {
   assert_class(task, "Task")
   make_feature_column = function(id, type) {
-    if (type == "numeric") tf$feature_column$numeric_column(id)
-    else if (type == "integer") tf$feature_column$numeric_column(id)
-    else tf$feature_column$categorical_column_with_vocabulary_list(id, task$levels(id)[[1]])
+    if (type == "numeric") tensorflow::tf$feature_column$numeric_column(id)
+    else if (type == "integer") tensorflow::tf$feature_column$numeric_column(id)
+    else tensorflow::tf$feature_column$categorical_column_with_vocabulary_list(id, task$levels(id)[[1]])
   }
   feature_columns = pmap(.f = make_feature_column, .x = task$feature_types)
 }

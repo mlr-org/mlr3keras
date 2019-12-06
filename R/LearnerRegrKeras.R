@@ -42,13 +42,12 @@
 #'  layer_dense(units = 1L, activation = "linear") %>%
 #'    compile(optimizer = optimizer_sgd(),
 #'      loss = "mean_squared_error",
-#'      metrics = "rmse")
+#'      metrics = "mean_squared_error")
 #'  # Create the learner
 #'  learner = LearnerRegrKeras$new()
 #'  learner$param_set$values$model = model
 #'  learner$train(mlr3::mlr_tasks$get("mtcars"))
 #' @export
-
 LearnerRegrKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerRegr,
   public = list(
     architecture = NULL,
