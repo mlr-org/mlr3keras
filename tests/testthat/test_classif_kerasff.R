@@ -32,6 +32,8 @@ test_that("works with pipelines", {
 
   po_enc = PipeOpEncode$new()
   po_lrn = PipeOpLearner$new(lrn("classif.kerasff"))
+  po_lrn$param_set$values$use_dropout = TRUE
+  po_lrn$param_set$values$use_batchnorm = TRUE
   po_lrn$param_set$values$epochs = 3L
   po_lrn$param_set$values$layer_units = integer()
 
