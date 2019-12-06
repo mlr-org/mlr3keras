@@ -1,0 +1,29 @@
+context("test data generator")
+
+test_that("test data generator", {
+  library("reticulate")
+  
+  # Create a generator from the task
+  tsk = mlr_tasks$get("iris")
+  
+  gen <- make_data_generator(tsk, batch_size = 73) # Make generator
+  
+  batch1 <- generator_next(gen) # Get next batch
+  
+  expect_equal(length(batch1[[1]]), 4) # 4 features
+  expect_equal(length(batch1[[1]]$Sepal.Width), 73) # batch_size records 
+  expect_equal(length(batch1[[2]]$Species), 73) # batch_size records 
+  
+  batch2 <- generator_next(gen) # Get next batch
+  
+  expect_equal(length(batch2[[1]]), 4) # 4 features
+  expect_equal(length(batch2[[1]]$Sepal.Width), 73) # batch_size records 
+  expect_equal(length(batch2[[2]]$Species), 73) # batch_size records 
+    
+  batch3 <- generator_next(gen) # Get last batch
+  
+  expect_equal(length(batch3[[1]]), 4) # 4 features
+  expect_equal(length(batch3[[1]]$Sepal.Width), 150 - 73 - 73) # remaining records 
+  expect_equal(length(batch3[[2]]$Species), 150 - 73 - 73) # remaining records 
+  
+})

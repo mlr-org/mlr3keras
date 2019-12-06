@@ -34,9 +34,9 @@ test_that("test tabnet", {
   lrn$param_set$values$validation_split = NULL # Does not work with tf.data
 
   # We overwrite task -> dataset transformers here to stay flexible.
-  lrn$set_transform("x", function(task, pars) {
-    x = lapply(task$feature_names, function(x) { as.matrix(task$data(cols = x))})
-    names(x) = task$feature_names
+  lrn$set_transform("x", function(features, pars) {
+    x = lapply(tsk$feature_names, function(x) { as.matrix(features)})
+    names(x) = tsk$feature_names
     return(x)
   })
   lrn$train(tsk)

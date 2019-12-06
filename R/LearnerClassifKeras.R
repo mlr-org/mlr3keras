@@ -59,10 +59,11 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
-        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
+        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict")),
+        ParamLgl$new("low_memory", default=FALSE, tags = c("train", "predict"))
       ))
       ps$values = list(epochs = 30L, callbacks = list(),
-        validation_split = 1/3, batch_size = 128L)
+        validation_split = 1/3, batch_size = 128L, low_memory=FALSE)
 
       super$initialize(
         id = "classif.keras",
@@ -74,12 +75,11 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         man = "mlr3keras::mlr_learners_classif.keras"
       )
 
-      x_transform = function(task, pars) {
-        as.matrix(task$data(cols = task$feature_names))
+      x_transform = function(features, pars) {
+        as.matrix(features)
       }
-      y_transform = function(task, pars) {
-        target = task$data(cols = task$target_names)
-        y = to_categorical(as.integer(target[[task$target_names]]) - 1)
+      y_transform = function(target, pars) {
+        y = to_categorical(as.integer(target) - 1)
         if (pars$model$loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
         return(y)
       }
@@ -91,35 +91,79 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       pars = self$param_set$get_values(tags = "train")
       assert_class(pars$model, "keras.engine.training.Model")
 
-      x = self$transforms$x(task, pars) 
-      y = self$transforms$y(task, pars)
-
-      history = invoke(keras::fit,
-        object = pars$model,
-        x = x,
-        y = y,
-        epochs = as.integer(pars$epochs),
-        class_weights = pars$class_weights,
-        batch_size = pars$batch_size,
-        validation_split = pars$validation_split,
-        verbose = pars$verbose,
-        callbacks = pars$callbacks)
+      if(!is.null(pars$low_memory) && pars$low_memory) {
+        pars["low_memory"] <- NULL # Do not pass to keras
+        
+        gen <- make_data_generator(
+          task = task,
+          batch_size = batch_size,
+          x_transform = self$transforms$x,
+          x_transform = self$transforms$y
+        )
+        
+        history = invoke(keras::fit_generator,
+                         object = pars$model,
+                         generator = gen,
+                         epochs = as.integer(pars$epochs),
+                         class_weights = pars$class_weights,
+                         batch_size = pars$batch_size,
+                         validation_split = pars$validation_split,
+                         verbose = pars$verbose,
+                         callbacks = pars$callbacks)
+        
+      } else {
+        pars["low_memory"] <- NULL # Do not pass to keras
+        
+        features <- task$data(cols = task$feature_names)
+        target = task$data(cols = task$target_names)[[task$target_names]]
+        
+        x = self$transforms$x(features, pars) 
+        y = self$transforms$y(target, pars)
+  
+        history = invoke(keras::fit,
+                         object = pars$model,
+                         x = x,
+                         y = y,
+                         epochs = as.integer(pars$epochs),
+                         class_weights = pars$class_weights,
+                         batch_size = pars$batch_size,
+                         validation_split = pars$validation_split,
+                         verbose = pars$verbose,
+                         callbacks = pars$callbacks)
+      }
       return(list(model = pars$model, history = history, target_labels = task$class_names))
     },
 
     predict_internal = function(task) {
       pars = self$param_set$get_values(tags = "predict")
-      newdata = self$transforms$x(task)
       
-      if (self$predict_type == "response") {
-        p = invoke(keras::predict_classes, self$model$model, x = newdata, .args = pars)
-        p = factor(self$model$target_labels[p + 1])
-        PredictionClassif$new(task = task, response = drop(p))
-      } else {
-        prob = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
-        if (ncol(prob) == 1L) prob = cbind(1-prob, prob)
-        colnames(prob) = task$class_names
+      if(!is.null(pars$low_memory) && pars$low_memory) {
+        pars["low_memory"] <- NULL # Do not pass to keras
+        
+        gen <- make_data_generator(
+          task = task,
+          batch_size = batch_size,
+          x_transform = self$transforms$x,
+          x_transform = self$transforms$y
+        )
+        prob = invoke(keras::predict_generator, self$model$model, generator = gen, .args = pars)
         PredictionClassif$new(task = task, prob = prob)
+      } else {
+        pars["low_memory"] <- NULL # Do not pass to keras
+        
+        features <- task$data(cols = task$feature_names)
+        newdata = self$transforms$x(features)
+        
+        if (self$predict_type == "response") {
+          p = invoke(keras::predict_classes, self$model$model, x = newdata, .args = pars)
+          p = factor(self$model$target_labels[p + 1])
+          PredictionClassif$new(task = task, response = drop(p))
+        } else {
+          prob = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
+          if (ncol(prob) == 1L) prob = cbind(1-prob, prob)
+          colnames(prob) = task$class_names
+          PredictionClassif$new(task = task, prob = prob)
+        }
       }
     },
 
