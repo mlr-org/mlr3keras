@@ -10,7 +10,7 @@
 #' A package that connects mlr3 to keras.
 "_PACKAGE"
 
-register_mlr3 = function() {
+register_mlr3 = function() { #nocov start
   x = utils::getFromNamespace("mlr_learners", ns = "mlr3")
   x$add("classif.kerasff", LearnerClassifKerasFF)
   x$add("classif.keras", LearnerClassifKeras)
@@ -34,4 +34,4 @@ register_mlr3 = function() {
 } # nocov end
 
 # silence R CMD check for callbacks:
-utils::globalVariables("model")
+utils::globalVariables("model") # nocov end
