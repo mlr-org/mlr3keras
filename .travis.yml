@@ -13,7 +13,7 @@ before_script:
   - R CMD INSTALL .
   - R -e 'keras::install_keras(tensorflow = Sys.getenv("TENSORFLOW_VERSION"), extra_packages = "IPython")'
   - R -e 'tensorflow::tf_config()'
-  - R -e 'keras::install_keras(extra_packages = c("tensorflow-hub", "tabnet>=0.1.4.1")'
+  - R -e 'keras::install_keras(extra_packages = c("tensorflow-hub", "tabnet>=0.1.4.1"))'
   - R -q -e 'tic::before_script()'
 script: R -q -e 'tic::script()'
 after_success: R -q -e 'tic::after_success()'
