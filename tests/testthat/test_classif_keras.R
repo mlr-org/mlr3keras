@@ -52,6 +52,8 @@ test_that("can fit with binary_crossentropy", {
       loss = "binary_crossentropy",
       metrics = "accuracy")
   po_lrn$param_set$values$model = model
+  po_lrn$param_set$values$use_dropout = TRUE
+  po_lrn$param_set$values$use_batchnorm = TRUE
   po_lrn$param_set$values$epochs = 10L
   pipe = po_imp %>>% po_lrn
   pipe$train(mlr_tasks$get("pima"))
