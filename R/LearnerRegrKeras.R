@@ -20,7 +20,7 @@
 #' Most of the parameters can be obtained from the `keras` documentation.
 #' Some exceptions are documented here.
 #' * `model`: A compiled keras model.
-#' * `class_weights`: needs to be a named list of class-weights
+#' * `class_weight`: needs to be a named list of class-weights
 #'   for the dierent classes numbered from 0 to c-1 (for c classes).
 #'   ```
 #'   Example:
@@ -56,7 +56,7 @@ LearnerRegrKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerRegr,
       ps = ParamSet$new(list(
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
         ParamUty$new("model", tags = c("train")),
-        ParamUty$new("class_weights", default = list(), tags = "train"),
+        ParamUty$new("class_weight", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
@@ -89,7 +89,7 @@ LearnerRegrKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerRegr,
         x = x,
         y = y,
         epochs = as.integer(pars$epochs),
-        class_weights = pars$class_weights,
+        class_weight = pars$class_weight,
         batch_size = pars$batch_size,
         validation_split = pars$validation_split,
         verbose = pars$verbose,
