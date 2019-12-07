@@ -45,8 +45,8 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
     }
   ),
   private = list(
-    .x_transform = function(task, pars, ...) {
-        as.matrix(task$data(cols = task$feature_names))
+    .x_transform = function(features, pars, ...) {
+        as.matrix(features)
     },
     .y_transform = function(task, pars, model, ...) {
         target = task$data(cols = task$target_names)

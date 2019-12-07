@@ -144,9 +144,9 @@ KerasArchitectureTabNet = R6::R6Class("KerasArchitectureTabNet",
   inherit = KerasArchitecture,
   public = list(
     initialize = function(build_arch_fn, x_transform, y_transform, param_set) {
-      x_transform = function(task, pars) {
-        x = lapply(task$feature_names, function(x) {as.matrix(task$data(cols = x))})
-        names(x) = task$feature_names
+      x_transform = function(features, pars) {
+        x = lapply(names(features), function(x) {as.matrix(features[, get(x)])})
+        names(x) = names(features)
         return(x)
       }
       super$initialize(build_arch_fn = build_arch_fn, x_transform = x_transform, param_set = param_set)

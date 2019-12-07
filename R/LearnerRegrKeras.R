@@ -81,7 +81,9 @@ LearnerRegrKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerRegr,
       model = self$architecture$get_model(task, pars)
       # Custom transformation depending on the model.
       # Could be generalized at some point.
-      x = self$architecture$transforms$x(task, pars) 
+      features = task$data(cols = task$feature_names)
+      
+      x = self$architecture$transforms$x(features, pars) 
       y = self$architecture$transforms$y(task, pars, model)
 
       history = invoke(keras::fit,
@@ -99,7 +101,10 @@ LearnerRegrKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerRegr,
 
     predict_internal = function(task) {
       pars = self$param_set$get_values(tags = "predict")
-      newdata = self$architecture$transforms$x(task, pars)
+      
+      features = task$data(cols = task$feature_names)
+      newdata = self$architecture$transforms$x(features, pars)
+
       if (self$predict_type == "response") {
         p = invoke(self$model$model$predict, x = newdata, .args = pars)
         PredictionRegr$new(task = task, response = drop(p))
