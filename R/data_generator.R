@@ -21,16 +21,17 @@ make_data_generator <- function(
   x_transform=function(x) {x},
   y_transform=function(y) {y}){
 
+  # Sample from task$row_roles$use which are the usable row ids of the task
   if (training) {
-    order_records <- sample(1:task$nrow)
+    order_records <- sample(task$row_roles$use)
   } else {
-    order_records <- 1:task$nrow
+    order_records <- task$row_roles$use
   }
 
   start <- 1
 
   function() {
-    end <- min(start + batch_size - 1, task$nrow) 
+    end <- min(start + batch_size - 1, length(task$row_roles$use)) 
     
     # Get records before transform
     features <- task$data(rows=order_records[start:end], cols = task$feature_names)
@@ -38,9 +39,9 @@ make_data_generator <- function(
     
     # Update slice for next run
     start <<- start + batch_size
-    if (start >= task$nrow && training) {
+    if (start >= length(task$row_roles$use) && training) {
       # The generator is expected to loop over its data indefinitely during training.
-        order_records <<- sample(1:task$nrow)
+        order_records <<- sample(task$row_roles$use)
         start <<- 1 
     }
     
