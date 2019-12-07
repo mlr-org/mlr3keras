@@ -60,9 +60,10 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
+        ParamLgl$new("low_memory", default=FALSE, tags = c("train")),
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
       ))
-      ps$values = list(epochs = 30L, callbacks = list(), validation_split = 1/3, batch_size = 128L)
+      ps$values = list(epochs = 30L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory=FALSE)
       ps = ParamSetCollection$new(list(ps, self$architecture$param_set))
       super$initialize(
         id = "classif.keras",
@@ -94,19 +95,69 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       features = task$data(cols = task$feature_names)
       target = task$data(cols = task$target_names)[[task$target_names]]
       
-      x = self$architecture$transforms$x(features, pars)
-      y = self$architecture$transforms$y(target, pars, model$loss)
-
-      history = invoke(keras::fit,
-        object = model,
-        x = x,
-        y = y,
-        epochs = as.integer(pars$epochs),
-        class_weight = pars$class_weight,
-        batch_size = pars$batch_size,
-        validation_split = pars$validation_split,
-        verbose = pars$verbose,
-        callbacks = pars$callbacks)
+      if(is.null(pars$low_memory) || !pars$low_memory) {
+        x = self$architecture$transforms$x(features, pars)
+        y = self$architecture$transforms$y(target, pars, model$loss)
+  
+        history = invoke(keras::fit,
+          object = model,
+          x = x,
+          y = y,
+          epochs = as.integer(pars$epochs),
+          class_weight = pars$class_weight,
+          batch_size = pars$batch_size,
+          validation_split = pars$validation_split,
+          verbose = pars$verbose,
+          callbacks = pars$callbacks)
+        
+      } else {
+        # Validation split
+        rho = rsmp("holdout", ratio = 1 - pars$validation_split)
+        rho$instantiate(task)
+        
+        train_gen <- make_data_generator(
+          task = task,
+          batch_size = pars$batch_size,
+          filter_ids = rho$train_set(1),
+          x_transform = function(x) {self$architecture$transforms$x(x, pars)},
+          y_transform = function(y) {self$architecture$transforms$y(y, pars, model$loss)}
+        )
+        
+        valid_gen <- make_data_generator(
+          task = task,
+          batch_size = pars$batch_size,
+          filter_ids = rho$test_set(1),
+          x_transform = function(x) {self$architecture$transforms$x(x, pars)},
+          y_transform = function(y) {self$architecture$transforms$y(y, pars, model$loss)}
+        )
+        
+        # Number of steps
+        train_steps <- ceiling(length(rho$train_set(1)) / pars$batch_size)
+        valid_steps <- ceiling(length(rho$test_set(1)) / pars$batch_size)
+        
+        # Train with generator
+        if(pars$validation_split > 0) {
+          history = invoke(keras::fit_generator,
+                           object = pars$model,
+                           generator = train_gen,
+                           epochs = as.integer(pars$epochs),
+                           class_weight = pars$class_weight, 
+                           steps_per_epoch = train_steps,
+                           validation_data = valid_gen,
+                           validation_steps = valid_steps,
+                           verbose = pars$verbose,
+                           callbacks = pars$callbacks)
+        } else {
+          history = invoke(keras::fit_generator,
+                           object = pars$model,
+                           generator = train_gen,
+                           epochs = as.integer(pars$epochs),
+                           class_weight = pars$class_weight, 
+                           steps_per_epoch = train_steps,
+                           verbose = pars$verbose,
+                           callbacks = pars$callbacks)
+        }
+      }
       return(list(model = model, history = history, class_names = task$class_names))
     },
 

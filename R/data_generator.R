@@ -3,6 +3,9 @@
 #' Creates a data generator for a mlr3 task.
 #' @param task [`Task`]\cr
 #'   An mlr3 [`Task`].
+#' @param training
+#'   If true, shuffles the data, includes y, and loops infinitely.
+#'   Training=FALSE is currently not used.
 #' @param batch_size [`numeric`]\cr
 #'   Batch size
 #' @param x_transform
