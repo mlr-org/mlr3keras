@@ -48,7 +48,7 @@
 #'  learner$param_set$values$model = model
 #'  learner$train(mlr3::mlr_tasks$get("mtcars"))
 #' @export
-LearnerRegrKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerRegr,
+LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
   public = list(
     architecture = NULL,
     initialize = function(architecture = KerasArchitectureCustomModel$new()) {
