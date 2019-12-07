@@ -48,15 +48,8 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
     .x_transform = function(features, pars, ...) {
         as.matrix(features)
     },
-    .y_transform = function(task, pars, model, ...) {
-        target = task$data(cols = task$target_names)
-        if (inherits(task, "TaskRegr")) {
-          y = as.numeric(target[[task$target_names]])
-        } else if (inherits(task, "TaskClassif")) {
-          y = to_categorical(as.integer(target[[task$target_names]]) - 1)
-          if (model$loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
-        }
-        return(y)
+    .y_transform = function(target, pars, model_loss) {
+        stop("Set y_transform within LearnerRegrKeras, LearnerClassifKeras, etc.") 
     }
   )
 )

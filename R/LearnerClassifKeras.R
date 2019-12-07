@@ -73,6 +73,16 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         packages = "keras",
         man = "mlr3keras::mlr_learners_classif.keras"
       )
+      
+      # Set y_transform
+      self$architecture$set_transform(
+        "y",
+        function(target, pars, model_loss) {
+          y = to_categorical(as.integer(target) - 1)
+          if (model_loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
+          return(y)
+        }
+      )
     },
 
     train_internal = function(task) {
@@ -82,9 +92,10 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       # Custom transformation depending on the model.
       # Could be generalized at some point.
       features = task$data(cols = task$feature_names)
+      target = task$data(cols = task$target_names)[[task$target_names]]
       
       x = self$architecture$transforms$x(features, pars)
-      y = self$architecture$transforms$y(task, pars, model)
+      y = self$architecture$transforms$y(target, pars, model$loss)
 
       history = invoke(keras::fit,
         object = model,
