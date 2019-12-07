@@ -30,7 +30,7 @@ test_that("autotest binary low memory", {
             loss = "categorical_crossentropy",
             metrics = c("accuracy"))
   learner = LearnerClassifKeras$new()
-  learner$param_set$values = list(model = model)
+  learner$param_set$values$model = model
   learner$param_set$values$epochs = 2L
   learner$param_set$values$low_memory = TRUE
   expect_learner(learner)
@@ -73,7 +73,7 @@ test_that("autotest multiclass low memory", {
             loss = "categorical_crossentropy",
             metrics = c("accuracy"))
   learner = LearnerClassifKeras$new()
-  learner$param_set$values = list(model = model)
+  learner$param_set$values$model = model
   learner$param_set$values$epochs = 2L
   learner$param_set$values$low_memory = TRUE  
   expect_learner(learner)

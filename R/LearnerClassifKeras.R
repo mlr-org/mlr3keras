@@ -60,7 +60,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict")),
-        ParamLgl$new("low_memory", default=FALSE, tags = c("train", "predict"))
+        ParamLgl$new("low_memory", default=FALSE, tags = c("train")) # , "predict"
       ))
       ps$values = list(epochs = 30L, callbacks = list(),
         validation_split = 1/3, batch_size = 128L, low_memory=FALSE)
@@ -94,7 +94,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       if(!is.null(pars$low_memory) && pars$low_memory) {
         gen <- make_data_generator(
           task = task,
-          batch_size = batch_size,
+          batch_size = pars$batch_size,
           x_transform = function(x) {self$transforms$x(x, pars)},
           y_transform = function(y) {self$transforms$y(y, pars)}
         )
@@ -104,7 +104,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
                          generator = gen,
                          epochs = as.integer(pars$epochs),
                          class_weight = pars$class_weight, 
-                         steps_per_epoch = floor(task$nrow / pars$batch_size),
+                         steps_per_epoch = ceiling(task$nrow / pars$batch_size),
                          # not implemented: validation_data can be set up using validation split and mlr
                          verbose = pars$verbose,
                          callbacks = pars$callbacks)
@@ -134,15 +134,25 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       pars = self$param_set$get_values(tags = "predict")
       
       if(!is.null(pars$low_memory) && pars$low_memory) {
-        pars["low_memory"] <- NULL # Do not pass to keras
-        pars["batch_size"] <- NULL # Generator does not take batch size
-        
+
         gen <- make_data_generator(
           task = task,
           batch_size = batch_size,
+          training = FALSE,
           x_transform = function(x) {self$transforms$x(x, pars)}
         )
-        prob = invoke(keras::predict_generator, self$model$model, generator = gen, .args = pars)
+        
+        steps <- ceiling(task$nrow / pars$batch_size)
+        
+        pars["low_memory"] <- NULL # Do not pass to keras
+        pars["batch_size"] <- NULL # Generator does not take batch size
+        
+        prob = invoke(keras::predict_generator, 
+                      self$model$model, 
+                      generator = gen, 
+                      steps = steps,
+                      .args = pars)
+
         PredictionClassif$new(task = task, prob = prob)
       } else {
         pars["low_memory"] <- NULL # Do not pass to keras

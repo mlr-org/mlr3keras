@@ -6,7 +6,9 @@ test_that("test data generator", {
   # Create a generator from the task
   tsk = mlr_tasks$get("iris")
   
-  gen <- make_data_generator(tsk, batch_size = 73) # Make generator
+  gen <- py_iterator(
+    make_data_generator(tsk, batch_size = 73), # Make generator
+    completed = NULL)
   
   batch1 <- generator_next(gen) # Get next batch
   
