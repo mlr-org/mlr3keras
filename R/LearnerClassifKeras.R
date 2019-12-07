@@ -92,20 +92,37 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       assert_class(pars$model, "keras.engine.training.Model")
 
       if(!is.null(pars$low_memory) && pars$low_memory) {
-        gen <- make_data_generator(
+        # Validation split
+        rho = rsmp("holdout", ratio = 1 - pars$validation_split)
+        rho$instantiate(task)
+
+        train_gen <- make_data_generator(
           task = task,
           batch_size = pars$batch_size,
+          filter_ids = rho$train_set(1),
           x_transform = function(x) {self$transforms$x(x, pars)},
           y_transform = function(y) {self$transforms$y(y, pars)}
         )
         
+        valid_gen <- make_data_generator(
+          task = task,
+          batch_size = pars$batch_size,
+          filter_ids = rho$test_set(1),
+          x_transform = function(x) {self$transforms$x(x, pars)},
+          y_transform = function(y) {self$transforms$y(y, pars)}
+        )
+
+        train_steps <- ceiling(length(rho$train_set(1)) / pars$batch_size)
+        valid_steps <- ceiling(length(rho$test_set(1)) / pars$batch_size)
+        
         history = invoke(keras::fit_generator,
                          object = pars$model,
-                         generator = gen,
+                         generator = train_gen,
                          epochs = as.integer(pars$epochs),
                          class_weight = pars$class_weight, 
-                         steps_per_epoch = ceiling(task$nrow / pars$batch_size),
-                         # not implemented (yet): validation_data can be set up using validation split and mlr
+                         steps_per_epoch = train_steps,
+                         validation_data = ifelse(pars$validation_split > 0, valid_gen, NULL),
+                         validation_steps = ifelse(pars$validation_split > 0, valid_steps, NULL),
                          verbose = pars$verbose,
                          callbacks = pars$callbacks)
         
