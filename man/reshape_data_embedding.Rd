@@ -20,6 +20,7 @@ as a single list element each.
 }
 }
 \seealso{
-Other reshape_task_embedding: \code{\link{reshape_task_embedding}}
+Other reshape_task_embedding: 
+\code{\link{reshape_task_embedding}()}
 }
 \concept{reshape_task_embedding}
