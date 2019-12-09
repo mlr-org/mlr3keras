@@ -26,7 +26,7 @@ An extension for `mlr3` to enable using various `keras` models as learners.
 
 Learners can be used for `training` and `prediction` as follows:
 
-```{r, message=FALSE}
+```r
   lrn = LearnerClassifKerasFF$new()
   lrn$param_set$values$epochs = 50
   lrn$param_set$values$layer_units = 12
