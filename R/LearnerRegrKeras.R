@@ -30,7 +30,7 @@
 #' * `callbacks`: A list of keras callbacks.
 #'   See `?callbacks`.
 #'
-#'
+#' @template learner_methods
 #' @template seealso_learner
 #' @templateVar learner_name regr.keras
 #' @examples
@@ -74,7 +74,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
         packages = "keras",
         man = "mlr3keras::mlr_learners_classif.keras"
       )
-      
+
       # Set y_transform
       self$architecture$set_transform("y", function(target, pars, model_loss) {as.numeric(target)})
     },
@@ -87,11 +87,11 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
       # Could be generalized at some point.
       features = task$data(cols = task$feature_names)
       target = task$data(cols = task$target_names)[[task$target_names]]
-      
+
       if(is.null(pars$low_memory) || !pars$low_memory) {
-        x = self$architecture$transforms$x(features, pars) 
+        x = self$architecture$transforms$x(features, pars)
         y = self$architecture$transforms$y(target, pars, model$loss)
-  
+
         history = invoke(keras::fit,
           object = model,
           x = x,
@@ -102,12 +102,12 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
           validation_split = pars$validation_split,
           verbose = pars$verbose,
           callbacks = pars$callbacks)
-        
+
       } else {
         # Validation split
         rho = rsmp("holdout", ratio = 1 - pars$validation_split)
         rho$instantiate(task)
-        
+
         train_gen <- make_data_generator(
           task = task,
           batch_size = pars$batch_size,
@@ -115,7 +115,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
           x_transform = function(x) {self$architecture$transforms$x(x, pars)},
           y_transform = function(y) {self$architecture$transforms$y(y, pars, model$loss)}
         )
-        
+
         valid_gen <- make_data_generator(
           task = task,
           batch_size = pars$batch_size,
@@ -123,18 +123,18 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
           x_transform = function(x) {self$architecture$transforms$x(x, pars)},
           y_transform = function(y) {self$architecture$transforms$y(y, pars, model$loss)}
         )
-        
+
         # Number of steps
         train_steps <- ceiling(length(rho$train_set(1)) / pars$batch_size)
         valid_steps <- ceiling(length(rho$test_set(1)) / pars$batch_size)
-        
+
         # Train with generator
         if(pars$validation_split > 0) {
           history = invoke(keras::fit_generator,
                            object = pars$model,
                            generator = train_gen,
                            epochs = as.integer(pars$epochs),
-                           class_weight = pars$class_weight, 
+                           class_weight = pars$class_weight,
                            steps_per_epoch = train_steps,
                            validation_data = valid_gen,
                            validation_steps = valid_steps,
@@ -145,7 +145,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
                            object = pars$model,
                            generator = train_gen,
                            epochs = as.integer(pars$epochs),
-                           class_weight = pars$class_weight, 
+                           class_weight = pars$class_weight,
                            steps_per_epoch = train_steps,
                            verbose = pars$verbose,
                            callbacks = pars$callbacks)
@@ -156,14 +156,23 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
 
     predict_internal = function(task) {
       pars = self$param_set$get_values(tags = "predict")
-      
+
       features = task$data(cols = task$feature_names)
       newdata = self$architecture$transforms$x(features, pars)
 
       if (self$predict_type == "response") {
         p = invoke(self$model$model$predict, x = newdata, .args = pars)
         PredictionRegr$new(task = task, response = drop(p))
-      } 
+      }
+    },
+    save = function(filepath) {
+      assert_path_for_output(filepath)
+      if (is.null(self$model)) stop("Model must be trained before saving")
+      self$model$model$save(filepath)
+    },
+    plot = function() {
+      if (is.null(self$model)) stop("Model must be trained before saving")
+      plot(self$model$history)
     }
   )
 )

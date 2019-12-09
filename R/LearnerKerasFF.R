@@ -10,8 +10,8 @@
 #' mlr3::mlr_learners$get("classif.kerasff")
 #' mlr3::lrn("classif.kerasff")
 #' ```
-#' 
 #' @template kerasff_description
+#' @template learner_methods
 #' @template seealso_learner
 #' @templateVar learner_name classif.kerasff
 #' @template example
@@ -66,6 +66,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
 #' mlr3::lrn("regr.kerasff")
 #' ```
 #' @template kerasff_description
+#' @template learner_methods
 #' @template seealso_learner
 #' @templateVar learner_name classif.kerasff
 #' @template example
@@ -109,7 +110,7 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
   )
 )
 
-# Builds a Keras Feed Forward Neural Network 
+# Builds a Keras Feed Forward Neural Network
 # @param task [`Task`] \cr
 #   A mlr3 Task.
 # @param pars [`list`] \cr

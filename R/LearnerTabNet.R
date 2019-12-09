@@ -14,6 +14,7 @@
 #' mlr3::lrn("classif.tabnet")
 #' ```
 #' @template tabnet_description
+#' @template learner_methods
 #' @references Sercan, A. and Pfister, T. (2019): TabNet. \url{https://arxiv.org/abs/1908.07442}.
 #' @template seealso_learner
 #' @templateVar learner_name classif.tabnet
@@ -83,6 +84,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
 #' mlr3::lrn("regr.tabnet")
 #' ```
 #' @template tabnet_description
+#' @template learner_methods
 #' @references Sercan, A. and Pfister, T. (2019): TabNet. \url{https://arxiv.org/abs/1908.07442}.
 #' @template seealso_learner
 #' @templateVar learner_name regr.tabnet

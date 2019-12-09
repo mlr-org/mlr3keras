@@ -90,7 +90,8 @@ test_that("can fit with binary_crossentropy", {
   skip_if_not(require("mlr3pipelines"))
 
   po_imp = PipeOpImputeMedian$new()
-  po_lrn = PipeOpLearner$new(lrn("classif.keras", predict_type = "prob"))
+  lrn = lrn("classif.keras", predict_type = "prob")
+  po_lrn = PipeOpLearner$new(lrn)
   model = keras_model_sequential() %>%
   layer_dense(units = 12L, input_shape = 8L, activation = "relu") %>%
   layer_dense(units = 12L, activation = "relu") %>%
@@ -113,5 +114,22 @@ test_that("can fit with binary_crossentropy", {
   expect_class(prd2[[1]], "PredictionClassif")
   expect_matrix(prd2[[1]]$prob, nrows = 768L, ncols = 2L)
   expect_true(all(prd[[1]]$response == prd2[[1]]$response))
+})
+
+test_that("Learner methods", {
+  # Only checked for classif, as this is
+  # equivalent between learners.
+  lrn = lrn("classif.kerasff", predict_type = "prob", epochs = 3L)
+  lrn$train(mlr_tasks$get("iris"))
+
+  # Saving to h5
+  fp = tempfile(fileext = ".h5")
+  lrn$save(fp)
+  expect_file_exists(fp)
+  unlink(fp)
+
+  # Plotting
+  p = lrn$plot()
+  expect_class(p, "ggplot")
   k_clear_session()
 })
