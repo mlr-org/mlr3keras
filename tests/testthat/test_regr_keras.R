@@ -72,3 +72,21 @@ test_that("autotest feed forward", {
   expect_true(result, info = result$error)
   k_clear_session()
 })
+
+test_that("Learner methods", {
+  fp = tempfile(fileext = ".h5")
+  lrn = lrn("regr.kerasff", epochs = 3L)
+  expect_error(lrn$plot())
+  expect_error(lrn$save(fp))
+  lrn$train(mlr_tasks$get("mtcars"))
+
+  # Saving to h5
+  lrn$save(fp)
+  expect_file_exists(fp)
+  unlink(fp)
+
+  # Plotting
+  p = lrn$plot()
+  expect_class(p, "ggplot")
+  k_clear_session()
+})

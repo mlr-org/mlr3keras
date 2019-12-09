@@ -119,11 +119,13 @@ test_that("can fit with binary_crossentropy", {
 test_that("Learner methods", {
   # Only checked for classif, as this is
   # equivalent between learners.
+  fp = tempfile(fileext = ".h5")
   lrn = lrn("classif.kerasff", predict_type = "prob", epochs = 3L)
+  expect_error(lrn$plot())
+  expect_error(lrn$save(fp))
   lrn$train(mlr_tasks$get("iris"))
 
   # Saving to h5
-  fp = tempfile(fileext = ".h5")
   lrn$save(fp)
   expect_file_exists(fp)
   unlink(fp)
