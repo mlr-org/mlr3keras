@@ -14,6 +14,82 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+
+# Using mlr3keras
+
+This vignette is used to showcase different aspects of `mlr3keras`.
+As `mlr3keras` is still under heavy development, this place might be a good way
+to look for currently working aspects of the package.
+
+For other aspects, we aim to sketch proposed functionality in order to enable discussion.
+
+
+
+## mlr3keras in 5 lines
+
+```{r}
+lrn = LearnerClassifKerasFF$new()
+lrn$param_set$values$epochs = 500
+lrn$param_set$values$layer_units = 12
+lrn$train(mlr_tasks$get("iris"))
+lrn$plot()
+```
+
+
+## A simple first example
+
+This first simple example showcases how to use `mlr3keras` in its simplest form.
+We use it together with `mlr3pipelines` in order to fit a model on a dataset,
+in this case `pima` with missing values.
+
+Before we fit the model, we thus impute every missing variable with its mean.
+
+Before we build up the pipeline, we define and `compile` the model we are going to use.
+This follows the `keras` API, see for example the [RStudio Keras Documentation](https://keras.rstudio.com/) for details.
+
+```{r}
+library(mlr3keras)
+model = keras_model_sequential() %>%
+layer_dense(units = 12L, input_shape = 8L, activation = "relu") %>%
+layer_dense(units = 12L, activation = "relu") %>%
+layer_dense(units = 1L, activation = "sigmoid") %>%
+  compile(optimizer = optimizer_adam(3*10^-4),
+    loss = "binary_crossentropy",
+    metrics = "accuracy")
+```
+
+Afterwards, we build up the pipeline using the `classif.keras` learner.
+We set the `model` defined above as a hyperparameter, as well as the
+number of `epochs` we want to train our model for.
+
+```{r}
+library(mlr3pipelines)
+po_imp = PipeOpImputeMedian$new()
+po_lrn = PipeOpLearner$new(lrn("classif.keras"))
+po_lrn$param_set$values$model = model
+po_lrn$param_set$values$epochs = 10L
+pipe = po_imp %>>% po_lrn
+```
+
+We now have a finished `pipe`, a `Pipeline` which can be used, either as a `Learner` in
+conjunction with `GraphLearner` or simply to train and predict.
+
+```{r}
+pipe$train(mlr_tasks$get("pima"))
+```
+
+The trained model gives us access to different methods for further inspection:
+
+```{r}
+pipe$pipeops$classif.keras
+```
+
+
+
+
+## Entity Embeddings
+
 ```{r, eval = FALSE}
 library(mlr3keras)
 
@@ -32,3 +108,4 @@ model = keras_model(embd$input, output) %>%
 
 model$train()
 ```
+
