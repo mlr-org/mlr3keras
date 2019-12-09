@@ -38,7 +38,7 @@ test_that("tuning works without pipelines", {
 
   # Parameter Set
   param_set = ParamSet$new(list(
-      paradox::ParamInt$new("epochs", lower = 1Lq, upper = 3L)))
+      paradox::ParamInt$new("epochs", lower = 1L, upper = 3L)))
   param_set$trafo = function(x, param_set) {
       x$epochs = ceiling(exp(x$epochs))
       return(x)
