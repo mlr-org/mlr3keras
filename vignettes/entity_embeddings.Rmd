@@ -14,8 +14,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-
-
 # Using mlr3keras
 
 This vignette is used to showcase different aspects of `mlr3keras`.
@@ -31,7 +29,7 @@ library("mlr3keras")
 
 ## mlr3keras in 5 lines
 
-```{r}
+```{r, message=FALSE}
 lrn = LearnerClassifKerasFF$new()
 lrn$param_set$values$epochs = 50
 lrn$param_set$values$layer_units = 12
@@ -110,3 +108,5 @@ model = keras_model(embd$input, output) %>%
 model$train()
 ```
 -->
+
+.. to be continued ..

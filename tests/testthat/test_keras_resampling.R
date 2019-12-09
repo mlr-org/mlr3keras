@@ -1,6 +1,7 @@
 context("Resampling works for keras models")
 
 test_that("can be trained with cv3", {
+  skip_on_os("solaris")
   # Build model
   model = keras_model_sequential() %>%
   layer_dense(units = 12L, input_shape = 4L, activation = "relu") %>%
@@ -22,6 +23,7 @@ test_that("can be trained with cv3", {
 })
 
 test_that("tuning works without pipelines", {
+  skip_on_os("solaris")
   skip_if_not(require("mlr3tuning"))
 
   # Build model

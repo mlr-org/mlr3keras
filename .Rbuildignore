@@ -11,3 +11,5 @@
 ^attic$
 ^pkgdown$
 ^inst/extdata/.+\.R$
+^doc$
+^Meta$

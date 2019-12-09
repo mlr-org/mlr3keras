@@ -21,7 +21,7 @@ test_that("autotest binary", {
 })
 
 test_that("autotest low memory generator binary", {
-  
+
   model = keras_model_sequential() %>%
     layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
     layer_dense(units = 12L, activation = "relu") %>%
@@ -34,7 +34,7 @@ test_that("autotest low memory generator binary", {
   learner$param_set$values$low_memory=TRUE
   learner$param_set$values$epochs = 2L
   expect_learner(learner)
-  
+
   skip_on_os("solaris")
   result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)")
   expect_true(result, info = result$error)
@@ -43,7 +43,7 @@ test_that("autotest low memory generator binary", {
 
 
 test_that("autotest low memory zero validation_split", {
-  
+
   model = keras_model_sequential() %>%
     layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
     layer_dense(units = 12L, activation = "relu") %>%
@@ -57,7 +57,7 @@ test_that("autotest low memory zero validation_split", {
   learner$param_set$values$validation_split=0
   learner$param_set$values$epochs = 2L
   expect_learner(learner)
-  
+
   skip_on_os("solaris")
   result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)")
   expect_true(result, info = result$error)
@@ -86,7 +86,9 @@ test_that("autotest multiclass", {
 })
 
 test_that("can fit with binary_crossentropy", {
+  skip_on_os("solaris")
   skip_if_not(require("mlr3pipelines"))
+
   po_imp = PipeOpImputeMedian$new()
   po_lrn = PipeOpLearner$new(lrn("classif.keras", predict_type = "prob"))
   model = keras_model_sequential() %>%

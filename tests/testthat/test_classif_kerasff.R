@@ -28,6 +28,7 @@ test_that("can fit logistic regression", {
 })
 
 test_that("works with pipelines", {
+  skip_on_os("solaris")
   skip_if_not(require("mlr3pipelines"))
 
   po_enc = PipeOpEncode$new()
@@ -58,6 +59,7 @@ test_that("works with pipelines", {
 })
 
 test_that("can fit with binary_crossentropy", {
+  skip_on_os("solaris")
   skip_if_not(require("mlr3pipelines"))
   po_imp = PipeOpImputeMedian$new()
   po_lrn = PipeOpLearner$new(lrn("classif.kerasff"))

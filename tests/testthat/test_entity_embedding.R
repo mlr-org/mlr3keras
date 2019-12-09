@@ -1,6 +1,7 @@
 context("entity embedding")
 
 test_that("entity embedding works for all tasks", {
+  skip_on_os("solaris")
   for (k in mlr_tasks$keys()) {
     task = mlr3::mlr_tasks$get(k)
     embds = make_embedding(task)

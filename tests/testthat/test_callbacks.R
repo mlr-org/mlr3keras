@@ -1,6 +1,7 @@
 context("Callbacks")
 
 test_that("callback early stopping", {
+  skip_on_os("solaris")
   # It is hard to reliably test whether callback works without long training
   lrn = mlr_learners$get("classif.kerasff")
   lrn$param_set$values$epochs = 25L
