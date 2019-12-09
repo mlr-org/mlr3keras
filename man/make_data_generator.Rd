@@ -23,12 +23,14 @@ Training=FALSE is currently not used.}
 \item{batch_size}{\code{\link{numeric}}\cr
 Batch size.}
 
-\item{filter_ids}{\code{\link{integer}}\©r
+\item{filter_ids}{\code{\link{integer}}\cr
 Id's to filter.}
 
-\item{x_transform}{Function used to transform data to a keras input format for features.}
+\item{x_transform}{\code{\link{function}}\cr
+Function used to transform data to a keras input format for features.}
 
-\item{y_transform}{Function used to transform data to a keras input format for the response.}
+\item{y_transform}{\code{\link{function}}\cr
+Function used to transform data to a keras input format for the response.}
 }
 \description{
 Creates a data generator for a mlr3 task.

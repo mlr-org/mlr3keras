@@ -7,7 +7,7 @@
 reshape_data_embedding(data)
 }
 \arguments{
-\item{data}{\code{\link{data.table}}\¢r
+\item{data}{\code{\link{data.table}}\cr
 data.table containing the features (without target variable).}
 }
 \description{

@@ -22,7 +22,7 @@ to look for currently working aspects of the package.
 
 For other aspects, we aim to sketch proposed functionality in order to enable discussion.
 
-```{r}
+```{r, message=FALSE}
 library("mlr3")
 library("mlr3keras")
 ```
@@ -63,7 +63,7 @@ Afterwards, we build up the pipeline using the `classif.keras` learner.
 We set the `model` defined above as a hyperparameter, as well as the
 number of `epochs` we want to train our model for.
 
-```{r}
+```{r,message=FALSE}
 library(mlr3pipelines)
 po_imp = PipeOpImputeMedian$new()
 po_lrn = PipeOpLearner$new(lrn("classif.keras"))
@@ -75,7 +75,7 @@ pipe = po_imp %>>% po_lrn
 We now have a finished `pipe`, a `Pipeline` which can be used, either as a `Learner` in
 conjunction with `GraphLearner` or simply to train and predict.
 
-```{r}
+```{r,message=FALSE}
 pipe$train(mlr_tasks$get("pima"))
 ```
 

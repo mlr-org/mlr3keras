@@ -8,18 +8,38 @@ An extension for `mlr3` to enable using various `keras` models as learners.
 -->
 
 ## Status
+
 `mlr3keras` is in very early stages of development, and currently only partially under development.
 
  Comments, discussion and issues/bug reports and PR's are **highly** appreciated.
- 
+
  If you want to **contribute**, please propose / discuss adding functionality in an issue in order to avoid unneccessary or duplicate work.
+
+## Usage
+
+`mlr3keras` currently exposes three `Learners` for regression and classification respectively.
+
+* (Regr|Classif)Keras:   A generic wrapper that allows to supply a custom keras architecture as
+                         a hyperparameter.
+* (Regr|Classif)KerasFF: A fully-connected feed-forward Neural Network.
+* (Regr|Classif)TabNet: An implementation of `TabNet` (c.f. Sercan, A. and Pfister, T. (2019): TabNet).
+
+Learners can be used for `training` and `prediction` as follows:
+
+```{r, message=FALSE}
+  lrn = LearnerClassifKerasFF$new()
+  lrn$param_set$values$epochs = 50
+  lrn$param_set$values$layer_units = 12
+  lrn$train(mlr_tasks$get("iris"))
+  lrn$predict(mlr_tasks$get("iris"))
+```
 
 ## Design
 
 This package's purpose for now is to understand the design-decisions required to make `keras` \ `tensorflow` work
 with `mlr3` **and** flexible enough for users.
 
-Several design decisions are not made yet, so input is highly apreciated.
+Several design decisions are not made yet, so input is highly appreciated.
 
 
 ## Installation

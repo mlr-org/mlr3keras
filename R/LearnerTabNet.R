@@ -139,6 +139,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
 
 #' @title Keras TabNet architecture
 #' @rdname KerasArchitecture
+#' @family KerasArchitectures
 #' @export
 KerasArchitectureTabNet = R6::R6Class("KerasArchitectureTabNet",
   inherit = KerasArchitecture,

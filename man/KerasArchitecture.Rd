@@ -9,7 +9,7 @@
 \arguments{
 \item{y_transform}{\code{\link{function}} \cr Function used to transform the targets for the model.}
 
-\item{param_set}{\code{\link{ParamSet}} \cr A methods / architecure's \code{ParamSet}.}
+\item{param_set}{\code{\link{ParamSet}} \cr A methods / architecture's \code{ParamSet}.}
 
 \item{build_arch_fun}{\code{\link{Task}} \cr Function that instantiates and compiles a model.}
 
@@ -32,10 +32,11 @@ Setter method for 'x_transform' and 'y_transform'.
 \section{Fields}{
 
 \describe{
-\item{\code{param_set}}{\code{\link{ParamSet}} \cr A methods / architecure's \code{ParamSet}.}
+\item{\code{param_set}}{\code{\link{ParamSet}} \cr A methods \ architecture's \code{ParamSet}.}
 
 \item{\code{build_arch_fun}}{\code{\link{function}} \cr Function that instantiates and compiles a model.}
 
-\item{\code{transforms}}{\code{\link{list}} \cr The coresponding x- and y_transform.}
+\item{\code{transforms}}{\code{\link{list}} \cr The corresponding x- and y_transform.}
 }}
 
+\concept{KerasArchitectures}

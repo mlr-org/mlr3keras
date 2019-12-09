@@ -8,11 +8,11 @@
 #'   Training=FALSE is currently not used.
 #' @param batch_size [`numeric`]\cr
 #'   Batch size.
-#' @param filter_ids [`integer`]\©r
+#' @param filter_ids [`integer`]\cr
 #'   Id's to filter.
-#' @param x_transform
+#' @param x_transform [`function`]\cr
 #'   Function used to transform data to a keras input format for features.
-#' @param y_transform
+#' @param y_transform [`function`]\cr
 #'   Function used to transform data to a keras input format for the response.
 #' @examples
 #' require("keras")

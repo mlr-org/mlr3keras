@@ -2,21 +2,21 @@
 #'
 #' The python implementation can be found in https://github.com/titu1994/tf-TabNet/tree/master/tabnet.
 #' (Excerpt from paper)
-#' We consider datasets ranging from ∼10K to ∼10M training points, with varying degrees of fitting
+#' We consider datasets ranging from 10K to 10M training points, with varying degrees of fitting
 #' difficulty. TabNet obtains high performance for all with a few general principles on hyperparameter
 #' selection:
-#'     - Most datasets yield the best results for Nsteps between 3 and 10. Typically, larger datasets and
+#'     * Most datasets yield the best results for Nsteps between 3 and 10. Typically, larger datasets and
 #'     more complex tasks require a larger Nsteps. A very high value of Nsteps may suffer from
 #'     overfitting and yield poor generalization.
-#'     - Adjustment of the values of Nd and Na is the most efficient way of obtaining a trade-off
+#'     * Adjustment of the values of Nd and Na is the most efficient way of obtaining a trade-off
 #'     between performance and complexity. Nd = Na is a reasonable choice for most datasets. A
 #'     very high value of Nd and Na may suffer from overfitting and yield poor generalization.
-#'     - An optimal choice of $\gamma$ can have a major role on the overall performance. Typically a larger
-#'     Nsteps value favors for a larger $\gamma$.
-#'     - A large batch size is beneficial for performance - if the memory constraints permit, as large
+#'     * An optimal choice of \eqn{\gamma} can have a major role on the overall performance. Typically a larger
+#'     Nsteps value favors for a larger \eqn{\gamma}.
+#'     * A large batch size is beneficial for performance - if the memory constraints permit, as large
 #'     as 1-10 % of the total training dataset size is suggested. The virtual batch size is typically
 #'     much smaller than the batch size.
-#'     - Initially large learning rate is important, which should be gradually decayed until convergence.
+#'     * Initially large learning rate is important, which should be gradually decayed until convergence.
 #' Parameters:
 #'     * feature_dim (N_a): Dimensionality of the hidden representation in feature
 #'         transformation block. Each layer first maps the representation to a

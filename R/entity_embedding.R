@@ -98,7 +98,7 @@ reshape_task_embedding = function(task) {
 
 #' Reshape data for use with entity embeddings.
 #'
-#' @param data [`data.table`]\¢r
+#' @param data [`data.table`]\cr
 #'   data.table containing the features (without target variable).
 #'
 #' @description
