@@ -24,7 +24,10 @@ to look for currently working aspects of the package.
 
 For other aspects, we aim to sketch proposed functionality in order to enable discussion.
 
-
+```{r}
+library("mlr3")
+library("mlr3keras")
+```
 
 ## mlr3keras in 5 lines
 
@@ -33,7 +36,6 @@ lrn = LearnerClassifKerasFF$new()
 lrn$param_set$values$epochs = 500
 lrn$param_set$values$layer_units = 12
 lrn$train(mlr_tasks$get("iris"))
-lrn$plot()
 ```
 
 
@@ -90,6 +92,7 @@ pipe$pipeops$classif.keras
 
 ## Entity Embeddings
 
+<!--
 ```{r, eval = FALSE}
 library(mlr3keras)
 
@@ -108,4 +111,4 @@ model = keras_model(embd$input, output) %>%
 
 model$train()
 ```
-
+-->

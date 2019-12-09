@@ -1,5 +1,5 @@
 #' @title Keras TabNet Neural Network for Classification
-#' 
+#'
 #' Implementation of "TabNet" from the paper TabNet: Attentive Interpretable Tabular Learning (Sercan, Pfister, 2019).
 #' See https://arxiv.org/abs/1908.07442 for details.
 #'
@@ -13,7 +13,7 @@
 #' mlr3::mlr_learners$get("classif.tabnet")
 #' mlr3::lrn("classif.tabnet")
 #' ```
-#' @template tabnet_description 
+#' @template tabnet_description
 #' @references Sercan, A. and Pfister, T. (2019): TabNet. \url{https://arxiv.org/abs/1908.07442}.
 #' @template seealso_learner
 #' @templateVar learner_name classif.tabnet
@@ -68,7 +68,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
 
 
 #' @title Keras TabNet Neural Network for Regression
-#' 
+#'
 #' Implementation of "TabNet" from the paper TabNet: Attentive Interpretable Tabular Learning (Sercan, Pfister, 2019).
 #' See https://arxiv.org/abs/1908.07442 for details.
 #'
@@ -82,7 +82,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
 #' mlr3::mlr_learners$get("regr.tabnet")
 #' mlr3::lrn("regr.tabnet")
 #' ```
-#' @template tabnet_description 
+#' @template tabnet_description
 #' @references Sercan, A. and Pfister, T. (2019): TabNet. \url{https://arxiv.org/abs/1908.07442}.
 #' @template seealso_learner
 #' @templateVar learner_name regr.tabnet
@@ -159,26 +159,26 @@ build_keras_tabnet = function(task, pars) {
   requireNamespace("reticulate")
   requireNamespace("tensorflow")
   if(!reticulate::py_module_available("tabnet")) {
-    stop("Python module tabnet is not available. In order to install it use 
-      keras::install_keras(extra_packages = c('tensorflow-hub', 'tabnet==0.1.4.1').")
+    stop("Python module tabnet is not available. In order to install it use
+      keras::install_keras(extra_packages = c('tensorflow-hub', 'tabnet==0.1.4.1')).")
   }
   tabnet = reticulate::import("tabnet")
 
   feature_columns = make_tf_feature_cols(task)
-  tabnet_param_names = c("feature_dim", "output_dim", "num_decision_steps", "relaxation_factor", 
+  tabnet_param_names = c("feature_dim", "output_dim", "num_decision_steps", "relaxation_factor",
     "sparsity_coefficient", "virtual_batch_size", "norm_type", "num_groups")
   if (pars$stacked) tabnet_param_names = c(tabnet_param_names, "num_layers")
 
   if (inherits(task, "TaskClassif")) {
     if (pars$stacked) clf = tabnet$StackedTabNetClassifier
     else clf = tabnet$TabNetClassifier
-    model = invoke(clf, 
+    model = invoke(clf,
       feature_columns = feature_columns, num_classes = length(task$class_names),
       .args = pars[tabnet_param_names])
   } else if (inherits(task, "TaskRegr")) {
     if (pars$stacked) regr = tabnet$StackedTabNetRegressor
     else regr = tabnet$TabNetRegressor
-    model = invoke(regr, 
+    model = invoke(regr,
       feature_columns = feature_columns, num_regressors = 1L,
       .args = pars[tabnet_param_names])
   }
