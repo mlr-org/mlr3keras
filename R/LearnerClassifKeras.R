@@ -63,7 +63,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamLgl$new("low_memory", default=FALSE, tags = c("train")),
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
       ))
-      ps$values = list(epochs = 30L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory=FALSE)
+      ps$values = list(epochs = 30L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory = FALSE)
       ps = ParamSetCollection$new(list(ps, self$architecture$param_set))
       super$initialize(
         id = "classif.keras",
