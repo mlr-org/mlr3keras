@@ -15,8 +15,8 @@ Authors@R:
             comment = c(ORCID = "0000-0001-8867-762X")),
         person(given = "Jacky",
             family = "Poon",
-            role = "aut"
-            email = "ackypn@gmail.com"
+            role = "aut",
+            email = "jackypn@gmail.com"
     )
 Description: Extension for the mlr3 package to incorporate keras.
 License: LGPL-3
