@@ -1,4 +1,4 @@
-context("kerasff")
+context("keras classification feed forward model")
 
 test_that("autotest", {
   skip_on_os("solaris")
@@ -10,7 +10,6 @@ test_that("autotest", {
   expect_true(result, info = result$error)
   k_clear_session()
 })
-
 
 test_that("can fit logistic regression", {
   skip_on_os("solaris")
@@ -28,12 +27,13 @@ test_that("can fit logistic regression", {
   k_clear_session()
 })
 
-
 test_that("works with pipelines", {
   skip_if_not(require("mlr3pipelines"))
 
   po_enc = PipeOpEncode$new()
   po_lrn = PipeOpLearner$new(lrn("classif.kerasff"))
+  po_lrn$param_set$values$use_dropout = TRUE
+  po_lrn$param_set$values$use_batchnorm = TRUE
   po_lrn$param_set$values$epochs = 3L
   po_lrn$param_set$values$layer_units = integer()
 
@@ -68,12 +68,12 @@ test_that("can fit with binary_crossentropy", {
   pipe$train(mlr_tasks$get("pima"))
 
   expect_list(pipe$state)
-  expect_list(pipe$pipeops$classif.kerasff$state$model)
+  expect_list(pipe$pipeops$classif.keras$state$model)
   prd = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd[[1]], "PredictionClassif")
   expect_true(is.null(prd[[1]]$prob))
 
-  pipe$pipeops$classif.kerasff$learner$predict_type = "prob"
+  pipe$pipeops$classif.keras$learner$predict_type = "prob"
   prd2 = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd2[[1]], "PredictionClassif")
   expect_matrix(prd2[[1]]$prob, nrows = 768L, ncols = 2L)

@@ -27,6 +27,7 @@ task = mlr3::mlr_tasks$get("boston_housing")
 reshape_task_embedding(task)
 }
 \seealso{
-Other reshape_task_embedding: \code{\link{reshape_data_embedding}}
+Other reshape_task_embedding: 
+\code{\link{reshape_data_embedding}()}
 }
 \concept{reshape_task_embedding}

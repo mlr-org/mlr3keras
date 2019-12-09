@@ -6,10 +6,7 @@
 \alias{mlr3keras-package}
 \title{mlr3keras: mlr3 Keras extension}
 \description{
-More learners are available in the \code{mlr3learners} repository on Github (\url{https://github.com/mlr3learners}).
-There also is a wiki page listing all currently available custom learners (\url{https://github.com/mlr-org/mlr3learners/wiki/Extra-Learners}).
-A guide on how to create custom learners is covered in the book: \url{https://mlr3book.mlr-org.com}.
-Feel invited to contribute a missing learner to the \CRANpkg{mlr3} ecosystem!
+A package that connects mlr3 to keras.
 }
 \seealso{
 Useful links:
@@ -20,11 +17,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Michel Lang \email{michellang@gmail.com} (0000-0001-9754-0393)
+\strong{Maintainer}: Michel Lang \email{michellang@gmail.com} (\href{https://orcid.org/0000-0001-9754-0393}{ORCID})
 
 Authors:
 \itemize{
-  \item Florian Pfisterer \email{pfistererf@googlemail.com} (0000-0001-0000-0000)
+  \item Florian Pfisterer \email{pfistererf@googlemail.com} (\href{https://orcid.org/0000-0001-0000-0000}{ORCID})
 }
 
 }

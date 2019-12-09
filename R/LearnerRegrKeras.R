@@ -1,14 +1,14 @@
-#' @title Keras Neural Network with custom architecture (Classification)
+#' @title Keras Neural Network with custom architecture (Regression)
 #'
 #' @usage NULL
-#' @aliases mlr_learners_classif.keras
-#' @format [R6::R6Class()] inheriting from [mlr3::LearnerClassif].
+#' @aliases mlr_learners_regr.keras
+#' @format [R6::R6Class()] inheriting from [mlr3::LearnerRegr].
 #'
 #' @section Construction:
 #' ```
-#' LearnerClassifKeras$new()
-#' mlr3::mlr_learners$get("classif.keras")
-#' mlr3::lrn("classif.keras")
+#' LearnerRegrKeras$new()
+#' mlr3::mlr_learners$get("regr.keras")
+#' mlr3::lrn("regr.keras")
 #' ```
 #'
 #' @description
@@ -32,23 +32,23 @@
 #'
 #'
 #' @template seealso_learner
-#' @templateVar learner_name classif.keras
+#' @templateVar learner_name regr.keras
 #' @examples
 #'  # Define a model
 #'  library(keras)
 #'  model = keras_model_sequential() %>%
-#'  layer_dense(units = 12L, input_shape = 4L, activation = "relu") %>%
+#'  layer_dense(units = 12L, input_shape = 10L, activation = "relu") %>%
 #'  layer_dense(units = 12L, activation = "relu") %>%
-#'  layer_dense(units = 3L, activation = "softmax") %>%
+#'  layer_dense(units = 1L, activation = "linear") %>%
 #'    compile(optimizer = optimizer_sgd(),
-#'      loss = "categorical_crossentropy",
-#'      metrics = "accuracy")
+#'      loss = "mean_squared_error",
+#'      metrics = "mean_squared_error")
 #'  # Create the learner
-#'  learner = LearnerClassifKeras$new()
+#'  learner = LearnerRegrKeras$new()
 #'  learner$param_set$values$model = model
-#'  learner$train(mlr3::mlr_tasks$get("iris"))
+#'  learner$train(mlr3::mlr_tasks$get("mtcars"))
 #' @export
-LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassif,
+LearnerRegrKeras = R6::R6Class("LearnerRegrKeras", inherit = LearnerRegr,
   public = list(
     architecture = NULL,
     initialize = function(architecture = KerasArchitectureCustomModel$new()) {
@@ -68,22 +68,15 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       super$initialize(
         id = "classif.keras",
         param_set = ps,
-        predict_types = c("response", "prob"),
+        predict_types = c("response"),
         feature_types = c("integer", "numeric"),
-        properties = c("twoclass", "multiclass"),
+        properties = character(),
         packages = "keras",
         man = "mlr3keras::mlr_learners_classif.keras"
       )
       
       # Set y_transform
-      self$architecture$set_transform(
-        "y",
-        function(target, pars, model_loss) {
-          y = to_categorical(as.integer(target) - 1)
-          if (model_loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
-          return(y)
-        }
-      )
+      self$architecture$set_transform("y", function(target, pars, model_loss) {as.numeric(target)})
     },
 
     train_internal = function(task) {
@@ -96,7 +89,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       target = task$data(cols = task$target_names)[[task$target_names]]
       
       if(is.null(pars$low_memory) || !pars$low_memory) {
-        x = self$architecture$transforms$x(features, pars)
+        x = self$architecture$transforms$x(features, pars) 
         y = self$architecture$transforms$y(target, pars, model$loss)
   
         history = invoke(keras::fit,
@@ -158,7 +151,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
                            callbacks = pars$callbacks)
         }
       }
-      return(list(model = model, history = history, class_names = task$class_names))
+      return(list(model = model, history = history))
     },
 
     predict_internal = function(task) {
@@ -167,28 +160,10 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       features = task$data(cols = task$feature_names)
       newdata = self$architecture$transforms$x(features, pars)
 
-      if (inherits(self$model$model, "keras.engine.sequential.Sequential")) {
-        if (self$predict_type == "response") {
-          p = invoke(keras::predict_classes, self$model$model, x = newdata, .args = pars)
-          p = factor(self$model$class_names[p + 1])
-          PredictionClassif$new(task = task, response = drop(p))
-        } else if (self$predict_type == "prob") {
-          prob = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
-          if (ncol(prob) == 1L) prob = cbind(1-prob, prob)
-          colnames(prob) = task$class_names
-          PredictionClassif$new(task = task, prob = prob)
-        }
-      } else {
+      if (self$predict_type == "response") {
         p = invoke(self$model$model$predict, x = newdata, .args = pars)
-        if (self$predict_type == "response") {
-          p = factor(self$model$class_names[apply(p, 1, which.max)])
-          PredictionClassif$new(task = task, response = drop(p))
-        } else if (self$predict_type == "prob") {
-          if (ncol(p) == 1L) p = cbind(1-p, p)
-          colnames(p) = task$class_names
-          PredictionClassif$new(task = task, prob = p)
-        }
-      }
+        PredictionRegr$new(task = task, response = drop(p))
+      } 
     }
   )
 )

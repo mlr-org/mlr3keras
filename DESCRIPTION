@@ -1,6 +1,6 @@
 Package: mlr3keras
 Title: mlr3 Keras extension
-Version: 0.1.0
+Version: 0.1.1
 Authors@R:
     c(person(given = "Michel",
              family = "Lang",
@@ -31,16 +31,18 @@ Suggests:
     devtools,
     digest,
     generics (>= 0.0.1),
+    knitr,
     Matrix,
     mlr3pipelines,
+    tensorflow,
     testthat (>= 2.1.0),
-    knitr,
+    reticulate,
     rmarkdown
 Encoding: UTF-8
 RdMacros: mlr3misc
 SystemRequirements: Keras >= 2.0 (https://keras.io)
 LazyData: true
 NeedsCompilation: no
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+Roxygen: list(markdown = TRUE, r6 = FALSE)
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr
