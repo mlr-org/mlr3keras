@@ -33,7 +33,7 @@ library("mlr3keras")
 
 ```{r}
 lrn = LearnerClassifKerasFF$new()
-lrn$param_set$values$epochs = 500
+lrn$param_set$values$epochs = 50
 lrn$param_set$values$layer_units = 12
 lrn$train(mlr_tasks$get("iris"))
 ```
@@ -51,7 +51,7 @@ Before we build up the pipeline, we define and `compile` the model we are going 
 This follows the `keras` API, see for example the [RStudio Keras Documentation](https://keras.rstudio.com/) for details.
 
 ```{r}
-library(mlr3keras)
+library("keras")
 model = keras_model_sequential() %>%
 layer_dense(units = 12L, input_shape = 8L, activation = "relu") %>%
 layer_dense(units = 12L, activation = "relu") %>%
@@ -86,8 +86,6 @@ The trained model gives us access to different methods for further inspection:
 ```{r}
 pipe$pipeops$classif.keras
 ```
-
-
 
 
 ## Entity Embeddings

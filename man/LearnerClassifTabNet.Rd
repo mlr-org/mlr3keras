@@ -29,7 +29,7 @@ The python implementation can be found in https://github.com/titu1994/tf-TabNet/
 We consider datasets ranging from ∼10K to ∼10M training points, with varying degrees of fitting
 difficulty. TabNet obtains high performance for all with a few general principles on hyperparameter
 selection:
-- Most datasets yield the best results for Nsteps between \link{3, 10}. Typically, larger datasets and
+- Most datasets yield the best results for Nsteps between 3 and 10. Typically, larger datasets and
 more complex tasks require a larger Nsteps. A very high value of Nsteps may suffer from
 overfitting and yield poor generalization.
 - Adjustment of the values of Nd and Na is the most efficient way of obtaining a trade-off

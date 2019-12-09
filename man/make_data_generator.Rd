@@ -21,7 +21,10 @@ An mlr3 \code{\link{Task}}.}
 Training=FALSE is currently not used.}
 
 \item{batch_size}{\code{\link{numeric}}\cr
-Batch size}
+Batch size.}
+
+\item{filter_ids}{\code{\link{integer}}\©r
+Id's to filter.}
 
 \item{x_transform}{Function used to transform data to a keras input format for features.}
 
@@ -31,8 +34,8 @@ Batch size}
 Creates a data generator for a mlr3 task.
 }
 \examples{
-require(reticulate)
-tsk = mlr_tasks$get("iris")
-gen <- py_iterator(make_data_generator(tsk))
-generator_next(gen) # Get next batch
+require("keras")
+tsk = mlr3::mlr_tasks$get("iris")
+gen = reticulate::py_iterator(make_data_generator(tsk))
+data = generator_next(gen) # Get next batch
 }
