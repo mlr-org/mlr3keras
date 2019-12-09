@@ -2,16 +2,21 @@ Package: mlr3keras
 Title: mlr3 Keras extension
 Version: 0.1.1
 Authors@R:
-    c(person(given = "Michel",
-             family = "Lang",
-             role = c("cre", "aut"),
-             email = "michellang@gmail.com",
-             comment = c(ORCID = "0000-0001-9754-0393")),
-      person(given = "Florian",
-             family = "Pfisterer",
-             role = "aut",
-             email = "pfistererf@googlemail.com",
-             comment = c(ORCID = "0000-0001-0000-0000"))
+    c(
+        person(given = "Michel",
+            family = "Lang",
+            role = c("cre", "aut"),
+            email = "michellang@gmail.com",
+            comment = c(ORCID = "0000-0001-9754-0393")),
+        person(given = "Florian",
+            family = "Pfisterer",
+            role = "aut",
+            email = "pfistererf@googlemail.com",
+            comment = c(ORCID = "0000-0001-8867-762X")),
+        person(given = "Jacky",
+            family = "Poon",
+            role = "aut"
+            email = "ackypn@gmail.com"
     )
 Description: Extension for the mlr3 package to incorporate keras.
 License: LGPL-3
