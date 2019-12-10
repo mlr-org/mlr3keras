@@ -59,9 +59,9 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         loss = "categorical_crossentropy",
         metrics = "accuracy"
       )
-
       arch = KerasArchitectureTabNet$new(build_arch_fn = build_keras_tabnet, param_set = ps)
       super$initialize(architecture = arch)
+      self$feature_types = c(self$feature_types, "factor", "logical")
       self$param_set$values$validation_split = 0 # Does not to work with tf_data.
     }
   )
@@ -148,8 +148,18 @@ KerasArchitectureTabNet = R6::R6Class("KerasArchitectureTabNet",
   public = list(
     initialize = function(build_arch_fn, x_transform, y_transform, param_set) {
       x_transform = function(features, pars) {
-        x = lapply(names(features), function(x) {as.matrix(features[, get(x)])})
+        x = lapply(names(features), function(x) {
+          x = features[, get(x)]
+          if (is.numeric(x) || is.integer(x)) {
+            as.matrix(as.numeric(x))
+          } else if (is.factor(x)) {
+            as.matrix(as.character(x))
+          } else {
+            as.matrix(as.integer(x))
+          }
+        })
         names(x) = names(features)
+        # x = tf$data$Dataset$from_tensor_slices(as.list(features))
         return(x)
       }
       super$initialize(build_arch_fn = build_arch_fn, x_transform = x_transform, param_set = param_set)
@@ -166,7 +176,6 @@ build_keras_tabnet = function(task, pars) {
       keras::install_keras(extra_packages = c('tensorflow-hub', 'tabnet==0.1.4.1')).")
   }
   tabnet = reticulate::import("tabnet")
-
   feature_columns = make_tf_feature_cols(task)
   tabnet_param_names = c("feature_dim", "output_dim", "num_decision_steps", "relaxation_factor",
     "sparsity_coefficient", "virtual_batch_size", "norm_type", "num_groups")
@@ -193,13 +202,31 @@ build_keras_tabnet = function(task, pars) {
   )
 }
 
+
+
+# Create a tf$feature_column according to the type of a Task's column.
 # FIXME: This covers only the most basic feature types, needs to be extended.
-make_tf_feature_cols = function(task) {
-  assert_class(task, "Task")
-  make_feature_column = function(id, type) {
-    if (type == "numeric") tensorflow::tf$feature_column$numeric_column(id)
-    else if (type == "integer") tensorflow::tf$feature_column$numeric_column(id)
-    else tensorflow::tf$feature_column$categorical_column_with_vocabulary_list(id, task$levels(id)[[1]])
+make_feature_column = function(id, type, levels) {
+  if (type %in% c("numeric", "integer")) tensorflow::tf$feature_column$numeric_column(id)
+  else if (type == "logical") {
+    tensorflow::tf$feature_column$indicator_column(
+      tensorflow::tf$feature_column$categorical_column_with_identity(id, num_buckets = 2L)
+    )
   }
-  feature_columns = pmap(.f = make_feature_column, .x = task$feature_types)
+  else if (type == "factor") {
+    tensorflow::tf$feature_column$indicator_column(
+      tensorflow::tf$feature_column$categorical_column_with_vocabulary_list(id, levels[[1]][[id]])
+    )
+  } else { # characters
+    tensorflow::tf$feature_column$indicator_column(
+      tensorflow::tf$feature_column$categorical_column_with_identity(id, num.buckets = 10^5L)
+    )
+  }
 }
+
+make_tf_feature_cols = function(task) {
+  assert_r6(task, "Task")
+  feature_columns = pmap(.f = make_feature_column, .x = task$feature_types, list(task$levels()))
+}
+
+

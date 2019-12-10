@@ -135,3 +135,13 @@ test_that("Learner methods", {
   expect_class(p, "ggplot")
   k_clear_session()
 })
+
+# test_that("Custom optimizer methods", {
+#   require("reticulate")
+#   skip_if_not(reticulate::py_module_available("keras_radam"))
+#   kr = import("keras_radam")
+#   radam = kr$training$RAdamOptimizer()
+#   sgd = optimizer_sgd()
+#   lrn = lrn("classif.kerasff", predict_type = "prob", epochs = 3L, optimizer = radam)
+#   lrn$train(mlr_tasks$get("iris"))
+# })

@@ -21,7 +21,7 @@
 #' Some exceptions are documented here.
 #' * `model`: A compiled keras model.
 #' * `class_weight`: needs to be a named list of class-weights
-#'   for the dierent classes numbered from 0 to c-1 (for c classes).
+#'   for the different classes numbered from 0 to c-1 (for c classes).
 #'   ```
 #'   Example:
 #'   wts = c(0.5, 1)
@@ -109,6 +109,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
           validation_split = pars$validation_split,
           verbose = pars$verbose,
           callbacks = pars$callbacks)
+
 
       } else {
         # Validation split
