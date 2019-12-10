@@ -85,6 +85,84 @@ The trained model gives us access to different methods for further inspection:
 pipe$pipeops$classif.keras
 ```
 
+## Tuning over model architectures
+
+Consider the following scenario:
+We define multiple `architectures`, and now we aim to find out which
+architecture works best.
+`mlr3tuning` does not directly allow to tune over architectures, and we have to use a little
+trick for now:
+
+Assume our architectures can be obtained from a function that looks as follows:
+
+```{r}
+get_keras_model = function(arch = "arch1", lr = 3*10^-4) {
+  if (arch == "arch1") {
+    model = keras_model_sequential() %>%
+      layer_dense(units = 16L, input_shape = 10L, activation = "relu") %>%
+      layer_dense(units = 16L, activation = "relu") %>%
+      layer_dense(units = 1L, activation = "linear")
+  } else if (arch == "arch2") {
+    model = keras_model_sequential() %>%
+      layer_dense(units = 64L, input_shape = 10L, activation = "relu") %>%
+      layer_dense(units = 32L, activation = "relu") %>%
+      layer_dense(units = 1L, activation = "linear")
+  }
+  model %>%
+    compile(optimizer = optimizer_adam(lr),
+      loss = "binary_crossentropy",
+      metrics = "accuracy")
+}
+
+```
+
+And now we aim to select the better architecture between `arch1` and `arch2`, and
+additionally a learning rate **lr**.
+
+First we create a `ParamSet` we want to tune over:
+In order to work with arbitrary types, we have to use a little trick:
+Instead of using `ParamUty`, we create a `ParamFct` with a fixed set of levels.
+Afterwards we use a `trafo` in order to transform the `ParamFct's` levels
+to a keras model.
+
+In the `trafo` we have to do two things:
+* Create a keras model from our arguments (i.e. `arch` and `lr`)
+* Delete the original `arch` and `lr` Parameters, as the *keras* learner does not know
+  what to do with them.
+
+```{r}
+library("paradox")
+ps = ParamSet$new(list(
+  ParamFct$new("arch", levels = c("arch1", "arch2"), tags = "train"),
+  ParamDbl$new("lr", lower = 10^-5, upper = 10^-2, tags = "train")
+))
+ps$trafo = function(x, param_set) {
+      x$model = get_keras_model(x$arch, x$lr)
+      x$lr = x$arch = NULL
+      return(x)
+}
+```
+
+Now we can tune over the architecture space like we are used to from **mlr3tuning**.
+
+```{r}
+library("mlr3tuning")
+learner = lrn("regr.keras", callbacks = list(cb_es(3)))
+task = mlr_tasks$get("mtcars")
+resampling = rsmp("holdout")
+measure = msr("regr.mse")
+tuner = tnr("grid_search", resolution = 2)
+terminator = term("evals", n_evals = 4)
+instance = TuningInstance$new(
+  task = task,
+  learner = learner,
+  resampling = resampling,
+  measures = measure,
+  param_set = ps,
+  terminator = terminator
+)
+tuner$tune(instance)
+```
 
 ## Entity Embeddings
 
