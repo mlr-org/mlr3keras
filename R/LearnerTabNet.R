@@ -153,7 +153,7 @@ KerasArchitectureTabNet = R6::R6Class("KerasArchitectureTabNet",
           if (is.numeric(x) || is.integer(x)) {
             as.matrix(as.numeric(x))
           } else if (is.factor(x)) {
-            as.matrix(as.character(x))
+            as.list(map(x, as.character))
           } else {
             as.matrix(as.integer(x))
           }
@@ -214,8 +214,9 @@ make_feature_column = function(id, type, levels) {
     )
   }
   else if (type == "factor") {
-    tensorflow::tf$feature_column$indicator_column(
-      tensorflow::tf$feature_column$categorical_column_with_vocabulary_list(id, levels[[1]][[id]])
+    tensorflow::tf$feature_column$embedding_column(
+      tensorflow::tf$feature_column$categorical_column_with_vocabulary_list(id, levels[[1]][[id]]),
+      dimension = 2L
     )
   } else { # characters
     tensorflow::tf$feature_column$indicator_column(
@@ -230,3 +231,4 @@ make_tf_feature_cols = function(task) {
 }
 
 
+sapply(letters[1:2], as.list)
