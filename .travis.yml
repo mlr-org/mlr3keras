@@ -53,4 +53,4 @@ env:
   - _R_CHECK_TESTS_NLINES_=0
   - KERAS_BACKEND="tensorflow"
   - KERAS_IMPLEMENTATION="tensorflow"
-  - TENSORFLOW_VERSION="default"
+  - TENSORFLOW_VERSION="2.0.0"

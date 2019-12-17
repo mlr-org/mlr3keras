@@ -142,7 +142,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
       arch = KerasArchitectureTabNet$new(build_arch_fn = build_keras_tabnet, param_set = ps)
       super$initialize(
         id = "regr.tabnet",
-        feature_types = c("integer", "numeric"),
+        feature_types = c("integer", "numeric", "factor", "logical"),
         packages = c("keras", "tensorflow", "reticulate"),
         man = "mlr3keras::mlr_learners_regr.tabnet",
         architecture = arch)
