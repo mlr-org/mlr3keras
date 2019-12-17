@@ -60,8 +60,12 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         metrics = "accuracy"
       )
       arch = KerasArchitectureTabNet$new(build_arch_fn = build_keras_tabnet, param_set = ps)
-      super$initialize(architecture = arch)
-      self$feature_types = c(self$feature_types, "factor", "logical")
+      super$initialize(
+        id = "classif.tabnet",
+        feature_types = c("integer", "numeric", "factor", "logical"),
+        packages = c("keras", "tensorflow", "reticulate"),
+        man = "mlr3keras::mlr_learners_classif.tabnet",
+        architecture = arch)
       self$param_set$values$validation_split = 0 # Does not to work with tf_data.
     }
   )
@@ -95,6 +99,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
+        ParamInt$new("embed_size", default = NULL, , lower = 1L, upper = Inf, tags = "train"),
         ParamLgl$new("stacked", default = FALSE, tags = "train"),
         ParamInt$new("num_layers", lower = 1, upper = Inf, default = 1L, tags = "train"),
         ParamDbl$new("batch_momentum", lower = 0, upper = 1, tags = "train"),
@@ -115,6 +120,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
       ))
       ps$add_dep("num_layers", "stacked", CondEqual$new(TRUE))
       ps$values = list(
+        embed_size = NULL,
         stacked = FALSE,
         batch_momentum = 0.98,
         relaxation_factor = 1.0,
@@ -132,7 +138,12 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
       )
 
       arch = KerasArchitectureTabNet$new(build_arch_fn = build_keras_tabnet, param_set = ps)
-      super$initialize(architecture = arch)
+      super$initialize(
+        id = "regr.tabnet",
+        feature_types = c("integer", "numeric"),
+        packages = c("keras", "tensorflow", "reticulate"),
+        man = "mlr3keras::mlr_learners_regr.tabnet",
+        architecture = arch)
       self$param_set$values$validation_split = 0 # Does not to work with tf_data.
     }
   )
@@ -152,14 +163,12 @@ KerasArchitectureTabNet = R6::R6Class("KerasArchitectureTabNet",
           x = features[, get(x)]
           if (is.numeric(x) || is.integer(x)) {
             as.matrix(as.numeric(x))
-          } else if (is.factor(x)) {
-            as.list(map(x, as.character))
-          } else {
+          } else if (is.logical(x)) {
             as.matrix(as.integer(x))
-          }
-        })
+          } else {
+            as.matrix(x)
+          }})
         names(x) = names(features)
-        # x = tf$data$Dataset$from_tensor_slices(as.list(features))
         return(x)
       }
       super$initialize(build_arch_fn = build_arch_fn, x_transform = x_transform, param_set = param_set)
@@ -176,7 +185,7 @@ build_keras_tabnet = function(task, pars) {
       keras::install_keras(extra_packages = c('tensorflow-hub', 'tabnet==0.1.4.1')).")
   }
   tabnet = reticulate::import("tabnet")
-  feature_columns = make_tf_feature_cols(task)
+  feature_columns = make_tf_feature_cols(task, pars$embed_size)
   tabnet_param_names = c("feature_dim", "output_dim", "num_decision_steps", "relaxation_factor",
     "sparsity_coefficient", "virtual_batch_size", "norm_type", "num_groups")
   if (pars$stacked) tabnet_param_names = c(tabnet_param_names, "num_layers")
@@ -185,12 +194,14 @@ build_keras_tabnet = function(task, pars) {
     if (pars$stacked) clf = tabnet$StackedTabNetClassifier
     else clf = tabnet$TabNetClassifier
     model = invoke(clf,
+      num_features = get_tf_num_features(task, pars),
       feature_columns = feature_columns, num_classes = length(task$class_names),
       .args = pars[tabnet_param_names])
   } else if (inherits(task, "TaskRegr")) {
     if (pars$stacked) regr = tabnet$StackedTabNetRegressor
     else regr = tabnet$TabNetRegressor
     model = invoke(regr,
+      num_features = get_tf_num_features(task, pars),
       feature_columns = feature_columns, num_regressors = 1L,
       .args = pars[tabnet_param_names])
   }
@@ -206,29 +217,53 @@ build_keras_tabnet = function(task, pars) {
 
 # Create a tf$feature_column according to the type of a Task's column.
 # FIXME: This covers only the most basic feature types, needs to be extended.
-make_feature_column = function(id, type, levels) {
+make_tf_feature_column = function(id, type, args) {
   if (type %in% c("numeric", "integer")) tensorflow::tf$feature_column$numeric_column(id)
   else if (type == "logical") {
     tensorflow::tf$feature_column$indicator_column(
       tensorflow::tf$feature_column$categorical_column_with_identity(id, num_buckets = 2L)
     )
   }
-  else if (type == "factor") {
+  else if (type %in% c("factor", "character", "ordered")) {
+    if (is.null(args$embed_size)) args$embed_size = get_default_embed_size(args$levels[[id]])
     tensorflow::tf$feature_column$embedding_column(
-      tensorflow::tf$feature_column$categorical_column_with_vocabulary_list(id, levels[[1]][[id]]),
-      dimension = 2L
-    )
-  } else { # characters
-    tensorflow::tf$feature_column$indicator_column(
-      tensorflow::tf$feature_column$categorical_column_with_identity(id, num.buckets = 10^5L)
+      tensorflow::tf$feature_column$categorical_column_with_vocabulary_list(id, args$levels[[id]]),
+      dimension = args$embed_size
     )
   }
 }
 
-make_tf_feature_cols = function(task) {
-  assert_r6(task, "Task")
-  feature_columns = pmap(.f = make_feature_column, .x = task$feature_types, list(task$levels()))
+get_tf_num_features = function(task, pars) {
+  dims = pmap_int(task$feature_types, function(id, type, levels) {
+    switch(type,
+      "numeric" = 1L,
+      "integer" = 1L,
+      "logical" = 2L,
+      "factor" = {
+        if (is.null(pars$embed_size))
+          get_default_embed_size(levels[[1]][[id]])
+        else pars$embed_size
+      },
+      "character" = {
+        if (is.null(pars$embed_size))
+          get_default_embed_size(levels[[1]][[id]])
+        else pars$embed_size
+      },
+      "ordered" = {
+        if (is.null(pars$embed_size))
+          get_default_embed_size(levels[[1]][[id]])
+        else pars$embed_size
+      }
+  )}, list(task$levels()))
+  sum(dims)
 }
 
+make_tf_feature_cols = function(task, embed_size = NULL) {
+  assert_r6(task, "Task")
+  feature_columns = pmap(.f = make_tf_feature_column, .x = task$feature_types, list(levels = task$levels(), embed_size = embed_size))
+}
 
-sapply(letters[1:2], as.list)
+get_default_embed_size = function(levels) {
+    # As a default we use the fast.ai heuristic
+    min(600L, round(1.6 * length(levels)^0.56))
+}

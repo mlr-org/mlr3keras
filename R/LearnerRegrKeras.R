@@ -21,7 +21,7 @@
 #' Some exceptions are documented here.
 #' * `model`: A compiled keras model.
 #' * `class_weight`: needs to be a named list of class-weights
-#'   for the dierent classes numbered from 0 to c-1 (for c classes).
+#'   for the different classes numbered from 0 to c-1 (for c classes).
 #'   ```
 #'   Example:
 #'   wts = c(0.5, 1)
@@ -52,7 +52,15 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
   inherit = LearnerRegr,
   public = list(
     architecture = NULL,
-    initialize = function(architecture = KerasArchitectureCustomModel$new()) {
+    initialize = function(
+        id = "regr.keras",
+        predict_types = c("response"),
+        feature_types = c("integer", "numeric"),
+        properties = character(),
+        packages = "keras",
+        man = "mlr3keras::mlr_learners_regr.keras",
+        architecture = KerasArchitectureCustomModel$new()
+      ) {
       self$architecture = assert_class(architecture, "KerasArchitecture")
       ps = ParamSet$new(list(
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
@@ -67,15 +75,14 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       ps$values = list(epochs = 30L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory = FALSE)
       ps = ParamSetCollection$new(list(ps, self$architecture$param_set))
       super$initialize(
-        id = "classif.keras",
+        id = assert_character(id, len = 1),
         param_set = ps,
-        predict_types = c("response"),
-        feature_types = c("integer", "numeric"),
-        properties = character(),
-        packages = "keras",
-        man = "mlr3keras::mlr_learners_classif.keras"
+        predict_types = assert_character(predict_types),
+        feature_types = assert_character(feature_types),
+        properties = assert_character(properties),
+        packages = assert_character(packages),
+        man = assert_character(man)
       )
-
       # Set y_transform
       self$architecture$set_transform("y", function(target, pars, model_loss) {as.numeric(target)})
     },

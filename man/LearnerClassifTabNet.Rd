@@ -24,7 +24,7 @@ mlr3::lrn("classif.tabnet")
 \section{Hyper Parameter Tuning}{
 
 
-The python implementation can be found in https://github.com/titu1994/tf-TabNet/tree/master/tabnet.
+The python implementation can be found in \url{https://github.com/titu1994/tf-TabNet/tree/master/tabnet}.
 (Excerpt from paper)
 We consider datasets ranging from 10K to 10M training points, with varying degrees of fitting
 difficulty. TabNet obtains high performance for all with a few general principles on hyperparameter
