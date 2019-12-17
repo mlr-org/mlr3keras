@@ -197,7 +197,7 @@ build_keras_ff_model = function(task, pars) {
   else
     model = model %>% layer_dense(units = output_shape, activation = pars$output_activation)
 
-  if (pars$use_embedding) model = keras_model(input = embd$inputs, output = model)
+  if (pars$use_embedding) model = keras_model(inputs = embd$inputs, outputs = model)
 
   model %>% compile(
     optimizer = pars$optimizer,

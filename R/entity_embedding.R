@@ -120,7 +120,9 @@ reshape_data_embedding = function(data) {
     fct_levels = map(as.list(data[, embed_vars, with = FALSE]), function(x) levels(x))
   out_data = list()
   if (length(embed_vars)  > 0)
-    out_data = setNames(map(as.list(data[, embed_vars, with = FALSE]), function(x) as.integer(x) - 1L), embed_vars)
+    out_data = setNames(map(data[, embed_vars, with = FALSE], function(x) {
+      as.integer(as.factor(x)) - 1L}),
+      embed_vars)
   if (length(embed_vars) < ncol(data))
     out_data$continuous = as.matrix(data[,setdiff(colnames(data), embed_vars), with = FALSE])
 

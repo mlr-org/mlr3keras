@@ -82,29 +82,29 @@ test_that("can fit with binary_crossentropy", {
   k_clear_session()
 })
 
-test_that("labelswitch", {
-  skip_on_os("solaris")
-  skip_if_not(FALSE) # FIXME: This fails stochastically.
-  learner = mlr3::lrn("classif.kerasff")
-  learner$param_set$values$use_embedding = FALSE
-  learner$param_set$values$epochs = 100L
-  learner$param_set$values$layer_units = integer()
-  tsk = mlr_tasks$get("german_credit")$select(c("housing", "age"))
-  learner$train(tsk)
-  prd = learner$predict(tsk)
-  expect_class(prd, "PredictionClassif")
+# test_that("labelswitch", {
+#   skip_on_os("solaris")
+#   skip_if_not(FALSE) # FIXME: This fails stochastically.
+#   learner = mlr3::lrn("classif.kerasff")
+#   learner$param_set$values$use_embedding = FALSE
+#   learner$param_set$values$epochs = 100L
+#   learner$param_set$values$layer_units = integer()
+#   tsk = mlr_tasks$get("german_credit")$select(c("housing", "age"))
+#   learner$train(tsk)
+#   prd = learner$predict(tsk)
+#   expect_class(prd, "PredictionClassif")
 
 
-  tsk2 = tsk$clone()
-  tsk2$positive = "bad"
-  learner = mlr3::lrn("classif.kerasff")
-  learner$param_set$values$use_embedding = FALSE
-  learner$param_set$values$epochs = 100L
-  learner$param_set$values$layer_units = integer()
-  learner$train(tsk2)
-  prd2 = learner$predict(tsk2)
-  expect_class(prd2, "PredictionClassif")
+#   tsk2 = tsk$clone()
+#   tsk2$positive = "bad"
+#   learner = mlr3::lrn("classif.kerasff")
+#   learner$param_set$values$use_embedding = FALSE
+#   learner$param_set$values$epochs = 100L
+#   learner$param_set$values$layer_units = integer()
+#   learner$train(tsk2)
+#   prd2 = learner$predict(tsk2)
+#   expect_class(prd2, "PredictionClassif")
 
 
-  k_clear_session()
-})
+#   k_clear_session()
+# })
