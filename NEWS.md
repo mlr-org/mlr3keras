@@ -1,7 +1,7 @@
 # mlr3keras 0.1.2
 
 ## Learners
-* TabNet and FeedForward can now deal with factor / ordered / logical features
+* TabNet and FeedForward can now deal with factor / ordered / character features
 * FeedForward Keras Models now default to "embeddings" for factor features
 
 # mlr3keras 0.1.1

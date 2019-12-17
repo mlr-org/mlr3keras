@@ -54,7 +54,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
       )
       arch = KerasArchitectureFF$new(build_arch_fn = build_keras_ff_model, param_set = ps)
       super$initialize(
-        feature_types = c("integer", "numeric", "factor"),
+        feature_types = c("integer", "numeric", "factor", "ordered", "character"),
         architecture = arch
       )
     }
@@ -117,7 +117,7 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
       )
       arch = KerasArchitectureFF$new(build_arch_fn = build_keras_ff_model, param_set = ps)
       super$initialize(
-        feature_types = c("integer", "numeric", "factor"),
+        feature_types = c("integer", "numeric", "factor", "ordered", "character"),
         architecture = arch
       )
     }
