@@ -33,8 +33,8 @@ test_that("tf_feature_cols returns list", {
     tsk = mlr_tasks$get(id)
     lst = make_tf_feature_cols(tsk)
     map(lst, assert_class, "tensorflow.python.feature_column.feature_column._FeatureColumn")
-    assert_list(lst, len = tsk$ncol - 1L)
-    assert_integerish(get_tf_num_features(tsk, pars = list(embed = NULL)), lower = tsk$ncol -1L, upper = Inf)
+    expect_list(lst, len = tsk$ncol - 1L)
+    expect_integerish(get_tf_num_features(tsk, pars = list(embed = NULL)), lower = tsk$ncol -1L, upper = Inf)
     # FIXME: We could check for expected number of features etc. here.
   })
 })

@@ -174,29 +174,36 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
       features = task$data(cols = task$feature_names)
       newdata = self$architecture$transforms$x(features, pars)
+      pars = pars[intersect(names(pars), self$keras_predict_pars)]
+      response = prob = NULL
 
       if (inherits(self$model$model, "keras.engine.sequential.Sequential")) {
         if (self$predict_type == "response") {
-          p = invoke(keras::predict_classes, self$model$model, x = newdata, .args = pars)
-          p = factor(self$model$class_names[p + 1])
-          PredictionClassif$new(task = task, response = drop(p))
+          response = invoke(keras::predict_classes, self$model$model, x = newdata, .args = pars)
+          response = drop(factor(self$model$class_names[response + 1]))
         } else if (self$predict_type == "prob") {
-          prob = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
-          if (ncol(prob) == 1L) prob = cbind(1-prob, prob)
-          colnames(prob) = task$class_names
-          PredictionClassif$new(task = task, prob = prob)
+          p = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
+          if (ncol(p) == 1L) {
+            if (task$class_names[1] != task$positive) p = cbind(1 - p, p)
+            else p = cbind(p, 1 - p)
+          }
         }
       } else {
         p = invoke(self$model$model$predict, x = newdata, .args = pars)
+          if (ncol(p) == 1L) {
+            if (task$class_names[1] != task$positive) p = cbind(1 - p, p)
+            else p = cbind(p, 1 - p)
+          }
         if (self$predict_type == "response") {
-          p = factor(self$model$class_names[apply(p, 1, which.max)])
-          PredictionClassif$new(task = task, response = drop(p))
-        } else if (self$predict_type == "prob") {
-          if (ncol(p) == 1L) p = cbind(1-p, p)
-          colnames(p) = task$class_names
-          PredictionClassif$new(task = task, prob = p)
+          response = factor(self$model$class_names[apply(p, 1, which.max)])
         }
       }
+      if (self$predict_type == "prob") {
+        prob = p
+        colnames(prob) = task$class_names
+      }
+      PredictionClassif$new(task = task, prob = prob, response = response)
+
     },
     save = function(filepath) {
       assert_path_for_output(filepath)
@@ -206,6 +213,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
     plot = function() {
       if (is.null(self$model)) stop("Model must be trained before saving")
       plot(self$model$history)
-    }
+    },
+    keras_predict_pars = c("batch_size", "verbose")
   )
 )

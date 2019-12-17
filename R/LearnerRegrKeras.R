@@ -167,6 +167,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
 
       features = task$data(cols = task$feature_names)
       newdata = self$architecture$transforms$x(features, pars)
+      pars = pars[intersect(names(pars), self$keras_predict_pars)]
 
       if (self$predict_type == "response") {
         p = invoke(self$model$model$predict, x = newdata, .args = pars)
@@ -181,6 +182,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
     plot = function() {
       if (is.null(self$model)) stop("Model must be trained before saving")
       plot(self$model$history)
-    }
+    },
+    keras_predict_pars = c("batch_size", "verbose")
   )
 )

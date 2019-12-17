@@ -31,14 +31,14 @@ test_that("works with pipelines", {
   skip_on_os("solaris")
   skip_if_not(require("mlr3pipelines"))
 
-  po_enc = PipeOpEncode$new()
+  po_imp = PipeOpImputeMedian$new()
   po_lrn = PipeOpLearner$new(lrn("classif.kerasff"))
   po_lrn$param_set$values$use_dropout = TRUE
   po_lrn$param_set$values$use_batchnorm = TRUE
   po_lrn$param_set$values$epochs = 3L
   po_lrn$param_set$values$layer_units = integer()
 
-  pipe = po_enc %>>% po_lrn
+  pipe = po_imp %>>% po_lrn
   expect_true(!pipe$is_trained)
   pipe$train(mlr_tasks$get("pima"))
   expect_true(pipe$is_trained)
@@ -48,13 +48,13 @@ test_that("works with pipelines", {
   po_lrn = PipeOpLearner$new(lrn("classif.kerasff"))
   po_lrn$param_set$values$epochs = 3L
   po_lrn$param_set$values$layer_units = c(10, 5)
-  pipe = po_enc %>>% po_lrn
+  po_lrn$param_set$values$use_embedding = FALSE
+  pipe = po_imp %>>% po_lrn
   expect_true(!pipe$is_trained)
   pipe$train(mlr_tasks$get("pima"))
   expect_true(pipe$is_trained)
   prd = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd[[1]], "PredictionClassif")
-
   k_clear_session()
 })
 
@@ -73,7 +73,6 @@ test_that("can fit with binary_crossentropy", {
   expect_list(pipe$pipeops$classif.keras$state$model)
   prd = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd[[1]], "PredictionClassif")
-  expect_true(is.null(prd[[1]]$prob))
 
   pipe$pipeops$classif.keras$learner$predict_type = "prob"
   prd2 = pipe$predict(mlr_tasks$get("pima"))

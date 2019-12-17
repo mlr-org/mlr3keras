@@ -21,7 +21,9 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
-        ParamLgl$new("use_embedding", default = FALSE, tags = "train"),
+        ParamLgl$new("use_embedding", default = TRUE, tags = c("train", "predict")),
+        ParamDbl$new("embed_dropout", default = 0, lower = 0, upper = 1, tags = "train"),
+        ParamDbl$new("embed_size", default = NULL, lower = 1, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamUty$new("layer_units", default = c(32, 32, 32), tags = "train"),
         ParamUty$new("initializer", default = "initializer_glorot_uniform()", tags = "train"),
         ParamUty$new("regularizer", default = "regularizer_l1_l2()", tags = "train"),
@@ -38,7 +40,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
         ParamUty$new("metrics", tags = "train")
       ))
       ps$values = list(
-        use_embedding = FALSE,
+        use_embedding = TRUE, embed_dropout = 0, embed_size = NULL,
         activation = "relu",
         layer_units = c(32, 32, 32),
         initializer = initializer_glorot_uniform(),
@@ -81,6 +83,9 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
+        ParamLgl$new("use_embedding", default = TRUE, tags = c("train", "predict")),
+        ParamDbl$new("embed_dropout", default = 0, lower = 0, upper = 1, tags = "train"),
+        ParamDbl$new("embed_size", default = NULL, lower = 1, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamUty$new("layer_units", default = c(32, 32, 32), tags = "train"),
         ParamUty$new("initializer", default = "initializer_glorot_uniform()", tags = "train"),
         ParamUty$new("regularizer", default = "regularizer_l1_l2()", tags = "train"),
@@ -96,9 +101,9 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
             "poison", "squared_hinge", "mean_squared_logarithmic_error")),
         ParamFct$new("output_activation", levels = c("linear", "sigmoid"), tags = "train"),
         ParamUty$new("metrics", default = "mean_squared_logarithmic_error", tags = "train")
-
       ))
       ps$values = list(
+        use_embedding = TRUE, embed_dropout = 0,  embed_size = NULL,
         activation = "relu",
         layer_units = c(32, 32, 32),
         initializer = initializer_glorot_uniform(),
@@ -110,8 +115,11 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
         metrics = "mean_squared_logarithmic_error",
         output_activation = "linear"
       )
-      arch = KerasArchitectureFF$new(build_arch_fn = build_keras_ff_model,  param_set = ps)
-      super$initialize(architecture = arch)
+      arch = KerasArchitectureFF$new(build_arch_fn = build_keras_ff_model, param_set = ps)
+      super$initialize(
+        feature_types = c("integer", "numeric", "factor"),
+        architecture = arch
+      )
     }
   )
 )
@@ -124,7 +132,11 @@ KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
   inherit = KerasArchitecture,
   public = list(
     initialize = function(build_arch_fn, param_set) {
-      super$initialize(build_arch_fn = build_arch_fn, param_set = param_set)
+      super$initialize(build_arch_fn = build_arch_fn, param_set = param_set,
+        x_transform = function(features, pars) {
+          if (pars$use_embedding) keras_array(reshape_data_embedding(features)$data)
+          else model.matrix(~. - 1 , features)
+      })
     }
   )
 )
@@ -159,7 +171,8 @@ build_keras_ff_model = function(task, pars) {
     model = keras_model_sequential()
   }
 
-  if (pars$use_dropout) model = model %>% layer_dropout(pars$input_dropout, input_shape = input_shape)
+  if (pars$use_dropout)
+    model = model %>% layer_dropout(pars$input_dropout, input_shape = input_shape)
 
   # Build hidden layers
   for (i in seq_len(length(pars$layer_units))) {
