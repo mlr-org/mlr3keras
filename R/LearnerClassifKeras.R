@@ -51,7 +51,15 @@
 LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassif,
   public = list(
     architecture = NULL,
-    initialize = function(architecture = KerasArchitectureCustomModel$new()) {
+    initialize = function(
+        id = "classif.keras",
+        predict_types = c("response", "prob"),
+        feature_types = c("integer", "numeric"),
+        properties = c("twoclass", "multiclass"),
+        packages = "keras",
+        man = "mlr3keras::mlr_learners_classif.keras",
+        architecture = KerasArchitectureCustomModel$new()
+      ) {
       self$architecture = assert_class(architecture, "KerasArchitecture")
       ps = ParamSet$new(list(
         ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
@@ -64,20 +72,19 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
       ))
       ps$values = list(epochs = 30L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory = FALSE)
-      ps = ParamSetCollection$new(list(ps, self$architecture$param_set))
+
       super$initialize(
-        id = "classif.keras",
-        param_set = ps,
-        predict_types = c("response", "prob"),
-        feature_types = c("integer", "numeric"),
-        properties = c("twoclass", "multiclass"),
-        packages = "keras",
-        man = "mlr3keras::mlr_learners_classif.keras"
+        id = assert_character(id, len = 1),
+        param_set = ParamSetCollection$new(list(ps, self$architecture$param_set)),
+        predict_types = assert_character(predict_types),
+        feature_types = assert_character(feature_types),
+        properties = assert_character(properties),
+        packages = assert_character(packages),
+        man = assert_character(man)
       )
 
       # Set y_transform
-      self$architecture$set_transform(
-        "y",
+      self$architecture$set_transform("y",
         function(target, pars, model_loss) {
           y = to_categorical(as.integer(target) - 1)
           if (model_loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
@@ -116,7 +123,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         rho = rsmp("holdout", ratio = 1 - pars$validation_split)
         rho$instantiate(task)
 
-        train_gen <- make_data_generator(
+        train_gen = make_data_generator(
           task = task,
           batch_size = pars$batch_size,
           filter_ids = rho$train_set(1),
@@ -124,7 +131,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
           y_transform = function(y) {self$architecture$transforms$y(y, pars, model$loss)}
         )
 
-        valid_gen <- make_data_generator(
+        valid_gen = make_data_generator(
           task = task,
           batch_size = pars$batch_size,
           filter_ids = rho$test_set(1),
@@ -133,8 +140,8 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         )
 
         # Number of steps
-        train_steps <- ceiling(length(rho$train_set(1)) / pars$batch_size)
-        valid_steps <- ceiling(length(rho$test_set(1)) / pars$batch_size)
+        train_steps = ceiling(length(rho$train_set(1)) / pars$batch_size)
+        valid_steps = ceiling(length(rho$test_set(1)) / pars$batch_size)
 
         # Train with generator
         if(pars$validation_split > 0) {

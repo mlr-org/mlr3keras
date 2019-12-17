@@ -21,7 +21,8 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Florian Pfisterer \email{pfistererf@googlemail.com} (\href{https://orcid.org/0000-0001-0000-0000}{ORCID})
+  \item Florian Pfisterer \email{pfistererf@googlemail.com} (\href{https://orcid.org/0000-0001-8867-762X}{ORCID})
+  \item Jacky Poon \email{jackypn@gmail.com}
 }
 
 }
