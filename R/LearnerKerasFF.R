@@ -21,6 +21,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
+        ParamLgl$new("use_embedding", default = FALSE, tags = "train"),
         ParamUty$new("layer_units", default = c(32, 32, 32), tags = "train"),
         ParamUty$new("initializer", default = "initializer_glorot_uniform()", tags = "train"),
         ParamUty$new("regularizer", default = "regularizer_l1_l2()", tags = "train"),
@@ -37,6 +38,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
         ParamUty$new("metrics", tags = "train")
       ))
       ps$values = list(
+        use_embedding = FALSE,
         activation = "relu",
         layer_units = c(32, 32, 32),
         initializer = initializer_glorot_uniform(),
@@ -48,8 +50,11 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
         metrics = "accuracy",
         output_activation = "softmax"
       )
-      arch = KerasArchitectureFF$new(build_arch_fn = build_keras_ff_model,  param_set = ps)
-      super$initialize(architecture = arch)
+      arch = KerasArchitectureFF$new(build_arch_fn = build_keras_ff_model, param_set = ps)
+      super$initialize(
+        feature_types = c("integer", "numeric", "factor"),
+        architecture = arch
+      )
     }
   )
 )

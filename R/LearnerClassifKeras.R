@@ -123,7 +123,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         rho = rsmp("holdout", ratio = 1 - pars$validation_split)
         rho$instantiate(task)
 
-        train_gen <- make_data_generator(
+        train_gen = make_data_generator(
           task = task,
           batch_size = pars$batch_size,
           filter_ids = rho$train_set(1),
@@ -131,7 +131,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
           y_transform = function(y) {self$architecture$transforms$y(y, pars, model$loss)}
         )
 
-        valid_gen <- make_data_generator(
+        valid_gen = make_data_generator(
           task = task,
           batch_size = pars$batch_size,
           filter_ids = rho$test_set(1),
@@ -140,8 +140,8 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         )
 
         # Number of steps
-        train_steps <- ceiling(length(rho$train_set(1)) / pars$batch_size)
-        valid_steps <- ceiling(length(rho$test_set(1)) / pars$batch_size)
+        train_steps = ceiling(length(rho$train_set(1)) / pars$batch_size)
+        valid_steps = ceiling(length(rho$test_set(1)) / pars$batch_size)
 
         # Train with generator
         if(pars$validation_split > 0) {

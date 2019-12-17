@@ -25,6 +25,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
+        ParamInt$new("embed_size", default = NULL, lower = 1L, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamLgl$new("stacked", default = FALSE, tags = "train"),
         ParamInt$new("num_layers", lower = 1, upper = Inf, default = 1L, tags = "train"),
         ParamDbl$new("batch_momentum", lower = 0, upper = 1, tags = "train"),
@@ -44,6 +45,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
       ))
       ps$add_dep("num_layers", "stacked", CondEqual$new(TRUE))
       ps$values = list(
+        embed_size = NULL,
         stacked = FALSE,
         batch_momentum = 0.98,
         relaxation_factor = 1.0,
@@ -99,7 +101,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
   public = list(
     initialize = function() {
       ps = ParamSet$new(list(
-        ParamInt$new("embed_size", default = NULL, , lower = 1L, upper = Inf, tags = "train"),
+        ParamInt$new("embed_size", default = NULL, lower = 1L, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamLgl$new("stacked", default = FALSE, tags = "train"),
         ParamInt$new("num_layers", lower = 1, upper = Inf, default = 1L, tags = "train"),
         ParamDbl$new("batch_momentum", lower = 0, upper = 1, tags = "train"),

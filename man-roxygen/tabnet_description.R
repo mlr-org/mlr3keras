@@ -1,5 +1,10 @@
 #' @section  Hyper Parameter Tuning:
 #'
+#' Additional Arguments:
+#' * embed_size: Size of embedding for categorical, character and ordered factors.
+#'                Defaults to `min(600L, round(1.6 * length(levels)^0.56))`.
+#' * stacked: Should a `StackedTabNetModel` be used instead of a normal `TabNetModel`?
+#'
 #' The python implementation can be found in \url{https://github.com/titu1994/tf-TabNet/tree/master/tabnet}.
 #' (Excerpt from paper)
 #' We consider datasets ranging from 10K to 10M training points, with varying degrees of fitting
