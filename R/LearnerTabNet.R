@@ -202,8 +202,6 @@ build_keras_tabnet = function(task, pars) {
   )
 }
 
-
-
 # Create a tf$feature_column according to the type of a Task's column.
 # FIXME: This covers only the most basic feature types, needs to be extended.
 make_feature_column = function(id, type, levels) {
@@ -229,6 +227,3 @@ make_tf_feature_cols = function(task) {
   assert_r6(task, "Task")
   feature_columns = pmap(.f = make_feature_column, .x = task$feature_types, list(task$levels()))
 }
-
-
-sapply(letters[1:2], as.list)

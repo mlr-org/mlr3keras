@@ -91,6 +91,7 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
             "poison", "squared_hinge", "mean_squared_logarithmic_error")),
         ParamFct$new("output_activation", levels = c("linear", "sigmoid"), tags = "train"),
         ParamUty$new("metrics", default = "mean_squared_logarithmic_error", tags = "train")
+
       ))
       ps$values = list(
         activation = "relu",
@@ -109,6 +110,21 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
     }
   )
 )
+
+#' @title Keras Neural Network Feed Forward architecture
+#' @rdname KerasArchitecture
+#' @family KerasArchitectures
+#' @export
+KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
+  inherit = KerasArchitecture,
+  public = list(
+    initialize = function(build_arch_fn, param_set) {
+      super$initialize(build_arch_fn = build_arch_fn, param_set = param_set)
+    }
+  )
+)
+
+
 
 # Builds a Keras Feed Forward Neural Network
 # @param task [`Task`] \cr
@@ -131,7 +147,13 @@ build_keras_ff_model = function(task, pars) {
     }
   }
 
-  model = keras_model_sequential()
+  if (pars$use_embedding) {
+    embd = make_embedding(task, pars$embed_size, pars$embed_dropout)
+    model = embd$layers
+  } else {
+    model = keras_model_sequential()
+  }
+
   if (pars$use_dropout) model = model %>% layer_dropout(pars$input_dropout, input_shape = input_shape)
 
   # Build hidden layers
@@ -156,6 +178,8 @@ build_keras_ff_model = function(task, pars) {
     model = model %>% layer_dense(units = output_shape, activation = "sigmoid")
   else
     model = model %>% layer_dense(units = output_shape, activation = pars$output_activation)
+
+  if (pars$use_embedding) model = keras_model(input = embd$inputs, output = model)
 
   model %>% compile(
     optimizer = pars$optimizer,
