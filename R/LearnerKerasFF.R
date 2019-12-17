@@ -135,7 +135,7 @@ KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
       super$initialize(build_arch_fn = build_arch_fn, param_set = param_set,
         x_transform = function(features, pars) {
           if (pars$use_embedding) keras_array(reshape_data_embedding(features)$data)
-          else model.matrix(~. - 1 , features)
+          else as.matrix(model.matrix(~. - 1 , features))
       })
     }
   )
