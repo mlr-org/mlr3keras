@@ -113,15 +113,17 @@ reshape_data_embedding = function(data) {
   assert_data_table(data)
 
   types = map_chr(data, function(x) class(x)[[1]])
-  embed_vars = names(types)[types %in% c("ordered", "factor", "character")]
+  embed_vars = names(types)[types %in% c("ordered", "factor")]
 
   fct_levels = NULL
   if (length(embed_vars) > 0)
     fct_levels = map(as.list(data[, embed_vars, with = FALSE]), function(x) levels(x))
   out_data = list()
   if (length(embed_vars)  > 0)
-    out_data = setNames(map(data[, embed_vars, with = FALSE], function(x) {
-      as.integer(as.factor(x)) - 1L}),
+    out_data = setNames(
+      map(as.list(data[, embed_vars, with = FALSE]), function(x) {
+        as.integer(x) - 1L
+      }),
       embed_vars)
   if (length(embed_vars) < ncol(data))
     out_data$continuous = as.matrix(data[,setdiff(colnames(data), embed_vars), with = FALSE])

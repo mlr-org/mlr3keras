@@ -228,7 +228,7 @@ make_tf_feature_column = function(id, type, args) {
     if (is.null(args$embed_size)) args$embed_size = get_default_embed_size(args$levels[[id]])
     tensorflow::tf$feature_column$embedding_column(
       tensorflow::tf$feature_column$categorical_column_with_vocabulary_list(id, args$levels[[id]]),
-      dimension = args$embed_size
+      dimension = as.integer(args$embed_size)
     )
   }
 }
@@ -265,6 +265,6 @@ make_tf_feature_cols = function(task, embed_size = NULL) {
 
 get_default_embed_size = function(levels) {
     # As a default we use the fast.ai heuristic
-    min(600L, round(1.6 * length(levels)^0.56))
+    as.integer(min(600L, round(1.6 * length(levels)^0.56)))
 }
 
