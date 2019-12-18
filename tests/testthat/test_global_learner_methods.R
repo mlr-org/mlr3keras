@@ -7,20 +7,21 @@ test_that("save/plot/serialize works kerasff", {
   learner$train(tsk)
   tmpdir = tempfile()
   learner$save(tmpdir)
-  assert_directory_exists(tmpdir)
+  expect_directory_exists(tmpdir)
   unlink(tmpdir, force = TRUE)
   prd = learner$predict(tsk)
+  expect_class(prd, "Prediction")
 
   p = learner$plot()
-  assert_class(p, "ggplot")
-  assert_true(1 %in% p$data$epoch)
+  expect_class(p, "ggplot")
+  expect_true(1 %in% p$data$epoch)
 
   tmprds = tempfile(fileext = ".RDS")
   saveRDS(learner, tmprds)
   lrn2 = readRDS(tmprds)
-  assert_file_exists(tmprds)
-  assert_learner(lrn2)
-  assert_list(lrn2$model)
+  expect_file_exists(tmprds)
+  expect_learner(lrn2)
+  expect_list(lrn2$model)
   # FIXME: This currently breaks, as
   # lrn2$model$model is a null-pointer
   # prd2 = lrn2$predict(tsk)

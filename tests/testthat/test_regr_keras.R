@@ -10,7 +10,7 @@ test_that("autotest regression custom model", {
       loss = "mean_squared_error",
       metrics = "mean_squared_logarithmic_error")
   learner = LearnerRegrKeras$new()
-  learner$param_set$values = list(model = model)
+  learner$param_set$values$model = model
   learner$param_set$values$epochs = 3L
   expect_learner(learner)
 

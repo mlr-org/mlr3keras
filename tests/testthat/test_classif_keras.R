@@ -10,7 +10,7 @@ test_that("autotest binary", {
       loss = "categorical_crossentropy",
       metrics = c("accuracy"))
   learner = LearnerClassifKeras$new()
-  learner$param_set$values = list(model = model)
+  learner$param_set$values$model = model
   learner$param_set$values$epochs = 2L
   expect_learner(learner)
 
@@ -75,7 +75,7 @@ test_that("autotest multiclass", {
       loss = "categorical_crossentropy",
       metrics = c("accuracy"))
   learner = LearnerClassifKeras$new()
-  learner$param_set$values = list(model = model)
+  learner$param_set$values$model = model
   learner$param_set$values$epochs = 2L
   expect_learner(learner)
 

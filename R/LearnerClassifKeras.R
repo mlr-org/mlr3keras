@@ -102,7 +102,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       features = task$data(cols = task$feature_names)
       target = task$data(cols = task$target_names)[[task$target_names]]
 
-      if(is.null(pars$low_memory) || !pars$low_memory) {
+      if(!pars$low_memory) {
         x = self$architecture$transforms$x(features, pars)
         y = self$architecture$transforms$y(target, pars, model$loss)
 
@@ -116,7 +116,6 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
           validation_split = pars$validation_split,
           verbose = pars$verbose,
           callbacks = pars$callbacks)
-
 
       } else {
         # Validation split
