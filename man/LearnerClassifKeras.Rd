@@ -16,7 +16,7 @@ Some exceptions are documented here.
 \itemize{
 \item \code{model}: A compiled keras model.
 \item \code{class_weight}: needs to be a named list of class-weights
-for the dierent classes numbered from 0 to c-1 (for c classes).\preformatted{Example:
+for the different classes numbered from 0 to c-1 (for c classes).\preformatted{Example:
 wts = c(0.5, 1)
 setNames(as.list(wts), seq_len(length(wts)) - 1)
 }

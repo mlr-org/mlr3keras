@@ -56,6 +56,10 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
 )
 
 #' @title Keras Neural Network custom architecture
+#' 
+#' @description 
+#'   This is an architecture used for custom, user-supplied models. 
+#'   The `model`, i.e a compiled keras model is supplied to the learner as a hyperparameter. 
 #' @rdname KerasArchitecture
 #' @family KerasArchitectures
 #' @export
@@ -63,24 +67,11 @@ KerasArchitectureCustomModel = R6::R6Class("KerasArchitectureCustomModel",
   inherit = KerasArchitecture,
   public = list(
     initialize = function() {
-      super$initialize(build_arch_fn = function(pars, input_shape, output_shape) {})
+      super$initialize(build_arch_fn = function(task, pars) {})
     },
     get_model = function(task, pars) {
       assert_class(pars$model, "keras.engine.training.Model")
       return(pars$model)
-    }
-  )
-)
-
-#' @title Keras Neural Network Feed Forward architecture
-#' @rdname KerasArchitecture
-#' @family KerasArchitectures
-#' @export
-KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
-  inherit = KerasArchitecture,
-  public = list(
-    initialize = function(build_arch_fn, param_set) {
-      super$initialize(build_arch_fn = build_arch_fn, param_set = param_set)
     }
   )
 )

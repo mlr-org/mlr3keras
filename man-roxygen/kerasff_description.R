@@ -11,12 +11,15 @@
 #'   `layer_dropout` depending on the architecture hyperparameters.
 #'   This is repeated `length(layer_units)` times, i.e. one
 #'   'dense->activation->batchnorm->dropout' block is appended for each `layer_unit`.
-#'   The last layer is either 'softmax' or 'sigmoid' for classification or 
-#'   'linear' or 'sigmoid' for regression. 
+#'   The last layer is either 'softmax' or 'sigmoid' for classification or
+#'   'linear' or 'sigmoid' for regression.
 #'
 #' Parameters:\cr
 #' Most of the parameters can be obtained from the `keras` documentation.
 #' Some exceptions are documented here.
+#' * `use_embedding`: A logical flag, should embeddings be used?
+#'   Either uses `make_embedding` (if TRUE) or if set to FALSE `model.matrix(~. - 1, data)`
+#'   to convert factor, logical and ordered factors into numeric features.
 #' * `layer_units`: An integer vector storing the number of units in each
 #'   consecutive layer. `layer_units = c(32L, 32L, 32L)` results in a 3 layer
 #'   network with 32 neurons in each layer.

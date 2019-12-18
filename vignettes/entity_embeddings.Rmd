@@ -30,12 +30,17 @@ library("mlr3keras")
 ## mlr3keras in 5 lines
 
 ```{r, message=FALSE}
+# Instantiate Learner
 lrn = LearnerClassifKerasFF$new()
+
+# Set hyperparameters
 lrn$param_set$values$epochs = 50
 lrn$param_set$values$layer_units = 12
-lrn$train(mlr_tasks$get("iris"))
-```
 
+# Train and predict
+lrn$train(mlr_tasks$get("iris"))
+lrn$predict(mlr_tasks$get("iris"))
+```
 
 ## A simple first example
 
@@ -113,7 +118,6 @@ get_keras_model = function(arch = "arch1", lr = 3*10^-4) {
       loss = "binary_crossentropy",
       metrics = "accuracy")
 }
-
 ```
 
 And now we aim to select the better architecture between `arch1` and `arch2`, and
