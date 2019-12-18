@@ -62,7 +62,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       ) {
       self$architecture = assert_class(architecture, "KerasArchitecture")
       ps = ParamSet$new(list(
-        ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
+        ParamInt$new("epochs", default = 30L, lower = 0L, tags = "train"),
         ParamUty$new("model", tags = c("train")),
         ParamUty$new("class_weight", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
@@ -146,7 +146,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         # Train with generator
         if(pars$validation_split > 0) {
           history = invoke(keras::fit_generator,
-                           object = pars$model,
+                           object = model,
                            generator = train_gen,
                            epochs = as.integer(pars$epochs),
                            class_weight = pars$class_weight,
@@ -157,7 +157,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
                            callbacks = pars$callbacks)
         } else {
           history = invoke(keras::fit_generator,
-                           object = pars$model,
+                           object = model,
                            generator = train_gen,
                            epochs = as.integer(pars$epochs),
                            class_weight = pars$class_weight,
