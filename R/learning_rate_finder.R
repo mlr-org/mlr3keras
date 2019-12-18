@@ -2,7 +2,7 @@
 # This is a wrapper around find_lr, that creates the model
 # and returns the learning rate.
 lr_finder = function(learner, task, epochs = 5, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
-  requireNamespace("ggplot2")
+  # requireNamespace("ggplot2")
   assert_learner(learner)
   assert_task(task)
   learner$param_set$values$epochs = assert_integerish(epochs)
