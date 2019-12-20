@@ -207,7 +207,11 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
     save = function(filepath) {
       assert_path_for_output(filepath)
       if (is.null(self$model)) stop("Model must be trained before saving")
-      self$model$model$save(filepath)
+      keras::save_model_hdf5(self$model$model, filepath)
+    },
+    load_model_from_file = function(filepath) {
+      assert_file_exists(filepath)
+      self$state$model$model = keras::load_model_hdf5(filepath)
     },
     plot = function() {
       if (is.null(self$model)) stop("Model must be trained before saving")
