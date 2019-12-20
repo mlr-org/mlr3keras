@@ -10,11 +10,26 @@ An extension for `mlr3` to enable using various `keras` models as learners.
 
 ## Status
 
-`mlr3keras` is in very early stages of development, and currently only partially under development.
+`mlr3keras` is in very early stages of development, and currently under development.
 
- Comments, discussion and issues/bug reports and PR's are **highly** appreciated.
+It builds on top of the (awesome) R packages `reticulate`, `tensorflow` and `keras`.
 
- If you want to **contribute**, please propose / discuss adding functionality in an issue in order to avoid unneccessary or duplicate work.
+Comments, discussion and issues/bug reports and PR's are **highly** appreciated.
+
+If you want to **contribute**, please propose / discuss adding functionality in an issue in order to avoid unnecessary or duplicate work.
+
+## Installation:
+
+```r
+# Install from GitHub
+remotes::install_github("mlr-org/mlr3keras")
+```
+
+**Troubleshooting:**
+
+If you encounter problems using the correct python versions, see [here](https://rstudio.github.io/reticulate/articles/versions.html).
+
+`mlr3keras` is currently tested and works using the python packages `keras (2.3.1)` and `tensorflow (2.0.0)`.
 
 ## Usage
 
@@ -22,7 +37,7 @@ An extension for `mlr3` to enable using various `keras` models as learners.
 
 * **(Regr|Classif)Keras**:   A generic wrapper that allows to supply a custom keras architecture as
                          a hyperparameter.
-* **(Regr|Classif)KerasFF**: A fully-connected feed-forward Neural Network.
+* **(Regr|Classif)KerasFF**: A fully-connected feed-forward Neural Network with entity embeddings
 * **(Regr|Classif)TabNet**: An implementation of `TabNet` (c.f. Sercan, A. and Pfister, T. (2019): TabNet).
 
 Learners can be used for `training` and `prediction` as follows:
@@ -30,9 +45,11 @@ Learners can be used for `training` and `prediction` as follows:
 ```r
   # Instantiate Learner
   lrn = LearnerClassifKerasFF$new()
+
   # Set Learner Hyperparams
   lrn$param_set$values$epochs = 50
   lrn$param_set$values$layer_units = 12
+
   # Train and Predict
   lrn$train(mlr_tasks$get("iris"))
   lrn$predict(mlr_tasks$get("iris"))

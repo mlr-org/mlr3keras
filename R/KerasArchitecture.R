@@ -56,10 +56,10 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
 )
 
 #' @title Keras Neural Network custom architecture
-#' 
-#' @description 
-#'   This is an architecture used for custom, user-supplied models. 
-#'   The `model`, i.e a compiled keras model is supplied to the learner as a hyperparameter. 
+#'
+#' @description
+#'   This is an architecture used for custom, user-supplied models.
+#'   The `model`, i.e a compiled keras model is supplied to the learner as a hyperparameter.
 #' @rdname KerasArchitecture
 #' @family KerasArchitectures
 #' @export

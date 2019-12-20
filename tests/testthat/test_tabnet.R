@@ -48,5 +48,4 @@ test_that("test tabnet on pima", {
   expect_true(pipe$is_trained)
   prd = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd[[1]], "PredictionClassif")
-  k_clear_session()
 })

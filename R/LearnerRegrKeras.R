@@ -63,13 +63,13 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       ) {
       self$architecture = assert_class(architecture, "KerasArchitecture")
       ps = ParamSet$new(list(
-        ParamInt$new("epochs", default = 30L, lower = 1L, tags = "train"),
+        ParamInt$new("epochs", default = 30L, lower = 0L, tags = "train"),
         ParamUty$new("model", tags = c("train")),
         ParamUty$new("class_weight", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
         ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
-        ParamLgl$new("low_memory", default=FALSE, tags = c("train")),
+        ParamLgl$new("low_memory", default = FALSE, tags = c("train")),
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
       ))
       ps$values = list(epochs = 30L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory = FALSE)
@@ -96,7 +96,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       features = task$data(cols = task$feature_names)
       target = task$data(cols = task$target_names)[[task$target_names]]
 
-      if(is.null(pars$low_memory) || !pars$low_memory) {
+      if(!pars$low_memory) {
         x = self$architecture$transforms$x(features, pars)
         y = self$architecture$transforms$y(target, pars, model$loss)
 

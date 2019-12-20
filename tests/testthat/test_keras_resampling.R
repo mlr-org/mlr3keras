@@ -11,7 +11,7 @@ test_that("can be trained with cv3", {
       loss = "categorical_crossentropy",
       metrics = c("accuracy"))
   learner = LearnerClassifKeras$new()
-  learner$param_set$values = list(model = model)
+  learner$param_set$values$model = model
   learner$param_set$values$epochs = 2L
 
   # Resample
@@ -35,7 +35,7 @@ test_that("tuning works without pipelines", {
       loss = "categorical_crossentropy",
       metrics = c("accuracy"))
   learner = LearnerClassifKeras$new()
-  learner$param_set$values = list(model = model)
+  learner$param_set$values$model = model
   learner$param_set$values$epochs = 2L
 
   # Parameter Set

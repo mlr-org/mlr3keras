@@ -5,6 +5,8 @@
 \alias{cb_lrs}
 \alias{cb_tb}
 \alias{cb_lr_log}
+\alias{LogMetrics}
+\alias{SetLogLR}
 \title{\code{cb_es}: Early stopping callback}
 \usage{
 cb_es(patience = 3L)
@@ -27,4 +29,8 @@ Number of iterations without improvement to wait before stopping.}
 \code{cb_tb}: Tensorboard callback
 
 \code{cb_lr_log}: Learning rate logger callback
+
+\code{LogMetrics}: Batch-wise Metrics Logger Callback
+
+\code{SetLogLR}: Batch-wise Metrics Setter Callback
 }
