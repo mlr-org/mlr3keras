@@ -40,7 +40,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         ParamInt$new("virtual_batch_size", lower = 1L, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamFct$new("loss", default = "categorical_crossentropy", tags = "train",
           levels = c("categorical_crossentropy", "sparse_categorical_crossentropy")),
-        ParamUty$new("optimizer", default = "optimizer_adam(3*10^-4)", tags = "train"),
+        ParamUty$new("optimizer", default = "tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9))", tags = "train"),
         ParamUty$new("metrics", default = "accuracy", tags = "train")
       ))
       ps$add_dep("num_layers", "stacked", CondEqual$new(TRUE))
@@ -57,7 +57,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         norm_type = "group",
         num_groups = 1L,
         virtual_batch_size = NULL,
-        optimizer = optimizer_adam(lr = 3*10^-4),
+        optimizer = tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9)),
         loss = "categorical_crossentropy",
         metrics = "accuracy"
       )
@@ -114,7 +114,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
         ParamDbl$new("epsilon", lower = 0, upper = 1, default = 10^-5, tags = "train"),
         ParamFct$new("norm_type", levels = c("group", "batch"), default = "group", tags = "train"),
         ParamInt$new("virtual_batch_size", lower = 1L, upper = Inf, tags = "train", special_vals = list(NULL)),
-        ParamUty$new("optimizer", default = "optimizer_adam(3*10^-4)", tags = "train"),
+        ParamUty$new("optimizer", default = "tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9))", tags = "train"),
         ParamFct$new("loss", default = "mean_squared_error", tags = "train",
           levels = c("cosine_proximity", "cosine_similarity", "mean_absolute_error", "mean_squared_error",
             "poison", "squared_hinge", "mean_squared_logarithmic_error")),
@@ -134,7 +134,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
         norm_type = "group",
         num_groups = 1L,
         virtual_batch_size = NULL,
-        optimizer = optimizer_adam(lr = 3*10^-4),
+        optimizer = tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9)),
         loss = "mean_squared_error",
         metrics = "mean_squared_logarithmic_error"
       )
