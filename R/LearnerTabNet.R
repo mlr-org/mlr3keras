@@ -233,6 +233,14 @@ make_tf_feature_column = function(id, type, args) {
   }
 }
 
+#' `get_tf_num_features`: Get number (dimension) of tensorflow features for TabNet.
+#' @param task [`Task`]\cr
+#'   A mlr3 Task
+#' @param pars \cr
+#'   Model parameters, obtained through ``your_model_name$param_set$get_values(tags = "train")``
+#' @return \cr
+#'   The number of features passed to TabNet.
+#' @export
 get_tf_num_features = function(task, pars) {
   dims = pmap_int(task$feature_types, function(id, type, levels) {
     switch(type,
