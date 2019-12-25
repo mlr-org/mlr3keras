@@ -2,8 +2,8 @@
 % Please edit documentation in R/keras_callbacks.R
 \name{cb_es}
 \alias{cb_es}
-\alias{cb_lrs}
-\alias{cb_tb}
+\alias{cb_lr_scheduler}
+\alias{cb_tensorboard}
 \alias{cb_lr_log}
 \alias{LogMetrics}
 \alias{SetLogLR}
@@ -11,9 +11,9 @@
 \usage{
 cb_es(patience = 3L)
 
-cb_lrs()
+cb_lr_scheduler()
 
-cb_tb()
+cb_tensorboard()
 
 cb_lr_log()
 }

@@ -136,6 +136,34 @@ test_that("Learner methods", {
   k_clear_session()
 })
 
+test_that("Labelswitch", {
+  x = data.table(matrix(runif(1000), ncol = 1))
+  opt = optimizer_sgd(lr = 0.1)
+  x$V1[1] = TRUE
+  x$target = as.factor(((0.2 + x$V1) > 0.7))
+  tsk = TaskClassif$new("labswitch", x, target = "target", positive = "TRUE")
+  tsk2 = TaskClassif$new("labswitch", x, target = "target", positive = "FALSE")
+  expect_true(tsk2$positive != tsk$positive)
+  expect_true(tsk$class_names[1] == tsk$positive)
+
+  for (pt in c("prob", "response")) {
+    for (embd in c(TRUE, FALSE)) {
+      lrn1 = lrn("classif.kerasff", optimizer = opt, layer_units = c(), epochs = 100, predict_type = pt, use_embedding = embd)
+      lrn1$train(tsk)
+      prd = lrn1$predict(tsk)
+      expect_true(lrn1$model$history$metrics$accuracy[100] > 0.9)
+      expect_true(mean(prd$truth == prd$response) > 0.5)
+      prd1 = lrn1$predict(tsk2)
+
+      lrn2 = lrn("classif.kerasff", optimizer = opt, layer_units = c(), epochs = 100, predict_type = pt, use_embedding = embd)
+      lrn2$train(tsk2)
+      prd2 = lrn2$predict(tsk2)
+      expect_true(lrn2$model$history$metrics$accuracy[100] > 0.9)
+      expect_true(mean(prd2$truth == prd2$response) > 0.5)
+    }
+  }
+})
+
 # test_that("Custom optimizer methods", {
 #   require("reticulate")
 #   skip_if_not(reticulate::py_module_available("keras_radam"))

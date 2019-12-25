@@ -1,5 +1,5 @@
 ---
-title: "entity_embeddings"
+title: "first_steps"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{entity_embeddings}
@@ -170,25 +170,27 @@ tuner$tune(instance)
 
 ## Entity Embeddings
 
-<!--
+Entity embeddings are naturally embedded into the `kerasff` learners.
+
+## Custom Optimizers & Activation Functions
+
+In the example below, we will use the `radam` (rectified adam) optimizer
+in order to train our neural network.
+We will first have to install the python package that contains the 
+optimizer using `pip` or `conda`.
+
+Afterwards we can check whether the package was successfully installed 
+via: 
 ```{r, eval = FALSE}
-library(mlr3keras)
+library("reticulate")
+py_module_available("keras_radam") 
+```  
 
-tsk = mlr_tasks$get("boston_housing")
-embd = make_embedding(tsk)
+Now we can import the optimizer and use it to train our learner.
 
-output = embd$layer %>%
-  layer_dense(12, activation = "relu") %>%
-  layer_dense(1, activation = "linear")
-
-model = keras_model(embd$input, output) %>%
-  compile(
-    optimizer = optimizer_adam(),
-    loss = "mse"
-  )
-
-model$train()
+```{r, eval = FALSE}
+kr = import("keras_radam")
+radam = kr$training$RAdamOptimizer()
+lrn = lrn("classif.kerasff", predict_type = "prob", epochs = 3L, optimizer = radam)
+lrn$train(mlr_tasks$get("iris"))
 ```
--->
-
-.. to be continued ..

@@ -44,3 +44,14 @@ test_that("save/plot/serialize works kerasff", {
   unlink(tmprds, force = TRUE)
   k_clear_session()
 })
+
+test_that("keras architecture properties", {
+  skip_on_os("solaris")
+  arch = KerasArchitecture$new()
+  expect_r6(arch, "KerasArchitecture")
+  expect_error(arch$transforms$y())
+
+  arch = KerasArchitecture$new(y_transform = function() {1})
+  expect_r6(arch, "KerasArchitecture")
+  expect_true(arch$transforms$y() == 1)
+})
