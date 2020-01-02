@@ -62,7 +62,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       ) {
       self$architecture = assert_class(architecture, "KerasArchitecture")
       ps = ParamSet$new(list(
-        ParamInt$new("epochs", default = 30L, lower = 0L, tags = "train"),
+        ParamInt$new("epochs", default = 100L, lower = 0L, tags = "train"),
         ParamUty$new("model", tags = c("train")),
         ParamUty$new("class_weight", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
@@ -71,7 +71,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamLgl$new("low_memory", default=FALSE, tags = c("train")),
         ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
       ))
-      ps$values = list(epochs = 30L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory = FALSE)
+      ps$values = list(epochs = 100L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory = FALSE)
 
       super$initialize(
         id = assert_character(id, len = 1),

@@ -34,13 +34,13 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         ParamInt$new("num_decision_steps", lower = 1L, upper = Inf, default = 5L, tags = "train"),
         ParamInt$new("feature_dim", lower = 1L, upper = Inf, default = 64L, tags = "train"),
         ParamInt$new("output_dim", lower = 1L, upper = Inf, default = 64L, tags = "train"),
-        ParamInt$new("num_groups", lower = 1L, upper = Inf, default = 2L, tags = "train"),
+        ParamInt$new("num_groups", lower = 1L, upper = Inf, default = 1L, tags = "train"),
         ParamDbl$new("epsilon", lower = 0, upper = 1, default = 10^-5, tags = "train"),
         ParamFct$new("norm_type", levels = c("group", "batch"), default = "group", tags = "train"),
         ParamInt$new("virtual_batch_size", lower = 1L, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamFct$new("loss", default = "categorical_crossentropy", tags = "train",
           levels = c("categorical_crossentropy", "sparse_categorical_crossentropy")),
-        ParamUty$new("optimizer", default = "optimizer_adam(3*10^-4)", tags = "train"),
+        ParamUty$new("optimizer", default = "tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9))", tags = "train"),
         ParamUty$new("metrics", default = "accuracy", tags = "train")
       ))
       ps$add_dep("num_layers", "stacked", CondEqual$new(TRUE))
@@ -55,9 +55,9 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         feature_dim = 4L,
         epsilon = 10^-5,
         norm_type = "group",
-        num_groups = 2L,
+        num_groups = 1L,
         virtual_batch_size = NULL,
-        optimizer = optimizer_adam(lr = 3*10^-4),
+        optimizer = tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9)),
         loss = "categorical_crossentropy",
         metrics = "accuracy"
       )
@@ -110,11 +110,11 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
         ParamInt$new("num_decision_steps", lower = 1L, upper = Inf, default = 5L, tags = "train"),
         ParamInt$new("feature_dim", lower = 1L, upper = Inf, default = 64L, tags = "train"),
         ParamInt$new("output_dim", lower = 1L, upper = Inf, default = 64L, tags = "train"),
-        ParamInt$new("num_groups", lower = 1L, upper = Inf, default = 2L, tags = "train"),
+        ParamInt$new("num_groups", lower = 1L, upper = Inf, default = 1L, tags = "train"),
         ParamDbl$new("epsilon", lower = 0, upper = 1, default = 10^-5, tags = "train"),
         ParamFct$new("norm_type", levels = c("group", "batch"), default = "group", tags = "train"),
         ParamInt$new("virtual_batch_size", lower = 1L, upper = Inf, tags = "train", special_vals = list(NULL)),
-        ParamUty$new("optimizer", default = "optimizer_adam(3*10^-4)", tags = "train"),
+        ParamUty$new("optimizer", default = "tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9))", tags = "train"),
         ParamFct$new("loss", default = "mean_squared_error", tags = "train",
           levels = c("cosine_proximity", "cosine_similarity", "mean_absolute_error", "mean_squared_error",
             "poison", "squared_hinge", "mean_squared_logarithmic_error")),
@@ -132,9 +132,9 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
         feature_dim = 4L,
         epsilon = 10^-5,
         norm_type = "group",
-        num_groups = 2L,
+        num_groups = 1L,
         virtual_batch_size = NULL,
-        optimizer = optimizer_adam(lr = 3*10^-4),
+        optimizer = tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9)),
         loss = "mean_squared_error",
         metrics = "mean_squared_logarithmic_error"
       )
@@ -233,6 +233,14 @@ make_tf_feature_column = function(id, type, args) {
   }
 }
 
+#' `get_tf_num_features`: Get number (dimension) of tensorflow features for TabNet.
+#' @param task [`Task`]\cr
+#'   A mlr3 Task
+#' @param pars \cr
+#'   Model parameters, obtained through ``your_model_name$param_set$get_values(tags = "train")``
+#' @return \cr
+#'   The number of features passed to TabNet.
+#' @export
 get_tf_num_features = function(task, pars) {
   dims = pmap_int(task$feature_types, function(id, type, levels) {
     switch(type,
