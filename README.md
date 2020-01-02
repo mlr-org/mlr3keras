@@ -12,6 +12,8 @@ An extension for `mlr3` to enable using various `keras` models as learners.
 
 `mlr3keras` is in very early stages of development, and currently under development.
 
+Functionality is therefore experimental and we do not guarantee *correctness*, *safety* or *stability*.
+
 It builds on top of the (awesome) R packages `reticulate`, `tensorflow` and `keras`.
 
 Comments, discussion and issues/bug reports and PR's are **highly** appreciated.
@@ -54,6 +56,8 @@ Learners can be used for `training` and `prediction` as follows:
   lrn$train(mlr_tasks$get("iris"))
   lrn$predict(mlr_tasks$get("iris"))
 ```
+
+The [vignette](https://github.com/mlr-org/mlr3keras/blob/master/vignettes/fist_steps.Rmd) has some examples on how to use some of the functionality introduces in `mlr3keras`.
 
 ## Design
 
