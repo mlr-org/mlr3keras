@@ -11,14 +11,14 @@ cb_es = function(patience = 3L) {
 #' `cb_lrs`: Learning rate scheduler callback
 #' @rdname callbacks
 #' @export
-cb_lrs = function() {
+cb_lr_scheduler = function() {
   callback_learning_rate_scheduler(function(epoch, lr) {lr * 1/(1 * epoch)})
 }
 
 #' `cb_tb`: Tensorboard callback
 #' @rdname callbacks
 #' @export
-cb_tb = function() {
+cb_tensorboard = function() {
   callback_tensorboard()
 }
 
@@ -76,7 +76,7 @@ SetLogLR = R6::R6Class("SetLogLR",
       l_rate = self$lr_min + l_rate * (self$lr_max - self$lr_min)
       self$iter = self$iter + 1
       LR = l_rate[self$iter] # if number of iterations > l_rate values, make LR constant to last value
-      if (is.na(LR)) LR = l_rate[length(l_rate)]
+      if (is.na(LR)) LR = l_rate[length(l_rate)] #nocov
       k_set_value(self$model$optimizer$lr, LR)
       self$lr_hist = c(self$lr_hist, k_get_value(self$model$optimizer$lr))
       self$iter_hist = c(self$iter_hist, k_get_value(self$model$optimizer$iterations))
