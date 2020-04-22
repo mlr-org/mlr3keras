@@ -4,7 +4,9 @@
 \alias{LearnerClassifKerasFF}
 \alias{mlr_learners_classif.kerasff}
 \title{Keras Feed Forward Neural Network for Classification}
-\format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3keras:LearnerClassifKeras]{mlr3keras::LearnerClassifKeras}.}
+\format{
+\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3keras:LearnerClassifKeras]{mlr3keras::LearnerClassifKeras}.
+}
 \description{
 Feed Forward Neural Network using Keras and Tensorflow.
 This learner builds and compiles the keras model from the hyperparameters in \code{param_set},

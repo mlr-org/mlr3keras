@@ -4,7 +4,9 @@
 \alias{LearnerClassifKeras}
 \alias{mlr_learners_classif.keras}
 \title{Keras Neural Network with custom architecture (Classification)}
-\format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerClassif]{mlr3::LearnerClassif}.}
+\format{
+\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerClassif]{mlr3::LearnerClassif}.
+}
 \description{
 Neural Network using Keras and Tensorflow.
 This learner allows for supplying a custom architecture.

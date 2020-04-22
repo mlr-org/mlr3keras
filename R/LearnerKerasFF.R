@@ -155,7 +155,7 @@ KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
 build_keras_ff_model = function(task, pars) {
 
   # Get input and output shape for model
-  input_shape = task$ncol - 1L
+  input_shape = list(task$ncol - 1L)
   if (inherits(task, "TaskRegr")) {
     output_shape = 1L
   } else if (inherits(task, "TaskClassif")) {
@@ -181,7 +181,7 @@ build_keras_ff_model = function(task, pars) {
     model = model %>%
       layer_dense(
         units = pars$layer_units[i],
-        input_shape = input_shape,
+        input_shape = if (i == 1) input_shape else NULL,
         kernel_regularizer = pars$regularizer,
         kernel_initializer = pars$initializer,
         bias_regularizer = pars$regularizer,

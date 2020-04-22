@@ -17,7 +17,9 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
     #'   Initialize architecture
     #' @param build_arch_fun [`function`] \cr Function that instantiates and compiles a model.
     #' @param x_transform [`function`] \cr Function used to transform the data for the model.
+    #'   Defaults to `as.matrix(features)`.  See `x_transform` for more information.
     #' @param y_transform [`function`] \cr Function used to transform the targets for the model.
+    #'   Default depends on the task type. See `y_transform` for more information.
     #' @param param_set [`ParamSet`] \cr A methods / architecture's `ParamSet`.
     initialize = function(build_arch_fn = NULL, x_transform = NULL, y_transform = NULL,
       param_set = ParamSet$new()) {
@@ -43,6 +45,26 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
       assert_choice(name, c("x", "y"))
       assert_function(transform)
       self$transforms[[name]] = transform
+    },
+    #' @description
+    #'   Transform the features before passing them on to `keras::fit()`.
+    #' @param features [`data.table`] \cr Function that convert the features to a 
+    #'   form that can be passed on to `keras::fit()`.
+    #' @param pars [`list`] \cr Parameter values, i.e. self$param_set$get_values().
+    #' @param ... [`any`] \cr Additional args passed on to x_transform.
+    x_transform = function(features, pars, ...) {
+      stop("Use .$set_transform() and `.$.x_transform;
+            This method exists for documentation purposes only")
+    },
+    #' @description
+    #'   Transform the target before passing it on to `keras::fit()`.
+    #' @param target [`data.table`] \cr Function that convert the features to a 
+    #'   form that can be passed on to `keras::fit()`.
+    #' @param pars [`list`] \cr Parameter values, i.e. self$param_set$get_values().
+    #' @param model_loss [`character`] Loss for `keras::compile()`.
+    y_transform = function(target, pars, model_loss) {
+      stop("Use .$set_transform() and `.$.y_transform;
+            This method exists for documentation purposes only")
     }
   ),
   private = list(

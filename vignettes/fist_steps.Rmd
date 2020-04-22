@@ -35,7 +35,7 @@ lrn = LearnerClassifKerasFF$new()
 
 # Set hyperparameters
 lrn$param_set$values$epochs = 50
-lrn$param_set$values$layer_units = 12
+lrn$param_set$values$layer_units = c(12, 30)
 
 # Train and predict
 lrn$train(mlr_tasks$get("iris"))

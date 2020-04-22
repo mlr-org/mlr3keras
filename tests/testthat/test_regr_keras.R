@@ -2,6 +2,7 @@ context("keras regression custom model")
 
 test_that("autotest regression custom model", {
   skip_on_os("solaris")
+
   model = keras_model_sequential() %>%
   layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
   layer_dense(units = 12L, activation = "relu") %>%

@@ -8,7 +8,8 @@
 \alias{KerasArchitectureTabNet}
 \title{Keras Neural Network architecture base class}
 \arguments{
-\item{y_transform}{\code{\link{function}} \cr Function used to transform the targets for the model.}
+\item{y_transform}{\code{\link{function}} \cr Function used to transform the targets for the model.
+Default depends on the task type. See \code{y_transform} for more information.}
 
 \item{param_set}{\code{\link{ParamSet}} \cr A methods / architecture's \code{ParamSet}.}
 
@@ -19,6 +20,18 @@
 \item{name}{\code{\link{character}} Either 'x' or 'y'.}
 
 \item{transform}{\code{\link{function}} \cr Function to set for the architecture}
+
+\item{features}{\code{\link{data.table}} \cr Function that convert the features to a
+form that can be passed on to \code{keras::fit()}.}
+
+\item{...}{\code{\link{any}} \cr Additional args passed on to x_transform.}
+
+\item{target}{\code{\link{data.table}} \cr Function that convert the features to a
+form that can be passed on to \code{keras::fit()}.}
+
+\item{pars}{\code{\link{list}} \cr Parameter values, i.e. self$param_set$get_values().}
+
+\item{model_loss}{\code{\link{character}} Loss for \code{keras::compile()}.}
 }
 \description{
 A \code{KerasArchitecture} is a parametrized abstraction of a keras model.
@@ -29,6 +42,10 @@ Initialize architecture
 Obtain the model. Called by Learner during \code{train_internal}.
 
 Setter method for 'x_transform' and 'y_transform'.
+
+Transform the features before passing them on to \code{keras::fit()}.
+
+Transform the target before passing it on to \code{keras::fit()}.
 
 This is an architecture used for custom, user-supplied models.
 The \code{model}, i.e a compiled keras model is supplied to the learner as a hyperparameter.

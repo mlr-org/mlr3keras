@@ -4,7 +4,9 @@
 \alias{LearnerRegrKeras}
 \alias{mlr_learners_regr.keras}
 \title{Keras Neural Network with custom architecture (Regression)}
-\format{\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerRegr]{mlr3::LearnerRegr}.}
+\format{
+\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3:LearnerRegr]{mlr3::LearnerRegr}.
+}
 \description{
 Neural Network using Keras and Tensorflow.
 This learner allows for supplying a custom architecture.
