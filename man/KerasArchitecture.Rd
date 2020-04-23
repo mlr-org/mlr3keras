@@ -24,14 +24,12 @@ Default depends on the task type. See \code{y_transform} for more information.}
 \item{features}{\code{\link{data.table}} \cr Function that convert the features to a
 form that can be passed on to \code{keras::fit()}.}
 
-\item{...}{\code{\link{any}} \cr Additional args passed on to x_transform.}
-
 \item{target}{\code{\link{data.table}} \cr Function that convert the features to a
 form that can be passed on to \code{keras::fit()}.}
 
 \item{pars}{\code{\link{list}} \cr Parameter values, i.e. self$param_set$get_values().}
 
-\item{model_loss}{\code{\link{character}} Loss for \code{keras::compile()}.}
+\item{...}{\code{\link{any}} \cr Additional args passed on to x_transform.}
 }
 \description{
 A \code{KerasArchitecture} is a parametrized abstraction of a keras model.
@@ -53,7 +51,7 @@ The \code{model}, i.e a compiled keras model is supplied to the learner as a hyp
 \section{Fields}{
 
 \describe{
-\item{\code{param_set}}{\code{\link{ParamSet}} \cr A methods \ architecture's \code{ParamSet}.}
+\item{\code{param_set}}{\code{\link{ParamSet}} \cr A method's \ architecture's \code{ParamSet}.}
 
 \item{\code{build_arch_fun}}{\code{\link{function}} \cr Function that instantiates and compiles a model.}
 

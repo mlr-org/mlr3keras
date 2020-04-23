@@ -7,7 +7,7 @@
 #' @export
 KerasArchitecture = R6::R6Class("KerasArchitecture",
   public = list(
-    #' @field param_set [`ParamSet`] \cr A methods \ architecture's `ParamSet`.
+    #' @field param_set [`ParamSet`] \cr A method's \ architecture's `ParamSet`.
     param_set = NULL,
     #' @field build_arch_fun [`function`] \cr Function that instantiates and compiles a model.
     build_arch_fn = NULL,
@@ -61,18 +61,10 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
     #' @param target [`data.table`] \cr Function that convert the features to a 
     #'   form that can be passed on to `keras::fit()`.
     #' @param pars [`list`] \cr Parameter values, i.e. self$param_set$get_values().
-    #' @param model_loss [`character`] Loss for `keras::compile()`.
-    y_transform = function(target, pars, model_loss) {
+    #' @param ... [`any`] \cr Additional args passed on to x_transform.
+    y_transform = function(target, pars, ...) {
       stop("Use .$set_transform() and `.$.y_transform;
             This method exists for documentation purposes only")
-    }
-  ),
-  private = list(
-    .x_transform = function(features, pars, ...) {
-        as.matrix(features)
-    },
-    .y_transform = function(target, pars, model_loss) {
-        stop("Set y_transform within LearnerRegrKeras, LearnerClassifKeras, etc.")
     }
   )
 )
@@ -89,7 +81,9 @@ KerasArchitectureCustomModel = R6::R6Class("KerasArchitectureCustomModel",
   inherit = KerasArchitecture,
   public = list(
     initialize = function() {
-      super$initialize(build_arch_fn = function(task, pars) {})
+      super$initialize(
+        build_arch_fn = function(task, pars) stop("Abstract!")
+      )
     },
     get_model = function(task, pars) {
       assert_class(pars$model, "keras.engine.training.Model")

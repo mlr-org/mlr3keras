@@ -36,7 +36,6 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
   # - create a layer_input
   # - create an embedding
   # - apply dropout
-  # - flatten (FIXME: Is this required?)
   embds = list()
   if (length(embed_vars) > 0) {
     embds = map(.f = function(feat_name) {

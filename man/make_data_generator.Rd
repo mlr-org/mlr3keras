@@ -9,8 +9,8 @@ make_data_generator(
   training = TRUE,
   batch_size = 128,
   filter_ids = NULL,
-  x_transform = function(x) {     x },
-  y_transform = function(y) {     y }
+  x_transform = function(x) x,
+  y_transform = function(y) y
 )
 }
 \arguments{
@@ -31,6 +31,9 @@ Function used to transform data to a keras input format for features.}
 
 \item{y_transform}{\code{\link{function}}\cr
 Function used to transform data to a keras input format for the response.}
+
+\item{...}{\code{\link{any}}\cr
+Further arguments passed on to \code{x_transform} and \code{y_transform}}
 }
 \description{
 Creates a data generator for a mlr3 task.

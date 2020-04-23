@@ -14,6 +14,8 @@
 #'   Function used to transform data to a keras input format for features.
 #' @param y_transform [`function`]\cr
 #'   Function used to transform data to a keras input format for the response.
+#' @param ... [`any`]\cr
+#'   Further arguments passed on to `x_transform` and `y_transform`
 #' @examples
 #' require("keras")
 #' tsk = mlr3::mlr_tasks$get("iris")
@@ -25,8 +27,9 @@ make_data_generator = function(
   training = TRUE,
   batch_size = 128,
   filter_ids = NULL,
-  x_transform = function(x) {x},
-  y_transform = function(y) {y}) {
+  x_transform = function(x) x,
+  y_transform = function(y) y
+  ) {
 
   row_ids = task$row_roles$use
 
@@ -42,7 +45,6 @@ make_data_generator = function(
   }
 
   start = 1L
-
   function() {
     end = min(start + batch_size - 1, length(row_ids))
 
@@ -70,4 +72,47 @@ make_data_generator = function(
   }
 }
 
+#' Create train / validation data generators from a task and params
+#'
+#' Creates a data generator for a mlr3 task.
+#' @param
+#' @param task [`Task`]\cr
+#'   An mlr3 [`Task`].
+#' @param x_transform [`function`]\cr
+#'   Function used to transform data to a keras input format for features.
+#' @param y_transform [`function`]\cr
+#'   Function used to transform data to a keras input format for the response.
+#' @param validation_split [`numeric(1)`]\cr
+#'   Fraction of data to use for validation.
+#' @param batch_size [`integer(1)`]\cr
+#'   Batch_size for the generators.
+#' @export
+make_train_valid_generators = function(task, x_transform, y_transform, validation_split = 1/3, batch_size = 128L) {
+  rho = rsmp("holdout", ratio = 1 - pars$validation_split)
+  rho$instantiate(task)
 
+  train_gen = make_data_generator(
+    task = task,
+    batch_size = batch_size,
+    filter_ids = rho$train_set(1),
+    x_transform = x_transform,
+    y_transform = y_transform
+  )
+  train_steps = ceiling(length(rho$train_set(1)) / batch_size)
+
+  if (pars$validation_split > 0) {
+    valid_gen = make_data_generator(
+      task = task,
+      batch_size = batch_size,
+      filter_ids = rho$test_set(1),
+      x_transform = x_transform,
+      y_transform = y_transform
+    )
+    valid_steps = ceiling(length(rho$test_set(1)) / batch_size)
+  } else {
+    valid_gen = NULL
+    valid_steps = NULL
+  }
+
+  list(train_gen = train_gen, valid_gen = valid_gen, train_steps = train_steps, valid_steps = valid_steps)
+}

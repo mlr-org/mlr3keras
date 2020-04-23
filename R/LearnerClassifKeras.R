@@ -19,8 +19,8 @@
 #' Parameters:\cr
 #' Most of the parameters can be obtained from the `keras` documentation.
 #' Some exceptions are documented here.
-#' * `model`: A compiled keras model.
-#' * `class_weight`: needs to be a named list of class-weights
+#' * `model`: A compiled keras model suited for the task.
+#' * `class_weight`: A named list of class-weights
 #'   for the different classes numbered from 0 to c-1 (for c classes).
 #'   ```
 #'   Example:
@@ -66,12 +66,12 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         ParamUty$new("model", tags = c("train")),
         ParamUty$new("class_weight", default = list(), tags = "train"),
         ParamDbl$new("validation_split", lower = 0, upper = 1, default = 1/3, tags = "train"),
-        ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict")),
+        ParamInt$new("batch_size", default = 128L, lower = 1L, tags = c("train", "predict", "predict_fun")),
         ParamUty$new("callbacks", default = list(), tags = "train"),
-        ParamLgl$new("low_memory", default=FALSE, tags = c("train")),
-        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict"))
+        ParamLgl$new("low_memory", default=FALSE, tags = "train"),
+        ParamInt$new("verbose", lower = 0L, upper = 1L, tags = c("train", "predict", "predict_fun"))
       ))
-      ps$values = list(epochs = 100L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory = FALSE)
+      ps$values = list(epochs = 100L, callbacks = list(), validation_split = 1/3, batch_size = 128L, low_memory = FALSE, verbose=0L)
 
       super$initialize(
         id = assert_character(id, len = 1),
@@ -83,7 +83,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         man = assert_character(man)
       )
 
-      # Set y_transform
+      # Set y_transform: use to_categorical, if goal is binary crossentropy drop 2nd column.
       self$architecture$set_transform("y",
         function(target, pars, model_loss) {
           y = to_categorical(as.integer(target) - 1)
@@ -96,74 +96,42 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
     train_internal = function(task) {
       pars = self$param_set$get_values(tags = "train")
 
+      # Construct / Get the model depending on task and hyperparams.
       model = self$architecture$get_model(task, pars)
+
       # Custom transformation depending on the model.
       # Could be generalized at some point.
       features = task$data(cols = task$feature_names)
       target = task$data(cols = task$target_names)[[task$target_names]]
 
-      if(!pars$low_memory) {
+      # Either fit directly on data or create a generator and fit from there
+      if (!pars$low_memory) {
         x = self$architecture$transforms$x(features, pars)
-        y = self$architecture$transforms$y(target, pars, model$loss)
-
+        y = self$architecture$transforms$y(target, pars, model_loss = model$loss)
         history = invoke(keras::fit,
           object = model,
           x = x,
           y = y,
           epochs = as.integer(pars$epochs),
           class_weight = pars$class_weight,
-          batch_size = pars$batch_size,
-          validation_split = pars$validation_split,
+          batch_size = as.integer(pars$batch_size),
+          validation_split = as.integer(pars$validation_split),
+          verbose = as.integer(pars$verbose),
+          callbacks = pars$callbacks)    
+      } else {
+        x_transform = function(features) self$architecture$transforms$x(features, pars)
+        y_transform = function(target)   self$architecture$transforms$y(target,   pars, model_loss = model$loss)
+        generators = make_train_valid_generators(task, x_transform, y_transform, pars)
+        history = invoke(keras::fit_generator,
+          object = model,
+          generator = generators$train_gen(),
+          epochs = as.integer(pars$epochs),
+          class_weight = pars$class_weight,
+          steps_per_epoch = generators$train_steps,
+          validation_data = generators$valid_gen,
+          validation_steps = generators$valid_steps,
           verbose = pars$verbose,
           callbacks = pars$callbacks)
-
-      } else {
-        # Validation split
-        rho = rsmp("holdout", ratio = 1 - pars$validation_split)
-        rho$instantiate(task)
-
-        train_gen = make_data_generator(
-          task = task,
-          batch_size = pars$batch_size,
-          filter_ids = rho$train_set(1),
-          x_transform = function(x) {self$architecture$transforms$x(x, pars)},
-          y_transform = function(y) {self$architecture$transforms$y(y, pars, model$loss)}
-        )
-
-        valid_gen = make_data_generator(
-          task = task,
-          batch_size = pars$batch_size,
-          filter_ids = rho$test_set(1),
-          x_transform = function(x) {self$architecture$transforms$x(x, pars)},
-          y_transform = function(y) {self$architecture$transforms$y(y, pars, model$loss)}
-        )
-
-        # Number of steps
-        train_steps = ceiling(length(rho$train_set(1)) / pars$batch_size)
-        valid_steps = ceiling(length(rho$test_set(1)) / pars$batch_size)
-
-        # Train with generator
-        if(pars$validation_split > 0) {
-          history = invoke(keras::fit_generator,
-                           object = model,
-                           generator = train_gen,
-                           epochs = as.integer(pars$epochs),
-                           class_weight = pars$class_weight,
-                           steps_per_epoch = train_steps,
-                           validation_data = valid_gen,
-                           validation_steps = valid_steps,
-                           verbose = pars$verbose,
-                           callbacks = pars$callbacks)
-        } else {
-          history = invoke(keras::fit_generator,
-                           object = model,
-                           generator = train_gen,
-                           epochs = as.integer(pars$epochs),
-                           class_weight = pars$class_weight,
-                           steps_per_epoch = train_steps,
-                           verbose = pars$verbose,
-                           callbacks = pars$callbacks)
-        }
       }
       return(list(model = model, history = history, class_names = task$class_names))
     },
@@ -173,15 +141,16 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
       features = task$data(cols = task$feature_names)
       newdata = self$architecture$transforms$x(features, pars)
-      pars = pars[intersect(names(pars), self$keras_predict_pars)]
-
+      
+      pf_pars = self$param_set$get_values(tags = "predict_fun")
       if (inherits(self$model$model, "keras.engine.sequential.Sequential")) {
-        p = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pars)
+        p = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pf_pars)
       } else {
-        p = invoke(self$model$model$predict, x = newdata, .args = pars)
+        p = invoke(self$model$model$predict, x = newdata, .args = pf_pars)
       }
-      fixup_target_levels_prediction(p, task, self$predict_type)
+      fixup_target_levels_prediction_classif(p, task, self$predict_type)
     },
+
     save = function(filepath) {
       assert_path_for_output(filepath)
       if (is.null(self$model)) stop("Model must be trained before saving")
@@ -194,12 +163,19 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
     plot = function() {
       if (is.null(self$model)) stop("Model must be trained before saving")
       plot(self$model$history)
-    },
-    keras_predict_pars = c("batch_size", "verbose")
+    }
   )
 )
 
-fixup_target_levels_prediction = function(prob, task, out = "response") {
+#' Fix target levels
+#' @param prob [`numeric`]\cr 
+#'   The prediction to fix levels for.
+#' @param task [`Task`]\cr
+#'   The [`Task`] to create prediction from.
+#' @param out [`character`]\cr
+#'   Output type, either "response" or "prob".
+#' @return A [`PredictionClassif`]
+fixup_target_levels_prediction_classif = function(prob, task, out = "response") {
   if (ncol(prob) == 1L) prob = cbind(prob, 1 - prob)
   colnames(prob) = task$class_names
 
