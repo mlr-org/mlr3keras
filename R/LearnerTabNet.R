@@ -24,6 +24,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
   inherit = LearnerClassifKeras,
   public = list(
     initialize = function() {
+      require("tensorflow")
       ps = ParamSet$new(list(
         ParamInt$new("embed_size", default = NULL, lower = 1L, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamLgl$new("stacked", default = FALSE, tags = "train"),

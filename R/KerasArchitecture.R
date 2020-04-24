@@ -66,6 +66,14 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
       stop("Use .$set_transform() and `.$.y_transform;
             This method exists for documentation purposes only")
     }
+  ),
+  private = list(
+    .x_transform = function(features, pars, ...) {
+        as.matrix(features)
+    },
+    .y_transform = function(target, pars, model_loss) {
+        stop("Abstract! Set y_transform according to the specific learner!")
+    }
   )
 )
 

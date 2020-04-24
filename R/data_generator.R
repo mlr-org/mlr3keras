@@ -25,10 +25,10 @@
 make_data_generator = function(
   task,
   training = TRUE,
-  batch_size = 128,
-  filter_ids = NULL,
   x_transform = function(x) x,
-  y_transform = function(y) y
+  y_transform = function(y) y,
+  batch_size = 128,
+  filter_ids = NULL
   ) {
 
   row_ids = task$row_roles$use
@@ -88,7 +88,7 @@ make_data_generator = function(
 #'   Batch_size for the generators.
 #' @export
 make_train_valid_generators = function(task, x_transform, y_transform, validation_split = 1/3, batch_size = 128L) {
-  rho = rsmp("holdout", ratio = 1 - pars$validation_split)
+  rho = rsmp("holdout", ratio = 1 - validation_split)
   rho$instantiate(task)
 
   train_gen = make_data_generator(
@@ -100,7 +100,7 @@ make_train_valid_generators = function(task, x_transform, y_transform, validatio
   )
   train_steps = ceiling(length(rho$train_set(1)) / batch_size)
 
-  if (pars$validation_split > 0) {
+  if (validation_split > 0) {
     valid_gen = make_data_generator(
       task = task,
       batch_size = batch_size,

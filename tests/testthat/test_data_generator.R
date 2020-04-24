@@ -34,5 +34,4 @@ test_that("test data generator", {
   expect_equal(length(batch4[[1]]), 4) # 4 features
   expect_equal(length(batch4[[1]]$Sepal.Width), 73) # batch_size records
   expect_equal(length(batch4[[2]]), 73) # batch_size records
-
 })

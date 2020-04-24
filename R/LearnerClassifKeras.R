@@ -115,16 +115,21 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
           epochs = as.integer(pars$epochs),
           class_weight = pars$class_weight,
           batch_size = as.integer(pars$batch_size),
-          validation_split = as.integer(pars$validation_split),
+          validation_split = pars$validation_split,
           verbose = as.integer(pars$verbose),
-          callbacks = pars$callbacks)    
+          callbacks = pars$callbacks)
       } else {
-        x_transform = function(features) self$architecture$transforms$x(features, pars)
-        y_transform = function(target)   self$architecture$transforms$y(target,   pars, model_loss = model$loss)
-        generators = make_train_valid_generators(task, x_transform, y_transform, pars)
+
+        generators = make_train_valid_generators(
+          task = task,
+          x_transform = function(features) self$architecture$transforms$x(features, pars = pars),
+          y_transform = function(target) self$architecture$transforms$y(target,   pars = pars, model_loss = model$loss),
+          validation_split = pars$validation_split,
+          batch_size = pars$batch_size)
+
         history = invoke(keras::fit_generator,
           object = model,
-          generator = generators$train_gen(),
+          generator = generators$train_gen,
           epochs = as.integer(pars$epochs),
           class_weight = pars$class_weight,
           steps_per_epoch = generators$train_steps,

@@ -7,10 +7,10 @@
 make_data_generator(
   task,
   training = TRUE,
-  batch_size = 128,
-  filter_ids = NULL,
   x_transform = function(x) x,
-  y_transform = function(y) y
+  y_transform = function(y) y,
+  batch_size = 128,
+  filter_ids = NULL
 )
 }
 \arguments{
@@ -20,17 +20,17 @@ An mlr3 \code{\link{Task}}.}
 \item{training}{If true, shuffles the data, includes y, and loops infinitely.
 Training=FALSE is currently not used.}
 
-\item{batch_size}{\code{\link{numeric}}\cr
-Batch size.}
-
-\item{filter_ids}{\code{\link{integer}}\cr
-Id's to filter.}
-
 \item{x_transform}{\code{\link{function}}\cr
 Function used to transform data to a keras input format for features.}
 
 \item{y_transform}{\code{\link{function}}\cr
 Function used to transform data to a keras input format for the response.}
+
+\item{batch_size}{\code{\link{numeric}}\cr
+Batch size.}
+
+\item{filter_ids}{\code{\link{integer}}\cr
+Id's to filter.}
 
 \item{...}{\code{\link{any}}\cr
 Further arguments passed on to \code{x_transform} and \code{y_transform}}

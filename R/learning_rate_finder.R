@@ -13,11 +13,10 @@ lr_finder = function(learner, task, epochs = 5, lr_min = 10^-4, lr_max = 0.8, ba
   learner$param_set$values$callbacks = list(lr_log, metrics)
   learner$train(task)
 
-  df = data.frame(
+  data.frame(
     lr_hist = lr_log$lr_hist,
     log_metric = metrics$log_metric,
     log_metric_value = metrics$log_metric_value,
     loss = metrics$loss
   )
-  return(df)
 }

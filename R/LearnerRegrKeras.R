@@ -97,7 +97,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
 
       if (!pars$low_memory) {
         x = self$architecture$transforms$x(features, pars)
-        y = self$architecture$transforms$y(target, pars, model$loss)
+        y = self$architecture$transforms$y(target, pars)
         history = invoke(keras::fit,
           object = model,
           x = x,
@@ -109,9 +109,14 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
           verbose = as.integer(pars$verbose),
           callbacks = pars$callbacks)
       } else {
-        x_transform = function(features) self$architecture$transforms$x(features, pars)
-        y_transform = function(target)   self$architecture$transforms$y(target, pars)
-        generators = make_train_valid_generators(task, x_transform, y_transform, pars)
+  
+        generators = make_train_valid_generators(
+          task = task,
+          x_transform = function(features) self$architecture$transforms$x(features, pars = pars),
+          y_transform = function(target) self$architecture$transforms$y(target, pars),
+          validation_split = pars$validation_split,
+          batch_size = pars$batch_size)
+
         history = invoke(keras::fit_generator,
           object = model,
           generator = generators$train_gen,

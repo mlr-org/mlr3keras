@@ -1,7 +1,6 @@
 context("keras classif custom model")
 
 test_that("autotest binary", {
-
   model = keras_model_sequential() %>%
   layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
   layer_dense(units = 12L, activation = "relu") %>%
@@ -15,13 +14,12 @@ test_that("autotest binary", {
   expect_learner(learner)
 
   skip_on_os("solaris")
-  result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
 
 test_that("autotest low memory generator binary", {
-
   model = keras_model_sequential() %>%
     layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
     layer_dense(units = 12L, activation = "relu") %>%
@@ -36,14 +34,13 @@ test_that("autotest low memory generator binary", {
   expect_learner(learner)
 
   skip_on_os("solaris")
-  result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
 
 
 test_that("autotest low memory zero validation_split", {
-
   model = keras_model_sequential() %>%
     layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
     layer_dense(units = 12L, activation = "relu") %>%
@@ -59,14 +56,13 @@ test_that("autotest low memory zero validation_split", {
   expect_learner(learner)
 
   skip_on_os("solaris")
-  result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity|multiclass)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
 
 
 test_that("autotest multiclass", {
-
   model = keras_model_sequential() %>%
   layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
   layer_dense(units = 12L, activation = "relu") %>%
@@ -80,7 +76,7 @@ test_that("autotest multiclass", {
   expect_learner(learner)
 
   skip_on_os("solaris")
-  result = run_autotest(learner, exclude = "(feat_single|sanity|binary)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity|binary)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
@@ -163,13 +159,3 @@ test_that("Labelswitch", {
     }
   }
 })
-
-# test_that("Custom optimizer methods", {
-#   require("reticulate")
-#   skip_if_not(reticulate::py_module_available("keras_radam"))
-#   kr = import("keras_radam")
-#   radam = kr$training$RAdamOptimizer()
-#   sgd = optimizer_sgd()
-#   lrn = lrn("classif.kerasff", predict_type = "prob", epochs = 3L, optimizer = radam)
-#   lrn$train(mlr_tasks$get("iris"))
-# })

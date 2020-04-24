@@ -15,7 +15,7 @@ test_that("autotest regression custom model", {
   learner$param_set$values$epochs = 3L
   expect_learner(learner)
 
-  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
@@ -35,7 +35,7 @@ test_that("autotest low memory generator", {
   learner$param_set$values$epochs = 3L
   expect_learner(learner)
 
-  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
@@ -56,7 +56,7 @@ test_that("autotest low memory zero validation_split", {
   learner$param_set$values$epochs = 3L
   expect_learner(learner)
 
-  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
@@ -69,7 +69,7 @@ test_that("autotest feed forward", {
   learner = LearnerRegrKerasFF$new()
   learner$param_set$values$epochs = 3L
   expect_learner(learner)
-  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })

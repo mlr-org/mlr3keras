@@ -6,7 +6,7 @@ test_that("autotest classif tabnet", {
   learner = LearnerClassifTabNet$new()
   learner$param_set$values$epochs = 3L
   expect_learner(learner)
-  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
@@ -19,7 +19,7 @@ test_that("autotest classif stacked tabnet", {
   learner$param_set$values$stacked = TRUE
   learner$param_set$values$num_layers = 2L
   expect_learner(learner)
-  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
@@ -30,7 +30,7 @@ test_that("autotest regr tabnet", {
   learner = LearnerRegrTabNet$new()
   learner$param_set$values$epochs = 3L
   expect_learner(learner)
-  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })

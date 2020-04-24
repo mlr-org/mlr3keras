@@ -6,7 +6,7 @@ test_that("autotest", {
   expect_learner(learner)
 
   learner$param_set$values$epochs = 3L
-  result = run_autotest(learner, exclude = "(feat_single|sanity)")
+  result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
 })
