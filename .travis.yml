@@ -9,9 +9,10 @@ after_install:
 before_script:
   - sudo apt-get update
   - sudo apt-get install python3 python3-pip
+  - sudo apt-get install python3 python3-setuptools
   - pip3 install --upgrade --ignore-installed --user travis virtualenv
   - R CMD INSTALL .
-  - R -e 'keras::install_keras(tensorflow = Sys.getenv("TENSORFLOW_VERSION"), extra_packages = "IPython")'
+  - R -e 'keras::install_keras(tensorflow = Sys.getenv("TENSORFLOW_VERSION"), extra_packages = c("IPython", 'requests', 'certifi', 'urllib3'))'
   - R -e 'tensorflow::tf_config()'
   - R -e 'keras::install_keras(extra_packages = c("tensorflow-hub", "tabnet==0.1.4.1"))'
   - R -q -e 'tic::before_script()'
@@ -53,4 +54,4 @@ env:
   - _R_CHECK_TESTS_NLINES_=0
   - KERAS_BACKEND="tensorflow"
   - KERAS_IMPLEMENTATION="tensorflow"
-  - TENSORFLOW_VERSION="2.0.0"
+  - TENSORFLOW_VERSION="2.1.0"
