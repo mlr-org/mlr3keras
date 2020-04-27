@@ -1,8 +1,13 @@
-do_package_checks(error_on = "error")
+# installs dependencies, runs R CMD check, runs covr::codecov()
+do_package_checks(args = "--as-cran")
 
-if (ci_has_env("BUILD_PKGDOWN")) {
-  do_pkgdown(orphan = TRUE)
+
+get_stage("install") %>% 
+  add_code_step(keras::install_keras(tensorflow = "2.1.0", extra_packages = c("IPython", "requests", "certifi", "urllib3"))) %>%
+  add_code_step(tensorflow::tf_config())
+  add_code_step(keras::install_keras(extra_packages = c("tensorflow-hub", "tabnet==0.1.4.1")))
+
+if (ci_on_ghactions()) {
+  # creates pkgdown site and pushes to gh-pages branch
+  do_pkgdown()
 }
-
-get_stage("after_success") %>%
-  add_code_step(system("bash ./inst/trigger-mlr3book.sh"))
