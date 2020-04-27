@@ -55,7 +55,7 @@ The \code{model}, i.e a compiled keras model is supplied to the learner as a hyp
 
 \item{\code{build_arch_fun}}{\code{\link{function}} \cr Function that instantiates and compiles a model.}
 
-\item{\code{transforms}}{\code{\link{list}} \cr The corresponding x- and y_transform.}
+\item{\code{transforms}}{\code{\link{list}} \cr The corresponding x- and y- transform.}
 }}
 
 \concept{KerasArchitectures}

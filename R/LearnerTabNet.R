@@ -240,7 +240,7 @@ make_tf_feature_column = function(id, type, args) {
 #'   A mlr3 Task
 #' @param pars \cr
 #'   Model parameters, obtained through ``your_model_name$param_set$get_values(tags = "train")``
-#' @return \cr
+#' @return
 #'   The number of features passed to TabNet.
 #' @export
 get_tf_num_features = function(task, pars) {

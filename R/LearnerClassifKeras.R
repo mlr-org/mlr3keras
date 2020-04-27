@@ -16,7 +16,7 @@
 #' This learner allows for supplying a custom architecture.
 #' Calls [keras::fit] from package \CRANpkg{keras}.
 #'
-#' Parameters:\cr
+#' Parameters:
 #' Most of the parameters can be obtained from the `keras` documentation.
 #' Some exceptions are documented here.
 #' * `model`: A compiled keras model suited for the task.

@@ -14,7 +14,6 @@ A mlr3 Task}
 Model parameters, obtained through \code{your_model_name$param_set$get_values(tags = "train")}}
 }
 \value{
-\cr
 The number of features passed to TabNet.
 }
 \description{

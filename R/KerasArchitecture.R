@@ -9,13 +9,16 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
   public = list(
     #' @field param_set [`ParamSet`] \cr A method's \ architecture's `ParamSet`.
     param_set = NULL,
+
     #' @field build_arch_fun [`function`] \cr Function that instantiates and compiles a model.
     build_arch_fn = NULL,
-    #' @field transforms [`list`] \cr The corresponding x- and y_transform.
+
+    #' @field transforms [`list`] \cr The corresponding x- and y- transform.
     transforms = list(),
     #' @description
     #'   Initialize architecture
-    #' @param build_arch_fun [`function`] \cr Function that instantiates and compiles a model.
+    #' @param build_arch_fun [`function`] \cr Function that instantiates and compiles a model given
+    #'   a [`Task`] and parameter values.
     #' @param x_transform [`function`] \cr Function used to transform the data for the model.
     #'   Defaults to `as.matrix(features)`.  See `x_transform` for more information.
     #' @param y_transform [`function`] \cr Function used to transform the targets for the model.
@@ -45,6 +48,7 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
       assert_choice(name, c("x", "y"))
       assert_function(transform)
       self$transforms[[name]] = transform
+      invisble(self)
     },
     #' @description
     #'   Transform the features before passing them on to `keras::fit()`.

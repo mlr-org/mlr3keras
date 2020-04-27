@@ -12,7 +12,7 @@ Neural Network using Keras and Tensorflow.
 This learner allows for supplying a custom architecture.
 Calls \link[keras:fit]{keras::fit} from package \CRANpkg{keras}.
 
-Parameters:\cr
+Parameters:
 Most of the parameters can be obtained from the \code{keras} documentation.
 Some exceptions are documented here.
 \itemize{
