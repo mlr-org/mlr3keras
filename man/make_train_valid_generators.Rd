@@ -22,10 +22,10 @@ Function used to transform data to a keras input format for features.}
 \item{y_transform}{\code{\link{function}}\cr
 Function used to transform data to a keras input format for the response.}
 
-\item{validation_split}{\code{\link{numeric(1)}}\cr
+\item{validation_split}{\code{\link{numeric}}\cr
 Fraction of data to use for validation.}
 
-\item{batch_size}{\code{\link{integer(1)}}\cr
+\item{batch_size}{\code{\link{integer}}\cr
 Batch_size for the generators.}
 }
 \description{
