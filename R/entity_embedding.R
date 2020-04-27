@@ -73,15 +73,15 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
 
 #' Reshape a Task for use with entity embeddings.
 #'
-#' @param task [`Task`]\cr
-#'   A mlr3 [`Task`].
-#'
 #' @description
 #' * `logical` variables are treated as integers and converted to
 #'    either 0 or 1.
 #' * `continuous` variables are stored in a matrix "continuous"
 #' * `categorical` variables are integer encoded and stored
 #'   as a single list element each.
+#'
+#' @param task [`Task`]\cr
+#'   A mlr3 [`Task`].
 #' @examples
 #' task = mlr3::mlr_tasks$get("boston_housing")
 #' reshape_task_embedding(task)
@@ -95,17 +95,10 @@ reshape_task_embedding = function(task) {
 }
 
 #' Reshape data for use with entity embeddings.
-#'
+#' @seealso reshape_task_embedding
 #' @param data [`data.table`]\cr
 #'   data.table containing the features (without target variable).
 #'
-#' @description
-#' * `logical` variables are treated as integers and converted to
-#'    either 0 or 1.
-#' * `continuous` variables are stored in a matrix "continuous"
-#' * `categorical` variables are integer encoded and stored
-#'   as a single list element each.
-#' @family reshape_task_embedding
 #' @export
 reshape_data_embedding = function(data) {
   assert_data_table(data)

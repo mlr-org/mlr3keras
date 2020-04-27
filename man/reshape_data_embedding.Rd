@@ -11,16 +11,8 @@ reshape_data_embedding(data)
 data.table containing the features (without target variable).}
 }
 \description{
-\itemize{
-\item \code{logical} variables are treated as integers and converted to
-either 0 or 1.
-\item \code{continuous} variables are stored in a matrix "continuous"
-\item \code{categorical} variables are integer encoded and stored
-as a single list element each.
-}
+Reshape data for use with entity embeddings.
 }
 \seealso{
-Other reshape_task_embedding: 
-\code{\link{reshape_task_embedding}()}
+reshape_task_embedding
 }
-\concept{reshape_task_embedding}

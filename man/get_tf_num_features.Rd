@@ -10,8 +10,8 @@ get_tf_num_features(task, pars)
 \item{task}{\code{\link{Task}}\cr
 A mlr3 Task}
 
-\item{pars}{\cr
-Model parameters, obtained through \code{your_model_name$param_set$get_values(tags = "train")}}
+\item{pars}{\code{\link{list}}\cr
+Named list of parameters, obtained through \code{your_model_name$param_set$get_values(tags = "train")}}
 }
 \value{
 The number of features passed to TabNet.

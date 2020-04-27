@@ -1,5 +1,6 @@
 #' @title Keras TabNet Neural Network for Classification
 #'
+#' @description
 #' Implementation of "TabNet" from the paper TabNet: Attentive Interpretable Tabular Learning (Sercan, Pfister, 2019).
 #' See https://arxiv.org/abs/1908.07442 for details.
 #'
@@ -77,6 +78,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
 
 #' @title Keras TabNet Neural Network for Regression
 #'
+#' @description
 #' Implementation of "TabNet" from the paper TabNet: Attentive Interpretable Tabular Learning (Sercan, Pfister, 2019).
 #' See https://arxiv.org/abs/1908.07442 for details.
 #'
@@ -238,8 +240,8 @@ make_tf_feature_column = function(id, type, args) {
 #' `get_tf_num_features`: Get number (dimension) of tensorflow features for TabNet.
 #' @param task [`Task`]\cr
 #'   A mlr3 Task
-#' @param pars \cr
-#'   Model parameters, obtained through ``your_model_name$param_set$get_values(tags = "train")``
+#' @param pars [`list`]\cr
+#'   Named list of parameters, obtained through ``your_model_name$param_set$get_values(tags = "train")``
 #' @return
 #'   The number of features passed to TabNet.
 #' @export

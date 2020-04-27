@@ -3,16 +3,11 @@
 \name{LearnerClassifTabNet}
 \alias{LearnerClassifTabNet}
 \alias{mlr_learners_classif.tabnet}
-\title{Keras TabNet Neural Network for Classification
-
-Implementation of "TabNet" from the paper TabNet: Attentive Interpretable Tabular Learning (Sercan, Pfister, 2019).
-See https://arxiv.org/abs/1908.07442 for details.}
+\title{Keras TabNet Neural Network for Classification}
 \format{
 \code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3keras:LearnerClassifKeras]{mlr3keras::LearnerClassifKeras}.
 }
 \description{
-Keras TabNet Neural Network for Classification
-
 Implementation of "TabNet" from the paper TabNet: Attentive Interpretable Tabular Learning (Sercan, Pfister, 2019).
 See https://arxiv.org/abs/1908.07442 for details.
 }
