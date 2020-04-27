@@ -29,5 +29,5 @@ Fraction of data to use for validation.}
 Batch_size for the generators.}
 }
 \description{
-Creates a data generator for a mlr3 task.
+Create train / validation data generators from a task and params
 }

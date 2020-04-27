@@ -20,7 +20,6 @@
 #' @return A `list` of input tensors and `layer`: the concatenated embeddings.
 #' @export
 make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
-  # stop("This is not yet working")
   assert_task(task)
   assert_numeric(embed_size, null.ok = TRUE)
   assert_number(embed_dropout)

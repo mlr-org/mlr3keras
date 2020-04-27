@@ -3,7 +3,7 @@
 #' Creates a data generator for a mlr3 task.
 #' @param task [`Task`]\cr
 #'   An mlr3 [`Task`].
-#' @param training
+#' @param training [`logical`]\cr
 #'   If true, shuffles the data, includes y, and loops infinitely.
 #'   Training=FALSE is currently not used.
 #' @param batch_size [`numeric`]\cr
@@ -11,25 +11,17 @@
 #' @param filter_ids [`integer`]\cr
 #'   Id's to filter.
 #' @param x_transform [`function`]\cr
-#'   Function used to transform data to a keras input format for features.
+#'   Function used to transform data to a keras input format for 'x' (features).
 #' @param y_transform [`function`]\cr
-#'   Function used to transform data to a keras input format for the response.
-#' @param ... [`any`]\cr
-#'   Further arguments passed on to `x_transform` and `y_transform`
+#'   Function used to transform data to a keras input format for 'y' (response).
 #' @examples
 #' require("keras")
 #' tsk = mlr3::mlr_tasks$get("iris")
 #' gen = reticulate::py_iterator(make_data_generator(tsk))
 #' data = generator_next(gen) # Get next batch
 #' @export
-make_data_generator = function(
-  task,
-  training = TRUE,
-  x_transform = function(x) x,
-  y_transform = function(y) y,
-  batch_size = 128,
-  filter_ids = NULL
-  ) {
+make_data_generator = function(task, training = TRUE, batch_size = 128, filter_ids = NULL,
+  x_transform = function(x) x, y_transform = function(y) y) {
 
   row_ids = task$row_roles$use
 
@@ -72,19 +64,18 @@ make_data_generator = function(
   }
 }
 
+
 #' Create train / validation data generators from a task and params
 #'
-#' Creates a data generator for a mlr3 task.
-#' @param
 #' @param task [`Task`]\cr
 #'   An mlr3 [`Task`].
 #' @param x_transform [`function`]\cr
 #'   Function used to transform data to a keras input format for features.
 #' @param y_transform [`function`]\cr
 #'   Function used to transform data to a keras input format for the response.
-#' @param validation_split [`numeric(1)`]\cr
+#' @param validation_split [`numeric`]\cr
 #'   Fraction of data to use for validation.
-#' @param batch_size [`integer(1)`]\cr
+#' @param batch_size [`integer`]\cr
 #'   Batch_size for the generators.
 #' @export
 make_train_valid_generators = function(task, x_transform, y_transform, validation_split = 1/3, batch_size = 128L) {

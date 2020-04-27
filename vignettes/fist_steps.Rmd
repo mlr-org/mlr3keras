@@ -36,7 +36,6 @@ lrn = LearnerClassifKerasFF$new()
 # Set hyperparameters
 lrn$param_set$values$epochs = 50
 lrn$param_set$values$layer_units = c(12, 30)
-lrn$param_set$values$low_memory = TRUE
 
 # Train and predict
 lrn$train(mlr_tasks$get("iris"))
@@ -177,15 +176,15 @@ Entity embeddings are naturally embedded into the `kerasff` learners.
 
 In the example below, we will use the `radam` (rectified adam) optimizer
 in order to train our neural network.
-We will first have to install the python package that contains the 
+We will first have to install the python package that contains the
 optimizer using `pip` or `conda`.
 
-Afterwards we can check whether the package was successfully installed 
-via: 
+Afterwards we can check whether the package was successfully installed
+via:
 ```{r, eval = FALSE}
 library("reticulate")
-py_module_available("keras_radam") 
-```  
+py_module_available("keras_radam")
+```
 
 Now we can import the optimizer and use it to train our learner.
 

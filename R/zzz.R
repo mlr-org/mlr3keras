@@ -2,9 +2,9 @@
 #' @import keras
 #' @import paradox
 #' @import mlr3misc
+#' @import mlr3
 #' @import checkmate
 #' @importFrom R6 R6Class
-#' @importFrom mlr3 mlr_learners LearnerClassif LearnerRegr assert_task assert_learner
 #' @importFrom stats setNames
 #' @description
 #' A package that connects mlr3 to keras.

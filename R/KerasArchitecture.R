@@ -48,7 +48,7 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
     },
     #' @description
     #'   Transform the features before passing them on to `keras::fit()`.
-    #' @param features [`data.table`] \cr Function that convert the features to a 
+    #' @param features [`data.table`] \cr Function that convert the features to a
     #'   form that can be passed on to `keras::fit()`.
     #' @param pars [`list`] \cr Parameter values, i.e. self$param_set$get_values().
     #' @param ... [`any`] \cr Additional args passed on to x_transform.
@@ -58,7 +58,7 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
     },
     #' @description
     #'   Transform the target before passing it on to `keras::fit()`.
-    #' @param target [`data.table`] \cr Function that convert the features to a 
+    #' @param target [`data.table`] \cr Function that convert the features to a
     #'   form that can be passed on to `keras::fit()`.
     #' @param pars [`list`] \cr Parameter values, i.e. self$param_set$get_values().
     #' @param ... [`any`] \cr Additional args passed on to x_transform.

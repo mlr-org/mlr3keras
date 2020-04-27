@@ -13,4 +13,12 @@
 ^inst/extdata/.+\.R$
 ^doc$
 ^Meta$
-^=0.1.4.1$
+^\.ccache$
+^\.github$
+^clang-.*
+^tic\.R$
+docs/
+.vscode
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -109,7 +109,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
           verbose = as.integer(pars$verbose),
           callbacks = pars$callbacks)
       } else {
-  
+
         generators = make_train_valid_generators(
           task = task,
           x_transform = function(features) self$architecture$transforms$x(features, pars = pars),
