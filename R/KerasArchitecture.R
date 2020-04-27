@@ -48,7 +48,6 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
       assert_choice(name, c("x", "y"))
       assert_function(transform)
       self$transforms[[name]] = transform
-      invisble(self)
     },
     #' @description
     #'   Transform the features before passing them on to `keras::fit()`.
