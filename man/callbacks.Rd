@@ -9,7 +9,7 @@
 \alias{SetLogLR}
 \title{\code{cb_es}: Early stopping callback}
 \usage{
-cb_es(patience = 3L)
+cb_es(monitor = "val_loss", patience = 3L)
 
 cb_lr_scheduler()
 
@@ -18,6 +18,9 @@ cb_tensorboard()
 cb_lr_log()
 }
 \arguments{
+\item{monitor}{\code{\link{string}}\cr
+Quantity to be monitored.}
+
 \item{patience}{\code{\link{integer}}\cr
 Number of iterations without improvement to wait before stopping.}
 }
