@@ -1,11 +1,14 @@
 #' `cb_es`: Early stopping callback
+#' @param monitor [`string`]\cr
+#'   Quantity to be monitored.
 #' @param patience [`integer`]\cr
 #'   Number of iterations without improvement to wait before stopping.
 #' @rdname callbacks
 #' @export
-cb_es = function(patience = 3L) {
+cb_es = function(monitor = 'val_loss', patience = 3L) {
+  assert_character(monitor, len = 1)
   assert_int(patience, lower = 0L)
-  callback_early_stopping(monitor = 'val_loss', patience = 3)
+  callback_early_stopping(monitor = monitor, patience = patience)
 }
 
 #' `cb_lrs`: Learning rate scheduler callback
