@@ -151,7 +151,7 @@ Now we can tune over the architecture space like we are used to from **mlr3tunin
 
 ```{r}
 library("mlr3tuning")
-learner = lrn("regr.keras", callbacks = list(cb_es(3)))
+learner = lrn("regr.keras", callbacks = list(cb_es(patience = 3)))
 task = mlr_tasks$get("mtcars")
 resampling = rsmp("holdout")
 measure = msr("regr.mse")
