@@ -10,6 +10,7 @@ mlr3keras_set_seeds(
   r_seed = TRUE,
   random_seed = TRUE,
   python_seed = TRUE,
+  tensorflow_seed = TRUE,
   disable_gpu = FALSE,
   disable_parallel_cpu = FALSE
 )
@@ -29,12 +30,23 @@ Should seed in random be set}
 \item{python_seed}{\code{\link{logical}}\cr
 Should seed in python/NumPy be set}
 
+\item{tensorflow_seed}{\code{\link{logical}}\cr
+Should seed in tensorflow be set}
+
 \item{disable_gpu}{\code{\link{logical}}\cr
+Should GPU be disabled}
+
+\item{disable_parallel_cpu}{\code{\link{logical}}\cr
 Should CPU parallelism be disabled}
 }
 \description{
 \code{mlr3keras_set_seeds}: sets a seed in Random, Python, NumPy and Tensorflow.
 Futhermore it disables hash seeds, and can disable GPU and CPU parallesim.
 GPU and Cpu paralelissm can be a source of non deteministic executions.
-For more information see \url(https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res).
+For more information see \url{https://stackoverflow.com/questions/42022950/which-seeds-have-to-be-set-where-to-realize-100-reproducibility-of-training-res}.
 }
+\section{Functions}{
+\itemize{
+\item \code{configure_session}: configurations for \link[mlr3keras:mlr3keras_set_seeds]{mlr3keras::mlr3keras_set_seeds}
+}}
+

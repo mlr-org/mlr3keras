@@ -18,7 +18,7 @@ cb_tensorboard()
 cb_lr_log()
 }
 \arguments{
-\item{monitor}{\code{\link{string}}\cr
+\item{monitor}{\code{\link{character}}\cr
 Quantity to be monitored.}
 
 \item{patience}{\code{\link{integer}}\cr
