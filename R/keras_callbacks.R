@@ -1,5 +1,5 @@
 #' `cb_es`: Early stopping callback
-#' @param monitor [`string`]\cr
+#' @param monitor [`character`]\cr
 #'   Quantity to be monitored.
 #' @param patience [`integer`]\cr
 #'   Number of iterations without improvement to wait before stopping.
