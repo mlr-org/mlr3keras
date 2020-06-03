@@ -34,8 +34,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
         ParamLgl$new("use_dropout", default = TRUE, tags = "train"),
         ParamDbl$new("dropout", lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("input_dropout", lower = 0, upper = 1, tags = "train"),
-        ParamFct$new("loss", default = "categorical_crossentropy", tags = "train",
-          levels = c("binary_crossentropy", "categorical_crossentropy", "sparse_categorical_crossentropy")),
+        ParamFct$new("loss", default = "categorical_crossentropy", tags = "train",  levels = keras_reflections$loss$classif),
         ParamFct$new("output_activation", levels = c("softmax", "linear", "sigmoid"), tags = "train"),
         ParamUty$new("metrics", tags = "train")
       ))
@@ -97,9 +96,7 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
         ParamLgl$new("use_dropout", default = TRUE, tags = "train"),
         ParamDbl$new("dropout", lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("input_dropout", lower = 0, upper = 1, tags = "train"),
-        ParamFct$new("loss", default = "mean_squared_error", tags = "train",
-          levels = c("cosine_proximity", "cosine_similarity", "mean_absolute_error", "mean_squared_error",
-            "poison", "squared_hinge", "mean_squared_logarithmic_error")),
+        ParamFct$new("loss", default = "mean_squared_error", tags = "train", levels = keras_reflections$loss$regr),
         ParamFct$new("output_activation", levels = c("linear", "sigmoid"), tags = "train"),
         ParamUty$new("metrics", default = "mean_squared_logarithmic_error", tags = "train")
       ))

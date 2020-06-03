@@ -146,7 +146,6 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
       features = task$data(cols = task$feature_names)
       newdata = self$architecture$transforms$x(features, pars)
-
       pf_pars = self$param_set$get_values(tags = "predict_fun")
       if (inherits(self$model$model, "keras.engine.sequential.Sequential")) {
         p = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pf_pars)
