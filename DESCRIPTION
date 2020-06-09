@@ -57,4 +57,4 @@ VignetteBuilder: knitr
 Remotes:
     mlr-org/mlr3,
     mlr-org/mlr3pipelines,
-    mlr-org/paradox#277
+    mlr-org/paradox
