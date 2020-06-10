@@ -54,7 +54,7 @@ mlr3keras_set_seeds = function(seed = 1L,
     # call hook (returns TRUE if TF seed should be set, this allows users to
     # call this function even when using front-end packages like keras that
     # may not use TF as their backend)
-    using_tf <- tensorflow:::call_hook("tensorflow.on_before_use_session", FALSE)
+    using_tf <- tf_call_hook("tensorflow.on_before_use_session", FALSE)
     if (using_tf) tf$reset_default_graph()
     session_conf <- do.call(tf$ConfigProto, config)
     session <- tf$Session(graph = tf$get_default_graph(), config = session_conf)
