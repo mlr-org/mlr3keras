@@ -124,14 +124,14 @@ jobs:
           mkdir -p ~/.R && echo -e 'CC=ccache /usr/bin/clang\nCXX=ccache /usr/bin/clang++\nCFLAGS=-isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk\nCCFLAGS=-isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk\nCXXFLAGS=-isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk\nCPPFLAGS=-isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.13.sdk\nF77=ccache /usr/local/gfortran/bin/gfortran\nFC=ccache /usr/local/gfortran/bin/gfortran' > $HOME/.R/Makevars
       
       - name: Install system dependencies 
-       if: runner.os == 'Linux'
+        if: runner.os == 'Linux'
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
-      run: |
-        Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')"
-        Rscript -e "remotes::install_github('r-hub/sysreqs')"
-        sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-        sudo -s eval "$sysreqs"
+        run: |
+          Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')"
+          Rscript -e "remotes::install_github('r-hub/sysreqs')"
+          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
+          sudo -s eval "$sysreqs"
       # for some strange Windows reason this step and the next one need to be decoupled
       - name: "[Stage] Prepare"
         run: |
@@ -150,6 +150,16 @@ jobs:
       - name: "[Stage] Script"
         run: Rscript -e 'tic::script()'
 
+      - name: Install Python
+        run: |
+          Rscript -e "remotes::install_github('rstudio/reticulate')"
+          Rscript -e "reticulate::install_miniconda()"
+          Rscript -e "reticulate::conda_create('r-reticulate', packages = c('python==3.6.9'))"
+      - name: Install TensorFlow
+        run: |
+          Rscript -e "remotes::install_local()"
+          Rscript -e "keras::install_keras(tensorflow = Sys.getenv('2.0.1'), extra_packages = c('IPython', 'requests', 'certifi', 'urllib3'))"
+  
       - name: "[Stage] After Success"
         if: matrix.config.os == 'macOS-latest' && matrix.config.r == 'release'
         run: Rscript -e "tic::after_success()"
