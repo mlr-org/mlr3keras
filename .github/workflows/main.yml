@@ -156,7 +156,7 @@ jobs:
       - name: Install TensorFlow
         run: |
           Rscript -e "remotes::install_local()"
-          Rscript -e "keras::install_keras(tensorflow = Sys.getenv('2.0.1'), extra_packages = c('IPython', 'requests', 'certifi', 'urllib3', 'tensorflow-hub', 'tabnet==0.1.4.1'))"
+          Rscript -e "keras::install_keras(tensorflow = '2.0.1', extra_packages = c('IPython', 'requests', 'certifi', 'urllib3', 'tensorflow-hub', 'tabnet==0.1.4.1'))"
 
 
       - name: "[Stage] Script"
