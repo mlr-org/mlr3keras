@@ -67,6 +67,73 @@ with `mlr3` **and** flexible enough for users.
 Several design decisions are not made yet, so input is highly appreciated.
 
 
+### Current Design and Scope
+
+The goal of the project is to expose keras *models* as mlr3 learners.
+A keras model in this context should be understood as the combination of
+
+  - model architecture:
+    ```r
+    keras_model_sequential() %>%
+    ... %>%
+    layer_activation(...)
+    ```
+
+  - training procedure:
+    ```r
+    model$compile(...)
+    model$fit(...)
+    ```
+
+  - All hyperparameters that control the steps:
+    - architecture hyperparams (dropout, neurons / filters, activation functions, ...)
+    - optimizer choice and hyperparams (learning rate, ...)
+    - fit hyperparams (epochs, callbacks, ...)
+
+Some important caveats:
+- Architectures are often data-dependent, e.g. require correct number of input / output neurons.
+  As a result, the architecture is a function of the incoming training data.
+  In `mlr3keras`, this is abstracted via `KerasArchitecture`:
+  See `KerasArchitectureFF` for an example.
+  This Architecture is initialized with a `build_arch_fun` which given the `task` and a
+  set of hyperparameters constructs & compiles the architecture.
+
+- Depending on the architecture, different data-formats are required for `x` and `y`
+  (e.g. a matrix for a feed-forward NN, a list of features if we use embeddings, ...)
+  To accomodate this, each architecture comes with an `x_transform` and a `y_transform`
+  method, which are called on the features and target respectively before passing those on to
+  `fit(...)`.
+
+
+In an initial version, we aim to support two types of models:
+- Pre-defined architectures:
+  In many cases, we just want to try out and tune architectures that have already been successfully
+  used in other contexts (LeNet, ResNet, TabNet). We aim to implement / make those accessible
+  for simplified tuning and fast iteration.
+  Example: `LearnerClassifTabNet$new()`.
+
+- Fully custom architectures:
+  Some operations require completely new architectures. We aim to allow users to supply custom architectures
+  and tune hyperparameters of those. This can be done via `KerasArchitectureCustom` by providing a
+  function that builds the model given a `Task` and a set of hyperparameters.
+
+All architectures can be parametrized and tuned using the `mlr3tuning` library.
+
+
+Open Issues:
+- More data types:
+  - Currently `mlr3` does not support features such as images / audio / ..., therefore `mlr3keras` is
+    not yet applicable for image classification and other related tasks. We aim to make this possible in the future!
+    A minor road block here is to find a way to not read images to memory in R but directly load from disk
+    to avoid additional overhead.
+  - It is unclear how efficient data preprocessing for images etc. can be paired with `mlr3pipelines`,
+    yet we hope this can be solved at some point in the future.
+- More task types:
+  - Currently `mlr3` focusses heavily on standard classification and regression. Many Deep Learning tasks
+    require slight extensions (image annotation, bounding boxes, object detection, ... ) of those existing
+    data containers (`Task`, `Prediction`, ...).
+
+
 ## Installation
 
 ```r
