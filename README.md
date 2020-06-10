@@ -120,7 +120,14 @@ In an initial version, we aim to support two types of models:
 All architectures can be parametrized and tuned using the `mlr3tuning` library.
 
 
+
+
 Open Issues:
+- Custom Optimizers / Losses / Activations
+  - As `keras` and it's ecosystem is constantly growing, the interface needs to be flexible and
+    highly adaptable. We try to solve this using a `reflections` mechanism:
+    `keras_reflections` that stores possible values for exchangable parts of an architecture.
+    New methods can now be added by adding to the respective reflection.
 - More data types:
   - Currently `mlr3` does not support features such as images / audio / ..., therefore `mlr3keras` is
     not yet applicable for image classification and other related tasks. We aim to make this possible in the future!

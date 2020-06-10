@@ -45,11 +45,11 @@ mlr3keras_set_seeds = function(seed = 1L,
   if (tensorflow::tf_version() >= "2.0") {
     tf = tensorflow$compat$v1
   } else tf <- tensorflow
-  
+
   # set up session and configurations for disabling gpu and cpu parallelism
   session <- NULL
   config <- configure_session(disable_gpu, disable_parallel_cpu)
-  
+
   if (length(config) > 0L) {
     # call hook (returns TRUE if TF seed should be set, this allows users to
     # call this function even when using front-end packages like keras that
@@ -59,7 +59,7 @@ mlr3keras_set_seeds = function(seed = 1L,
     session_conf <- do.call(tf$ConfigProto, config)
     session <- tf$Session(graph = tf$get_default_graph(), config = session_conf)
     # call after hook
-    tensorflow:::call_hook("tensorflow.compat.v1.on_use_session", session, FALSE)
+    tf_call_hook("tensorflow.compat.v1.on_use_session", session, FALSE)
     tf$keras$backend$set_session(session)
   }
   invisible(session)
@@ -77,4 +77,17 @@ configure_session <- function(disable_gpu, disable_parallel_cpu) {
     config$inter_op_parallelism_threads <- 1L
   }
   config
+}
+
+# Re-export tensorflow:::call_hook
+tf_call_hook = function (name, ...) {
+    hooks <- getHook(name)
+    if (!is.list(hooks))
+        hooks <- list(hooks)
+    response <- FALSE
+    lapply(hooks, function(hook) {
+        if (isTRUE(hook(...)))
+            response <<- TRUE
+    })
+    response
 }

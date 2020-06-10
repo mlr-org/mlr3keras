@@ -2,9 +2,9 @@
 title: "first_steps"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{entity_embeddings}
+  %\VignetteIndexEntry{first_steps}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[UTF-8]{inputenc}
 ---
 
 ```{r, include = FALSE}
