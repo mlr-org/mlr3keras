@@ -132,6 +132,8 @@ jobs:
           Rscript -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
+          Rscript -e "remotes::install_dev('pkgdown')"
+          Rscript -e "remotes::install_github('mlr-org/mlr3pkgdowntemplate')"
       # for some strange Windows reason this step and the next one need to be decoupled
       - name: "[Stage] Prepare"
         run: |
