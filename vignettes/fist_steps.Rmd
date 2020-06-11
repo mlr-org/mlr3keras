@@ -162,10 +162,10 @@ instance = TuningInstance$new(
   learner = learner,
   resampling = resampling,
   measures = measure,
-  param_set = ps,
+  search_space = ps,
   terminator = terminator
 )
-tuner$tune(instance)
+tuner$optimize(instance)
 ```
 
 ## Entity Embeddings

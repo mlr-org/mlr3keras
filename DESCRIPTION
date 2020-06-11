@@ -32,7 +32,7 @@ Imports:
     mlr3misc (>= 0.1.1),
     paradox,
     R6,
-    reticulate (>= 1.10), 
+    reticulate (>= 1.10),
     tensorflow (>= 2.0.0)
 Suggests:
     devtools,
@@ -57,4 +57,5 @@ VignetteBuilder: knitr
 Remotes:
     mlr-org/mlr3,
     mlr-org/mlr3pipelines,
+    mlr-org/mlr3tuning,
     mlr-org/paradox
