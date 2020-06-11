@@ -57,10 +57,10 @@ test_that("tuning works without pipelines", {
     learner = learner,
     resampling = resampling,
     measures = measure,
-    param_set = param_set,
+    search_space = param_set,
     terminator = terminator
   )
-  tuner$tune(instance)
+  tuner$optimize(instance)
   out = instance$result$params
   assert_class(instance, "TuningInstance")
   assert_class(instance$bmr, "BenchmarkResult")
