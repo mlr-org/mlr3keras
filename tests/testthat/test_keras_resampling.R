@@ -12,7 +12,8 @@ test_that("can be trained with cv3", {
       metrics = c("accuracy"))
   learner = LearnerClassifKeras$new()
   learner$param_set$values$model = model
-  learner$param_set$values$epochs = 2L
+  learner$pa
+  ram_set$values$epochs = 2L
 
   # Resample
   rsm = rsmp("cv", folds = 3)
@@ -63,7 +64,7 @@ test_that("tuning works without pipelines", {
   tuner$optimize(instance)
   out = instance$result$params
   assert_class(instance, "TuningInstance")
-  assert_class(instance$bmr, "BenchmarkResult")
+  assert_class(instance$archive, "Archive")
   assert_list(out)
   assert_integerish(out$epochs, lower = 1, upper = 30)
   k_clear_session()
