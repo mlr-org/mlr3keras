@@ -176,7 +176,7 @@ instance = TuningInstance$new(
   task = task,
   learner = learner,
   resampling = resampling,
-  measures = measure,
+  measure = measure,
   search_space = ps,
   terminator = terminator
 )
