@@ -35,7 +35,6 @@ test_that("tf_feature_cols returns list", {
     map(lst, assert_class, "tensorflow.python.feature_column.feature_column._FeatureColumn")
     expect_list(lst, len = tsk$ncol - 1L)
     expect_integerish(get_tf_num_features(tsk, pars = list(embed = NULL)), lower = tsk$ncol -1L, upper = Inf)
-    # FIXME: We could check for expected number of features etc. here.
   })
 })
 

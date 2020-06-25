@@ -12,8 +12,7 @@ test_that("can be trained with cv3", {
       metrics = c("accuracy"))
   learner = LearnerClassifKeras$new()
   learner$param_set$values$model = model
-  learner$pa
-  ram_set$values$epochs = 2L
+  learner$param_set$values$epochs = 2L
 
   # Resample
   rsm = rsmp("cv", folds = 3)

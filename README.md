@@ -69,6 +69,8 @@ Several design decisions are not made yet, so input is highly appreciated.
 
 ### Current Design and Scope
 
+**Design**
+
 The goal of the project is to expose keras *models* as mlr3 learners.
 A keras model in this context should be understood as the combination of
 
@@ -92,20 +94,26 @@ A keras model in this context should be understood as the combination of
 
 Some important caveats:
 - Architectures are often data-dependent, e.g. require correct number of input / output neurons.
-  As a result, the architecture is a function of the incoming training data.
+  As a result, in `mlr3keras`, the architecture is a function of the incoming training data.
   In `mlr3keras`, this is abstracted via `KerasArchitecture`:
   See `KerasArchitectureFF` for an example.
   This Architecture is initialized with a `build_arch_fun` which given the `task` and a
   set of hyperparameters constructs & compiles the architecture.
 
-- Depending on the architecture, different data-formats are required for `x` and `y`
+- Depending on the architecture, different data-formats are required for `x` (features) and `y` (target)
   (e.g. a matrix for a feed-forward NN, a list of features if we use embeddings, ...)
   To accomodate this, each architecture comes with an `x_transform` and a `y_transform`
   method, which are called on the features and target respectively before passing those on to
   `fit(...)`.
 
 
+**Scope**
+The current scope for `mlr3keras` is to support deep learning on different kinds of **tabular** data. In the future,
+we aim to extend this to other data modalities, but as of yet, work on this has not started.
+
+
 In an initial version, we aim to support two types of models:
+
 - Pre-defined architectures:
   In many cases, we just want to try out and tune architectures that have already been successfully
   used in other contexts (LeNet, ResNet, TabNet). We aim to implement / make those accessible

@@ -1,6 +1,7 @@
 context("set_seeds")
 
 test_that("make reproducable outputs", {
+  skip_if_not(tensorflow::tf_version() < "2.1", "R Generators only work for tensorflow < 2.1")
   skip_on_os("solaris")
 
   build_model = function() {
@@ -13,7 +14,7 @@ test_that("make reproducable outputs", {
               loss = "mean_squared_error",
               metrics = "mean_squared_logarithmic_error")
 }
-    
+
   predict_mt <- function() {
     learner = LearnerRegrKeras$new()
     learner$param_set$values$model = build_model()
