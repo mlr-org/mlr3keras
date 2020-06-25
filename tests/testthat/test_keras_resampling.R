@@ -56,15 +56,15 @@ test_that("tuning works without pipelines", {
     task = task,
     learner = learner,
     resampling = resampling,
-    measures = measure,
+    measure = measure,
     search_space = param_set,
     terminator = terminator
   )
   tuner$optimize(instance)
-  out = instance$result$params
+  out = instance$result$x_domain
   assert_class(instance, "TuningInstance")
   assert_class(instance$archive, "Archive")
   assert_list(out)
-  assert_integerish(out$epochs, lower = 1, upper = 30)
+  assert_integerish(out[[1]]$epochs, lower = 1, upper = 30)
   k_clear_session()
 })
