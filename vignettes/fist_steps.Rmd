@@ -1,8 +1,8 @@
 ---
-title: "first_steps"
+title: "First Steps with mlr3keras"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{first_steps}
+  %\VignetteIndexEntry{"First Steps with mlr3keras"}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[UTF-8]{inputenc}
 ---
@@ -13,6 +13,20 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
+
+# Introduction to mlr3keras
+
+This vignette assumes that the reader is familiar with either **keras** and at least basic aspects of deep learning.
+
+If you are unfamiliar with **keras** and **deep learning**, several excellent ressources exist:
+
+- [Keras R-package Homepage](https://keras.rstudio.com/) with a wide variety of examples
+
+- The [Deep Learning Book](https://www.deeplearningbook.org/) and the [Dive into Deep Learning](https://d2l.ai/) book.
+
+- [fast.ai](https://fast.ai) offers a very comprehensive free 2-part online course on deep learning for coders.
+
 
 # Using mlr3keras
 
@@ -41,6 +55,7 @@ lrn$param_set$values$layer_units = c(12, 30)
 lrn$train(mlr_tasks$get("iris"))
 lrn$predict(mlr_tasks$get("iris"))
 ```
+
 
 ## A simple first example
 
@@ -176,11 +191,13 @@ Entity embeddings are naturally embedded into the `kerasff` learners.
 
 In the example below, we will use the `radam` (rectified adam) optimizer
 in order to train our neural network.
-We will first have to install the python package that contains the
-optimizer using `pip` or `conda`.
+The goal here is to show, that custom optimizers, layers and activations can be integrated into
+`mlr3keras` seamlessly. We will first have to install the python package that contains the
+optimizer using `pip` or `conda` or `py_install()`.
 
 Afterwards we can check whether the package was successfully installed
 via:
+
 ```{r, eval = FALSE}
 library("reticulate")
 py_module_available("keras_radam")
