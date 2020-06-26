@@ -25,7 +25,8 @@ make_data_generator = function(task, training = TRUE, batch_size = 128, filter_i
 
 
   if (tensorflow::tf_version() >= "2.1")
-    skip("TODO: R based generators are not working with TF >= 2.1")
+    stop("TODO: R based generators are not working with TF >= 2.1")
+
   row_ids = task$row_roles$use
 
   if (!is.null(filter_ids)) {

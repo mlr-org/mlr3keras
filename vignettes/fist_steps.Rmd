@@ -1,9 +1,10 @@
 ---
-title: "First Steps with mlr3keras"
+author: "Florian Pfisterer"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{"First Steps with mlr3keras"}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{knitr::knitr}
   \usepackage[UTF-8]{inputenc}
 ---
 
