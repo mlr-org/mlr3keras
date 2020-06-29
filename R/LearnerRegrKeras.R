@@ -14,7 +14,7 @@
 #' @description
 #' Neural Network using Keras and Tensorflow.
 #' This learner allows for supplying a custom architecture.
-#' Calls [keras::fit] from package \CRANpkg{keras}.
+#' Calls [keras::fit()] from package \CRANpkg{keras}.
 #'
 #' Parameters:
 #' Most of the parameters can be obtained from the `keras` documentation.

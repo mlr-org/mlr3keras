@@ -12,7 +12,7 @@ Feed Forward Neural Network using Keras and Tensorflow.
 This learner builds and compiles the keras model from the hyperparameters in \code{param_set},
 and does not require a supplied and compiled model.
 
-Calls \link[keras:fit]{keras::fit} from package \CRANpkg{keras}.
+Calls \code{\link[keras:fit]{keras::fit()}} from package \CRANpkg{keras}.
 Layers are set up as follows:
 \itemize{
 \item The inputs are connected to a \code{layer_dropout}, applying the \code{input_dropout}.

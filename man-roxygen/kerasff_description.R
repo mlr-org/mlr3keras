@@ -3,7 +3,7 @@
 #' This learner builds and compiles the keras model from the hyperparameters in `param_set`,
 #' and does not require a supplied and compiled model.
 #'
-#' Calls [keras::fit] from package \CRANpkg{keras}.
+#' Calls [keras::fit()] from package \CRANpkg{keras}.
 #' Layers are set up as follows:
 #' * The inputs are connected to a `layer_dropout`, applying the `input_dropout`.
 #'   Afterwards, each `layer_dense()` is followed by a `layer_activation`, and
