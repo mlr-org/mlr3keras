@@ -22,3 +22,4 @@ docs/
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^mlr3keras\.Rproj$
