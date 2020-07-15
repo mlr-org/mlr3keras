@@ -52,7 +52,7 @@ test_that("tuning works without pipelines", {
   measure = msr("classif.ce")
   tuner = tnr("grid_search", resolution = 2)
   terminator = term("evals", n_evals = 2)
-  instance = TuningInstance$new(
+  instance = TuningInstanceSingleCrit$new(
     task = task,
     learner = learner,
     resampling = resampling,

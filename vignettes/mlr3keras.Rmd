@@ -176,7 +176,7 @@ resampling = rsmp("holdout")
 measure = msr("regr.mse")
 tuner = tnr("grid_search", resolution = 2)
 terminator = term("evals", n_evals = 4)
-instance = TuningInstance$new(
+instance = TuningInstanceSingleCrit$new(
   task = task,
   learner = learner,
   resampling = resampling,
