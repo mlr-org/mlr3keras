@@ -17,7 +17,6 @@
 ^\.github$
 ^clang-.*
 ^tic\.R$
-docs/
 .vscode
 ^_pkgdown\.yml$
 ^docs$
