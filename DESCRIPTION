@@ -2,23 +2,22 @@ Package: mlr3keras
 Title: mlr3 Keras extension
 Version: 0.1.2
 Authors@R:
-    c(
-        person(given = "Florian",
-            family = "Pfisterer",
-            role = "aut",
-            email = "pfistererf@googlemail.com",
-            comment = c(ORCID = "0000-0001-8867-762X")),
-        person(given = "Jacky",
-            family = "Poon",
-            role = "aut",
-            email = "jackypn@gmail.com"),
-        person(given = "Michel",
-            family = "Lang",
-            role = c("cre", "aut"),
-            email = "michellang@gmail.com",
-            comment = c(ORCID = "0000-0001-9754-0393"))
-    )
-Description: Extension for the mlr3 package to incorporate keras.
+    c(person(given = "Florian",
+             family = "Pfisterer",
+             role = "aut",
+             email = "pfistererf@googlemail.com",
+             comment = c(ORCID = "0000-0001-8867-762X")),
+      person(given = "Jacky",
+             family = "Poon",
+             role = "aut",
+             email = "jackypn@gmail.com"),
+      person(given = "Michel",
+             family = "Lang",
+             role = c("cre", "aut"),
+             email = "michellang@gmail.com",
+             comment = c(ORCID = "0000-0001-9754-0393")))
+Description: Extension for the mlr3 package to incorporate
+    keras.
 License: LGPL-3
 URL: https://github.com/mlr-org/mlr3keras
 BugReports: https://github.com/mlr-org/mlr3keras/issues
@@ -44,18 +43,21 @@ Suggests:
     Matrix,
     mlr3pipelines,
     mlr3tuning,
-    testthat (>= 2.1.0),
-    rmarkdown
-Encoding: UTF-8
-RdMacros: mlr3misc
-SystemRequirements: Keras >= 2.0 (https://keras.io)
-LazyData: true
-NeedsCompilation: no
-Roxygen: list(markdown = TRUE, r6 = FALSE)
-RoxygenNote: 7.1.0
-VignetteBuilder: knitr
+    rmarkdown,
+    testthat (>= 2.1.0)
+VignetteBuilder: 
+    knitr
+RdMacros: 
+    mlr3misc
 Remotes:
+    mlr-org/bbotk,
     mlr-org/mlr3,
     mlr-org/mlr3pipelines,
     mlr-org/mlr3tuning,
     mlr-org/paradox
+Encoding: UTF-8
+LazyData: true
+NeedsCompilation: no
+Roxygen: list(markdown = TRUE, r6 = FALSE)
+RoxygenNote: 7.1.1
+SystemRequirements: Keras >= 2.0 (https://keras.io)
