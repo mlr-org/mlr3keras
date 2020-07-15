@@ -50,7 +50,7 @@ VignetteBuilder:
 RdMacros: 
     mlr3misc
 Remotes:
-    mlr-org/bbotk
+    mlr-org/bbotk,
     mlr-org/mlr3,
     mlr-org/mlr3pipelines,
     mlr-org/mlr3tuning,
