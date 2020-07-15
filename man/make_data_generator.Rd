@@ -37,8 +37,10 @@ Function used to transform data to a keras input format for 'y' (response).}
 Creates a data generator for a mlr3 task.
 }
 \examples{
+\donttest{
 require("keras")
 tsk = mlr3::mlr_tasks$get("iris")
 gen = reticulate::py_iterator(make_data_generator(tsk))
 data = generator_next(gen) # Get next batch
+}
 }

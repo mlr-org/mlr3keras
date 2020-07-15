@@ -5,7 +5,7 @@
 \alias{mlr_learners_regr.tabnet}
 \title{Keras TabNet Neural Network for Regression}
 \format{
-\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link{LearnerRegrKeras}.
+\code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link[mlr3keras:LearnerRegrKeras]{mlr3keras::LearnerRegrKeras}.
 }
 \description{
 Implementation of "TabNet" from the paper TabNet: Attentive Interpretable Tabular Learning (Sercan, Pfister, 2019).

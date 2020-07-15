@@ -47,6 +47,6 @@ For more information see \url{https://stackoverflow.com/questions/42022950/which
 }
 \section{Functions}{
 \itemize{
-\item \code{configure_session}: configurations for \link{mlr3keras_set_seeds}
+\item \code{configure_session}: configurations for \link[mlr3keras:mlr3keras_set_seeds]{mlr3keras::mlr3keras_set_seeds}
 }}
 

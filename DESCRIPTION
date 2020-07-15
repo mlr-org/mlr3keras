@@ -45,12 +45,13 @@ Suggests:
     mlr3tuning,
     rmarkdown,
     testthat (>= 2.1.0)
-VignetteBuilder: 
+VignetteBuilder:
     knitr
-RdMacros: 
+RdMacros:
     mlr3misc
 Remotes:
     mlr-org/bbotk,
+    mlr-org/mlr3misc,
     mlr-org/mlr3,
     mlr-org/mlr3pipelines,
     mlr-org/mlr3tuning,

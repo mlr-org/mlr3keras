@@ -15,17 +15,19 @@
 #' @param y_transform [`function`]\cr
 #'   Function used to transform data to a keras input format for 'y' (response).
 #' @examples
+#' \donttest{
 #' require("keras")
 #' tsk = mlr3::mlr_tasks$get("iris")
 #' gen = reticulate::py_iterator(make_data_generator(tsk))
 #' data = generator_next(gen) # Get next batch
+#' }
 #' @export
 make_data_generator = function(task, training = TRUE, batch_size = 128, filter_ids = NULL,
   x_transform = function(x) x, y_transform = function(y) y) {
 
 
   if (tensorflow::tf_version() >= "2.1")
-    stop("TODO: R based generators are not working with TF >= 2.1")
+    stop("R based generators are not working with TF >= 2.1")
 
   row_ids = task$row_roles$use
 

@@ -44,6 +44,9 @@ library("mlr3keras")
 
 ## mlr3keras in 5 lines
 
+`mlr3keras` offers several pre-configured learner's and model architectures.
+They can be used like any other `Learner`.
+
 ```{r, message=FALSE}
 # Instantiate Learner
 lrn = LearnerClassifKerasFF$new()
