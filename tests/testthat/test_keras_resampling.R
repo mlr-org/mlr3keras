@@ -51,7 +51,7 @@ test_that("tuning works without pipelines", {
   resampling = rsmp("holdout")
   measure = msr("classif.ce")
   tuner = tnr("grid_search", resolution = 2)
-  terminator = term("evals", n_evals = 2)
+  terminator = trm("evals", n_evals = 2)
   instance = TuningInstanceSingleCrit$new(
     task = task,
     learner = learner,
@@ -62,7 +62,7 @@ test_that("tuning works without pipelines", {
   )
   tuner$optimize(instance)
   out = instance$result$x_domain
-  assert_class(instance, "TuningInstance")
+  assert_class(instance, "TuningInstanceSingleCrit")
   assert_class(instance$archive, "Archive")
   assert_list(out)
   assert_integerish(out[[1]]$epochs, lower = 1, upper = 30)
