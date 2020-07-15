@@ -34,6 +34,7 @@ Imports:
     reticulate (>= 1.10),
     tensorflow (>= 2.0.0)
 Suggests:
+    bbotk,
     devtools,
     digest,
     generics (>= 0.0.1),
