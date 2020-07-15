@@ -2,6 +2,7 @@ context("test data generator")
 
 test_that("test data generator", {
   skip_on_os("solaris")
+  skip_if_not(tensorflow::tf_version() < "2.1")
   library("reticulate")
 
   # Create a generator from the task
