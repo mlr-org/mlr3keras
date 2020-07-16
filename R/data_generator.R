@@ -68,7 +68,7 @@ make_data_generator = function(task, training = TRUE, batch_size = 128, filter_i
       x_transform(features)
     }
   }
-} # nocov start
+} # nocov end
 
 
 #' Create train / validation data generators from a task and params
