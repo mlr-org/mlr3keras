@@ -23,11 +23,11 @@
 #' }
 #' @export
 make_data_generator = function(task, training = TRUE, batch_size = 128, filter_ids = NULL,
-  x_transform = function(x) x, y_transform = function(y) y) {
+  x_transform = function(x) x, y_transform = function(y) y) { # nocov start
 
 
-  if (tensorflow::tf_version() >= "2.1")
-    stop("R based generators are not working with TF >= 2.1")
+  if (tensorflow::tf_version() >= "2.1") # nocov
+    stop("R based generators are not working with TF >= 2.1") # nocov
 
   row_ids = task$row_roles$use
 
@@ -68,7 +68,7 @@ make_data_generator = function(task, training = TRUE, batch_size = 128, filter_i
       x_transform(features)
     }
   }
-}
+} # nocov start
 
 
 #' Create train / validation data generators from a task and params
@@ -84,7 +84,7 @@ make_data_generator = function(task, training = TRUE, batch_size = 128, filter_i
 #' @param batch_size [`integer`]\cr
 #'   Batch_size for the generators.
 #' @export
-make_train_valid_generators = function(task, x_transform, y_transform, validation_split = 1/3, batch_size = 128L) {
+make_train_valid_generators = function(task, x_transform, y_transform, validation_split = 1/3, batch_size = 128L) { # nocov start
   rho = rsmp("holdout", ratio = 1 - validation_split)
   rho$instantiate(task)
 
@@ -112,4 +112,4 @@ make_train_valid_generators = function(task, x_transform, y_transform, validatio
   }
 
   list(train_gen = train_gen, valid_gen = valid_gen, train_steps = train_steps, valid_steps = valid_steps)
-}
+} # nocov end

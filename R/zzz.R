@@ -19,11 +19,9 @@
 #'
 #' @format [environment].
 #' @export
-keras_reflections = new.env(parent = emptyenv())
+keras_reflections = new.env(parent = emptyenv()) # nocov
 
-
-
-register_mlr3 = function() { #nocov start
+register_mlr3 = function() { # nocov start
   x = utils::getFromNamespace("mlr_learners", ns = "mlr3")
   x$add("classif.kerasff", LearnerClassifKerasFF)
   x$add("classif.keras", LearnerClassifKeras)

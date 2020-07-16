@@ -1,11 +1,41 @@
 context("set_seeds")
 
-test_that("make reproducable outputs", {
-  skip_if_not(tensorflow::tf_version() < "2.1", "R Generators only work for tensorflow < 2.1")
+test_that("random.random reproducible", {
+  skip_on_os("solaris")
+  # random seed python:
+  mlr3keras_set_seeds(random_seed = TRUE)
+  a = reticulate::import("random")$random()
+  mlr3keras_set_seeds(random_seed = TRUE)
+  expect_equal(a, reticulate::import("random")$random())
+
+})
+
+test_that("numpy.random reproducible", {
+  skip_on_os("solaris")
+  # random seed python:
+  mlr3keras_set_seeds(python_seed = TRUE)
+  a = reticulate::import("numpy")$random$rand()
+  mlr3keras_set_seeds(python_seed = TRUE)
+  expect_equal(a, reticulate::import("numpy")$random$rand())
+})
+
+test_that("tf.random reproducible", {
+  skip_on_os("solaris")
+  tf = reticulate::import("tensorflow")
+  # random seed python
+  mlr3keras_set_seeds(tensorflow_seed = TRUE)
+  a = tf$keras$backend$eval(tf$random$uniform(list(1L)))
+  mlr3keras_set_seeds(tensorflow_seed = TRUE)
+  expect_equal(a, tf$keras$backend$eval(tf$random$uniform(list(1L))))
+  k_clear_session()
+})
+
+
+test_that("make reproducible outputs", {
   skip_on_os("solaris")
 
   build_model = function() {
-    mlr3keras_set_seeds()
+    mlr3keras_set_seeds(3.5)
     keras_model_sequential() %>%
       layer_dense(units = 12L, input_shape = 10L, activation = "relu") %>%
       layer_dense(units = 12L, activation = "relu") %>%
@@ -18,7 +48,6 @@ test_that("make reproducable outputs", {
   predict_mt <- function() {
     learner = LearnerRegrKeras$new()
     learner$param_set$values$model = build_model()
-    learner$param_set$values$low_memory = TRUE
     learner$param_set$values$epochs = 3L
     learner$train(tsk("mtcars"))
     learner$predict(tsk("mtcars"))

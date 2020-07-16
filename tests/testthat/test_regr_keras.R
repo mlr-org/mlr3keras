@@ -86,10 +86,16 @@ test_that("Learner methods", {
   # Saving to h5
   lrn$save(fp)
   expect_file_exists(fp)
-  unlink(fp)
 
   # Plotting
   p = lrn$plot()
   expect_class(p, "ggplot")
+
+
+  lrn$load_model_from_file(fp)
+  prd = lrn$predict(mlr_tasks$get("iris"))
+  expect_true(inherits(prd, "Prediction"))
+
+  unlink(fp)
   k_clear_session()
 })

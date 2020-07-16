@@ -6,9 +6,9 @@
 #' @param seed [`integer`]\cr
 #' A seed to be set on different platforms
 #' @param r_seed [`logical`]\cr
-#' Should seed in R be set
+#' Should seed in R be set?
 #' @param random_seed [`logical`]\cr
-#' Should seed in random be set
+#' Should seed for python's random.random be set?
 #' @param python_seed [`logical`]\cr
 #' Should seed in python/NumPy be set
 #' @param tensorflow_seed [`logical`]\cr
@@ -50,7 +50,7 @@ mlr3keras_set_seeds = function(seed = 1L,
   session <- NULL
   config <- configure_session(disable_gpu, disable_parallel_cpu)
 
-  if (length(config) > 0L) {
+  if (length(config) > 0L) { # nocov start
     # call hook (returns TRUE if TF seed should be set, this allows users to
     # call this function even when using front-end packages like keras that
     # may not use TF as their backend)
@@ -61,12 +61,12 @@ mlr3keras_set_seeds = function(seed = 1L,
     # call after hook
     tf_call_hook("tensorflow.compat.v1.on_use_session", session, FALSE)
     tf$keras$backend$set_session(session)
-  }
+  } # nocov end
   invisible(session)
 }
 
 #' @describeIn mlr3keras_set_seeds configurations for [mlr3keras::mlr3keras_set_seeds]
-configure_session <- function(disable_gpu, disable_parallel_cpu) {
+configure_session <- function(disable_gpu, disable_parallel_cpu) { # nocov start
   config <- list()
   if (disable_gpu) {
     Sys.setenv(CUDA_VISIBLE_DEVICES = "")
@@ -77,10 +77,10 @@ configure_session <- function(disable_gpu, disable_parallel_cpu) {
     config$inter_op_parallelism_threads <- 1L
   }
   config
-}
+} # nocov end
 
 # Re-export tensorflow:::call_hook
-tf_call_hook = function (name, ...) {
+tf_call_hook = function (name, ...) {  # nocov start
     hooks <- getHook(name)
     if (!is.list(hooks))
         hooks <- list(hooks)
@@ -90,4 +90,4 @@ tf_call_hook = function (name, ...) {
             response <<- TRUE
     })
     response
-}
+} # nocov end

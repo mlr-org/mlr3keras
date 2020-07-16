@@ -22,10 +22,10 @@ configure_session(disable_gpu, disable_parallel_cpu)
 A seed to be set on different platforms}
 
 \item{r_seed}{\code{\link{logical}}\cr
-Should seed in R be set}
+Should seed in R be set?}
 
 \item{random_seed}{\code{\link{logical}}\cr
-Should seed in random be set}
+Should seed for python's random.random be set?}
 
 \item{python_seed}{\code{\link{logical}}\cr
 Should seed in python/NumPy be set}
@@ -47,6 +47,6 @@ For more information see \url{https://stackoverflow.com/questions/42022950/which
 }
 \section{Functions}{
 \itemize{
-\item \code{configure_session}: configurations for \link[mlr3keras:mlr3keras_set_seeds]{mlr3keras::mlr3keras_set_seeds}
+\item \code{configure_session}: configurations for \link{mlr3keras_set_seeds}
 }}
 
