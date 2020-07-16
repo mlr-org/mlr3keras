@@ -93,7 +93,7 @@ test_that("Learner methods", {
 
 
   lrn$load_model_from_file(fp)
-  prd = lrn$predict(mlr_tasks$get("iris"))
+  prd = lrn$predict(mlr_tasks$get("mtcars"))
   expect_true(inherits(prd, "Prediction"))
 
   unlink(fp)

@@ -28,7 +28,6 @@ mlr3keras_set_seeds = function(seed = 1L,
                      disable_parallel_cpu = FALSE) {
 
   checkmate::assert_integerish(seed, len = 1L, lower = 1L, all.missing = FALSE)
-  if (!is.integer(seed)) seed = as.integer(seed)
 
   # set seed in...
   if (r_seed) set.seed(seed) # R

@@ -35,7 +35,7 @@ test_that("make reproducible outputs", {
   skip_on_os("solaris")
 
   build_model = function() {
-    mlr3keras_set_seeds(3.5)
+    mlr3keras_set_seeds(3)
     keras_model_sequential() %>%
       layer_dense(units = 12L, input_shape = 10L, activation = "relu") %>%
       layer_dense(units = 12L, activation = "relu") %>%
