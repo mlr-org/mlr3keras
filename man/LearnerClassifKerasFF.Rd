@@ -83,6 +83,10 @@ Loads a model saved using \code{saved} back into the learner.
 The model needs to be saved separately when the learner is serialized.
 In this case, the learner can be restored from this function.
 Currently not implemented for 'TabNet'.
+\item \code{.$lr_find(task, epochs, lr_min, lr_max, batch_size)}\cr
+Employ an implementation of the learning rate finder as popularized by
+Jeremy Howard in fast.ai (http://course.fast.ai/) for the learner.
+For more info on parameters, see \code{find_lr}.
 }
 }
 

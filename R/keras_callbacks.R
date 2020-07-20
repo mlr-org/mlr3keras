@@ -38,6 +38,9 @@ cb_lr_log = function() {
 
 
 #' `LogMetrics`: Batch-wise Metrics Logger Callback
+#' Note, that the specified metric must be additionally supplied to
+#' 'keras::compile' or as a hyperparameter of kerasff in
+#' order to be trackable during training.
 #' @rdname callbacks
 #' @export
 LogMetrics = R6::R6Class("LogMetrics",

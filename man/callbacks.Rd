@@ -34,6 +34,9 @@ Number of iterations without improvement to wait before stopping.}
 \code{cb_lr_log}: Learning rate logger callback
 
 \code{LogMetrics}: Batch-wise Metrics Logger Callback
+Note, that the specified metric must be additionally supplied to
+'keras::compile' or as a hyperparameter of kerasff in
+order to be trackable during training.
 
 \code{SetLogLR}: Batch-wise Metrics Setter Callback
 }

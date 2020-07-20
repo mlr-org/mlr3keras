@@ -156,6 +156,10 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       if (is.null(self$model)) stop("Model must be trained before saving")
       plot(self$model$history)
     },
+    lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
+      data = find_lr(self$clone(), task, epochs, lr_min, lr_max, batch_size)
+      plot_lr(data)
+    },
     keras_predict_pars = c("batch_size", "verbose")
   )
 )
