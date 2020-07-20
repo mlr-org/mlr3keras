@@ -34,6 +34,7 @@ Imports:
     reticulate (>= 1.10),
     tensorflow (>= 2.0.0)
 Suggests:
+    bbotk,
     devtools,
     digest,
     generics (>= 0.0.1),
@@ -50,6 +51,7 @@ VignetteBuilder:
 RdMacros:
     mlr3misc
 Remotes:
+    mlr-org/bbotk,
     mlr-org/mlr3misc,
     mlr-org/mlr3,
     mlr-org/mlr3pipelines,
