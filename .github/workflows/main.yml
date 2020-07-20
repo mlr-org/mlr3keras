@@ -50,12 +50,15 @@ jobs:
       # set date/week for use in cache creation
       # https://github.community/t5/GitHub-Actions/How-to-set-and-access-a-Workflow-variable/m-p/42970
       # - cache R packages daily
-      # - cache ccache weekly -> 'ccache' helps rebuilding the package cache faster
       - name: "[Cache] Prepare daily timestamp for cache"
         if: runner.os != 'Windows'
         id: date
         run: echo "::set-output name=date::$(date '+%d-%m')"
 
+      - name: "[Stage] [Linux] Install curl"
+        if: runner.os == 'Linux'
+        run: sudo apt install libcurl4-openssl-dev libmagic-dev
+        
       - name: "[Cache] Cache R packages"
         if: runner.os != 'Windows'
         uses: pat-s/always-upload-cache@v2.0.0
@@ -71,10 +74,6 @@ jobs:
           Rscript -e "if (getRversion() < '3.2' && !requireNamespace('curl')) install.packages('curl', type = 'source')"
           Rscript -e "remotes::install_dev('pkgdown')"
           Rscript -e "remotes::install_github('mlr-org/mlr3pkgdowntemplate')"
-
-      - name: "[Stage] [Linux] Install curl"
-        if: runner.os == 'Linux'
-        run: sudo apt install libcurl4-openssl-dev libmagic-dev
 
       - name: "[Stage] Install"
         if: matrix.config.os != 'macOS-latest' || matrix.config.r != 'devel'
