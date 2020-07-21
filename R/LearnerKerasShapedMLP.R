@@ -1,4 +1,4 @@
-#' @title Keras Feed Forward Neural Network for Classification
+#' @title Keras Feed Forward Neural Network for Classification: Shaped MLP
 #'
 #' @usage NULL
 #' @aliases mlr_learners_classif.kerasff
@@ -6,17 +6,17 @@
 #'
 #' @section Construction:
 #' ```
-#' LearnerClassifKerasFF$new()
+#' LearnerClassifShapedMLP$new()
 #' mlr3::mlr_learners$get("classif.kerasff")
 #' mlr3::lrn("classif.kerasff")
 #' ```
-#' @template kerasff_description
+#' @template shaped_mlp_description
 #' @template learner_methods
 #' @template seealso_learner
-#' @templateVar learner_name classif.kerasff
+#' @templateVar learner_name classif.keras_smlp
 #' @template example
 #' @export
-LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
+LearnerClassifShapedMLP = R6::R6Class("LearnerClassifShapedMLP",
   inherit = LearnerClassifKeras,
   public = list(
     initialize = function() {
@@ -24,7 +24,8 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
         ParamLgl$new("use_embedding", default = TRUE, tags = c("train", "predict")),
         ParamDbl$new("embed_dropout", default = 0, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("embed_size", default = NULL, lower = 1, upper = Inf, tags = "train", special_vals = list(NULL)),
-        ParamUty$new("layer_units", default = c(32, 32, 32), tags = "train"),
+        ParamInt$new("n_max", default = 128L, tags = "train", lower = 1, upper = Inf),
+        ParamInt$new("n_layers", default = 2L, tags = "train", lower = 1, upper = Inf),
         ParamUty$new("initializer", default = "initializer_glorot_uniform()", tags = "train"),
         ParamUty$new("regularizer", default = "regularizer_l1_l2()", tags = "train"),
         ParamUty$new("optimizer", default = "optimizer_sgd()", tags = "train"),
@@ -39,19 +40,20 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
         ParamUty$new("metrics", tags = "train")
       ))
       ps$values = list(
-        use_embedding = TRUE, embed_dropout = 0, embed_size = NULL,
+        use_embedding = FALSE, embed_dropout = 0, embed_size = NULL,
         activation = "relu",
-        layer_units = c(32, 32, 32),
+        n_max = 128L,
+        n_layers = 2L,
         initializer = initializer_glorot_uniform(),
-        optimizer = optimizer_adam(lr = 3*10^-4),
+        optimizer = optimizer_sgd(lr = 3*10^-4, momentum = 0.9),
         regularizer = regularizer_l1_l2(),
         use_batchnorm = FALSE,
-        use_dropout = FALSE, dropout = 0, input_dropout = 0,
+        use_dropout = TRUE, dropout = 0, input_dropout = 0,
         loss = "categorical_crossentropy",
         metrics = "accuracy",
         output_activation = "softmax"
       )
-      arch = KerasArchitectureFF$new(build_arch_fn = build_keras_ff_model, param_set = ps)
+      arch = KerasArchitectureFF$new(build_arch_fn = build_shaped_mlp, param_set = ps)
       super$initialize(
         feature_types = c("integer", "numeric", "factor", "ordered"),
         man = "mlr3keras::mlr_learners_classif.keras",
@@ -61,10 +63,10 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
   )
 )
 
-#' @title Keras Feed Forward Neural Network for Regression
+#' @title Keras Feed Forward Neural Network for Regression: Shaped MLP
 #'
 #' @usage NULL
-#' @aliases mlr_learners_regr.kerasff
+#' @aliases mlr_learners_regr.keras_smlp
 #' @format [R6::R6Class()] inheriting from [mlr3keras::LearnerRegrKeras].
 #' @section Construction:
 #' ```
@@ -72,13 +74,13 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
 #' mlr3::mlr_learners$get("regr.kerasff")
 #' mlr3::lrn("regr.kerasff")
 #' ```
-#' @template kerasff_description
+#' @template shaped_mlp_description
 #' @template learner_methods
 #' @template seealso_learner
-#' @templateVar learner_name regr.kerasff
+#' @templateVar learner_name regr.keras_smlp
 #' @template example
 #' @export
-LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
+LearnerRegrShapedMLP = R6::R6Class("LearnerRegrShapedMLP",
   inherit = LearnerRegrKeras,
   public = list(
     initialize = function() {
@@ -86,7 +88,8 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
         ParamLgl$new("use_embedding", default = TRUE, tags = c("train", "predict")),
         ParamDbl$new("embed_dropout", default = 0, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("embed_size", default = NULL, lower = 1, upper = Inf, tags = "train", special_vals = list(NULL)),
-        ParamUty$new("layer_units", default = c(32, 32, 32), tags = "train"),
+        ParamInt$new("n_max", default = 128L, tags = "train", lower = 1, upper = Inf),
+        ParamInt$new("n_layers", default = 2L, tags = "train", lower = 1, upper = Inf),
         ParamUty$new("initializer", default = "initializer_glorot_uniform()", tags = "train"),
         ParamUty$new("regularizer", default = "regularizer_l1_l2()", tags = "train"),
         ParamUty$new("optimizer", default = "optimizer_sgd()", tags = "train"),
@@ -103,17 +106,18 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
       ps$values = list(
         use_embedding = TRUE, embed_dropout = 0,  embed_size = NULL,
         activation = "relu",
-        layer_units = c(32, 32, 32),
+        n_max = 128L,
+        n_layers = 2L,
         initializer = initializer_glorot_uniform(),
-        optimizer = optimizer_adam(lr = 3*10^-4),
+        optimizer = optimizer_sgd(lr = 3*10^-4, momentum = 0.9),
         regularizer = regularizer_l1_l2(),
         use_batchnorm = FALSE,
-        use_dropout = FALSE, dropout = 0, input_dropout = 0,
+        use_dropout = TRUE, dropout = 0, input_dropout = 0,
         loss = "mean_squared_error",
         metrics = "mean_squared_logarithmic_error",
         output_activation = "linear"
       )
-      arch = KerasArchitectureFF$new(build_arch_fn = build_keras_ff_model, param_set = ps)
+      arch = KerasArchitectureFF$new(build_arch_fn = build_shaped_mlp, param_set = ps)
       super$initialize(
         feature_types = c("integer", "numeric", "factor", "ordered"),
         man = "mlr3keras::mlr_learners_regr.kerasff",
@@ -123,11 +127,11 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
   )
 )
 
-#' @title Keras Neural Network Feed Forward architecture
+#' @title Keras Neural Network Shaped MLP Architecture
 #' @rdname KerasArchitecture
 #' @family KerasArchitectures
 #' @export
-KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
+KerasArchitectureShapedLMP = R6::R6Class("KerasArchitectureShapedLMP",
   inherit = KerasArchitecture,
   public = list(
     initialize = function(build_arch_fn, param_set) {
@@ -140,16 +144,12 @@ KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
   )
 )
 
-
-
-# Builds a Keras Feed Forward Neural Network
-# @param task [`Task`] \cr
-#   A mlr3 Task.
-# @param pars [`list`] \cr
-#   A list of parameter values from the Learner(Regr|Classif)KerasFF param_set.
-# @template kerasff_description
-# @return A compiled keras model
-build_keras_ff_model = function(task, pars) {
+#' Shaped MLP as used in Zimmer et al. Auto Pytorch Tabular (2020)
+#' and proposed by https://mikkokotila.github.io/slate.
+#'
+#' Implements 'Search Space 1' from Zimmer et al. Auto Pytorch Tabular (2020)
+#' (https://arxiv.org/abs/2006.13799)
+build_shaped_mlp = function(task, pars) {
 
   if ("factor" %in% task$feature_types$type && !pars$use_embedding)
     stop("Factor features are only available with use_embedding = TRUE!")
@@ -173,81 +173,10 @@ build_keras_ff_model = function(task, pars) {
     model = keras_model_sequential()
   }
 
-  if (pars$use_dropout)
-    model = model %>% layer_dropout(pars$input_dropout, input_shape = input_shape)
-
-  # Build hidden layers
-  for (i in seq_len(length(pars$layer_units))) {
-    model = model %>%
-      layer_dense(
-        units = pars$layer_units[i],
-        input_shape = if (i == 1) input_shape else NULL,
-        kernel_regularizer = pars$regularizer,
-        kernel_initializer = pars$initializer,
-        bias_regularizer = pars$regularizer,
-        bias_initializer = pars$initializer
-      ) %>%
-      layer_activation(pars$activation)
-    # https://stackoverflow.com/questions/39691902/ordering-of-batch-normalization-and-dropout
-    # Dense -> Act -> [BN] -> [Dropout]
-    if (pars$use_batchnorm) model = model %>% layer_batch_normalization()
-    if (pars$use_dropout) model = model %>% layer_dropout(pars$dropout)
-  }
-  # Output layer
-  if (output_shape == 1L)
-    model = model %>% layer_dense(units = output_shape, activation = "sigmoid")
-  else
-    model = model %>% layer_dense(units = output_shape, activation = pars$output_activation)
-
-  if (pars$use_embedding) model = keras_model(inputs = embd$inputs, outputs = model)
-
-  model %>% compile(
-    optimizer = pars$optimizer,
-    loss = pars$loss,
-    metrics = pars$metrics
-  )
-}
-
-
-#' Shaped MLP as used in Zimmer et al. Auto Pytorch Tabular (2020)
-#' and proposed by https://mikkokotila.github.io/slate.
-#'
-#' Implements 'Search Space 1' from Zimmer et al. Auto Pytorch Tabular (2020)
-#' (https://arxiv.org/abs/2006.13799)
-#'
-#' @param pars [`list`]\cr
-#'   * `n_layers` : Number of layers.
-#'   * `n_max`    : Maximum number of neurons.
-build_shaped_mlp = function(task, pars) {
-    # Get input and output shape for model
-  input_shape = list(task$ncol - 1L)
-  if (inherits(task, "TaskRegr")) {
-    output_shape = 1L
-  } else if (inherits(task, "TaskClassif")) {
-    output_shape = length(task$class_names)
-    if (pars$loss == "binary_crossentropy") {
-      if (length(output_shape) > 2L) stop("binary_crossentropy loss is only available for binary targets")
-      output_shape = 1L
-    }
-  }
-
-  if (pars$use_embedding) {
-    embd = make_embedding(task, pars$embed_size, pars$embed_dropout)
-    model = embd$layers
-  } else {
-    model = keras_model_sequential()
-  }
-
-  if (pars$use_dropout)
-    model = model %>% layer_dropout(pars$input_dropout, input_shape = input_shape)
-
-
-
   # Build hidden layers
   n_neurons_layer = pars$n_max
 
   for (i in seq_len(length(pars$n_layers))) {
-    n_neurons_layer = n_neurons_layer - (pars$n_max - output_shape) / (pars$n_layers - 1L)
     model = model %>%
       layer_dense(
         units = n_neurons_layer,
@@ -262,6 +191,7 @@ build_shaped_mlp = function(task, pars) {
     # Dense -> Act -> [BN] -> [Dropout]
     if (pars$use_batchnorm) model = model %>% layer_batch_normalization()
     if (pars$use_dropout) model = model %>% layer_dropout(pars$dropout)
+     n_neurons_layer = ceiling(n_neurons_layer - (pars$n_max - output_shape) / (pars$n_layers - 1L))
   }
   # Output layer
   if (output_shape == 1L)
@@ -277,5 +207,3 @@ build_shaped_mlp = function(task, pars) {
     metrics = pars$metrics
   )
 }
-
-
