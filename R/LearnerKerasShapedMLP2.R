@@ -34,8 +34,6 @@ LearnerClassifShapedMLP2 = R6::R6Class("LearnerClassifShapedMLP2",
         ParamUty$new("optimizer", default = "optimizer_sgd()", tags = "train"),
         ParamFct$new("activation", default = "relu", tags = "train",
           levels = c("elu", "relu", "selu", "tanh", "sigmoid","PRelU", "LeakyReLu", "linear")),
-        ParamLgl$new("use_batchnorm", default = TRUE, tags = "train"),
-        ParamLgl$new("use_dropout", default = TRUE, tags = "train"),
         ParamDbl$new("dropout", lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("input_dropout", lower = 0, upper = 1, tags = "train"),
         ParamFct$new("loss", default = "categorical_crossentropy", tags = "train",  levels = keras_reflections$loss$classif),
@@ -50,8 +48,7 @@ LearnerClassifShapedMLP2 = R6::R6Class("LearnerClassifShapedMLP2",
         initializer = initializer_glorot_uniform(),
         optimizer = optimizer_sgd(lr = 3*10^-4, momentum = 0.9),
         regularizer = regularizer_l1_l2(),
-        use_batchnorm = FALSE,
-        use_dropout = TRUE, dropout = 0, input_dropout = 0,
+        dropout = 0, input_dropout = 0,
         loss = "categorical_crossentropy",
         metrics = "accuracy",
         output_activation = "softmax"
@@ -115,8 +112,7 @@ LearnerRegrShapedMLP2 = R6::R6Class("LearnerRegrShapedMLP2",
         initializer = initializer_glorot_uniform(),
         optimizer = optimizer_sgd(lr = 3*10^-4, momentum = 0.9),
         regularizer = regularizer_l1_l2(),
-        use_batchnorm = FALSE,
-        use_dropout = TRUE, dropout = 0, input_dropout = 0,
+        dropout = 0, input_dropout = 0,
         loss = "mean_squared_error",
         metrics = "mean_squared_logarithmic_error",
         output_activation = "linear"
@@ -161,9 +157,6 @@ build_shaped_mlp2 = function(task, pars) {
   } else {
     model = input = layer_input(shape = input_shape)
   }
-
-  # SVD
-  model = model %>% layer_lambda(f = tf$linalg$svd)
 
   # Build hidden layers
   n_neurons_layer = pars$n_max

@@ -10,11 +10,12 @@
 #' mlr3::mlr_learners$get("classif.smlp")
 #' mlr3::lrn("classif.smlp")
 #' ```
+#'
 #' @template shaped_mlp_1_description
 #' @template shaped_mlp_description
 #' @template learner_methods
 #' @template seealso_learner
-#' @templateVar learner_name classif.keras_smlp
+#' @templateVar learner_name classif.smlp
 #' @template example
 #' @export
 LearnerClassifShapedMLP = R6::R6Class("LearnerClassifShapedMLP",
@@ -75,11 +76,12 @@ LearnerClassifShapedMLP = R6::R6Class("LearnerClassifShapedMLP",
 #' mlr3::mlr_learners$get("regr.smlp")
 #' mlr3::lrn("regr.smlp")
 #' ```
+#'
 #' @template shaped_mlp_1_description
 #' @template shaped_mlp_description
 #' @template learner_methods
 #' @template seealso_learner
-#' @templateVar learner_name regr.keras_smlp
+#' @templateVar learner_name regr.smlp
 #' @template example
 #' @export
 LearnerRegrShapedMLP = R6::R6Class("LearnerRegrShapedMLP",
@@ -122,7 +124,7 @@ LearnerRegrShapedMLP = R6::R6Class("LearnerRegrShapedMLP",
       arch = KerasArchitectureFF$new(build_arch_fn = build_shaped_mlp, param_set = ps)
       super$initialize(
         feature_types = c("integer", "numeric", "factor", "ordered"),
-        man = "mlr3keras::mlr_learners_regr.kerasff",
+        man = "mlr3keras::mlr_learners_regr.smlp",
         architecture = arch
       )
     }

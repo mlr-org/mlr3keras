@@ -96,7 +96,7 @@ For more info on parameters, see \code{find_lr}.
 }
 
 \examples{
-learner = mlr3::lrn("classif.keras_smlp")
+learner = mlr3::lrn("classif.smlp")
 print(learner)
 
 # available parameters:
