@@ -2,7 +2,7 @@
 % Please edit documentation in R/LearnerKerasShapedMLP.R
 \name{LearnerRegrShapedMLP}
 \alias{LearnerRegrShapedMLP}
-\alias{mlr_learners_regr.keras_smlp}
+\alias{mlr_learners_regr.smlp}
 \title{Keras Feed Forward Neural Network for Regression: Shaped MLP}
 \format{
 \code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link{LearnerRegrKeras}.

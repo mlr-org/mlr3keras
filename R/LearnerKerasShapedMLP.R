@@ -68,7 +68,7 @@ LearnerClassifShapedMLP = R6::R6Class("LearnerClassifShapedMLP",
 #' @title Keras Feed Forward Neural Network for Regression: Shaped MLP
 #'
 #' @usage NULL
-#' @aliases mlr_learners_regr.keras_smlp
+#' @aliases mlr_learners_regr.smlp
 #' @format [R6::R6Class()] inheriting from [mlr3keras::LearnerRegrKeras].
 #' @section Construction:
 #' ```
