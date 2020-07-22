@@ -39,11 +39,11 @@ If you encounter problems using the correct python versions, see [here](https://
 
 | Learner | Details | Reference |
 |---|---|---|
-| **(Regr/Classif)Keras**   | A generic wrapper that allows to supply a custom keras architecture as a hyperparameter.| --  |
-| **(Regr/Classif)KerasFF** | A fully-connected feed-forward Neural Network with entity embeddings                    |  Guo et al. (2016) Entity Embeddings for Categorical Variables | 
-| **(Regr/Classif)TabNet**  | An implementation of `TabNet`                   | Sercan, A. and Pfister, T. (2019): TabNet |
-| **(Regr/Classif)ShapedMLP** | Shaped MLP as described in Configuration Space 1   | Zimmer, L. et al. (2020): Auto PyTorch Tabular |
-
+| [regr/classif.keras]()   | A generic wrapper that allows to supply a custom keras architecture as a hyperparameter.| --  |
+| [regr/classif.kerasFF]() | A fully-connected feed-forward Neural Network with entity embeddings                    |  Guo et al. (2016) Entity Embeddings for Categorical Variables |
+| [regr/classif.tabNet]()  | An implementation of `TabNet`                      | Sercan, A. and Pfister, T. (2019): TabNet |
+| [regr/classif.smlp]()    | Shaped MLP as described in Configuration Space 1   | Zimmer, L. et al. (2020): Auto PyTorch Tabular |
+| [regr/classif.smlp2]()   | Shaped MLP as described in Configuration Space 2   | Zimmer, L. et al. (2020): Auto PyTorch Tabular |
 
 Learners can be used for `training` and `prediction` as follows:
 

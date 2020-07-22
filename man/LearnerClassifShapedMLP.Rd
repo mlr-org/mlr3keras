@@ -2,7 +2,7 @@
 % Please edit documentation in R/LearnerKerasShapedMLP.R
 \name{LearnerClassifShapedMLP}
 \alias{LearnerClassifShapedMLP}
-\alias{mlr_learners_classif.kerasff}
+\alias{mlr_learners_classif.smlp}
 \title{Keras Feed Forward Neural Network for Classification: Shaped MLP}
 \format{
 \code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link{LearnerClassifKeras}.
@@ -10,15 +10,13 @@
 \description{
 Shaped MLP as used in Zimmer et al. Auto Pytorch Tabular (2020)
 and proposed by https://mikkokotila.github.io/slate.
-
-Note, that some additional hyperparameters (e.g. Embeddings) are made available.
-
 Implements 'Search Space 1' from Zimmer et al. Auto Pytorch Tabular (2020)
 (https://arxiv.org/abs/2006.13799)
 
 This learner builds and compiles the keras model from the hyperparameters in \code{param_set},
 and does not require a supplied and compiled model.
-
+}
+\details{
 Calls \code{\link[keras:reexports]{keras::fit()}} from package \CRANpkg{keras}.
 Layers are set up as follows:
 \itemize{
@@ -33,6 +31,7 @@ The last layer is either 'softmax' or 'sigmoid' for classification or
 }
 
 Parameters:\cr
+
 Most of the parameters can be obtained from the \code{keras} documentation.
 Some exceptions are documented here.
 \itemize{
@@ -69,8 +68,8 @@ See \code{?callbacks}.
 }
 \section{Construction}{
 \preformatted{LearnerClassifShapedMLP$new()
-mlr3::mlr_learners$get("classif.kerasff")
-mlr3::lrn("classif.kerasff")
+mlr3::mlr_learners$get("classif.smlp")
+mlr3::lrn("classif.smlp")
 }
 }
 

@@ -22,6 +22,7 @@
 keras_reflections = new.env(parent = emptyenv()) # nocov
 
 register_mlr3 = function() { # nocov start
+  # Add Learners
   x = utils::getFromNamespace("mlr_learners", ns = "mlr3")
   x$add("classif.keras", LearnerClassifKeras)
   x$add("regr.keras", LearnerRegrKeras)
@@ -31,6 +32,8 @@ register_mlr3 = function() { # nocov start
   x$add("regr.tabnet", LearnerRegrTabNet)
   x$add("classif.smlp", LearnerClassifShapedMLP)
   x$add("regr.smlp", LearnerRegrShapedMLP)
+  x$add("classif.smlp2", LearnerClassifShapedMLP2)
+  x$add("regr.smlp2", LearnerRegrShapedMLP2)
 
   local({
     keras_reflections$loss = list(

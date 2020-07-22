@@ -1,23 +1,25 @@
-#' @title Keras Feed Forward Neural Network for Classification: Shaped MLP
+#' @title Keras Feed Forward Neural Network for Classification: Shaped MLP 2
+#'
+#' Currently does not allow Shake-Shake, Shake-Drop or Mixup training as well as SVD on sparse matrices.
 #'
 #' @usage NULL
-#' @aliases mlr_learners_classif.smlp
+#' @aliases mlr_learners_classif.smlp2
 #' @format [R6::R6Class()] inheriting from [mlr3keras::LearnerClassifKeras].
 #'
 #' @section Construction:
 #' ```
-#' LearnerClassifShapedMLP$new()
-#' mlr3::mlr_learners$get("classif.smlp")
-#' mlr3::lrn("classif.smlp")
+#' LearnerClassifShapedMLP2$new()
+#' mlr3::mlr_learners$get("classif.smlp2")
+#' mlr3::lrn("classif.smlp2")
 #' ```
-#' @template shaped_mlp_1_description
+#' @template shaped_mlp_2_description
 #' @template shaped_mlp_description
 #' @template learner_methods
 #' @template seealso_learner
-#' @templateVar learner_name classif.keras_smlp
+#' @templateVar learner_name classif.smlp2
 #' @template example
 #' @export
-LearnerClassifShapedMLP = R6::R6Class("LearnerClassifShapedMLP",
+LearnerClassifShapedMLP2 = R6::R6Class("LearnerClassifShapedMLP2",
   inherit = LearnerClassifKeras,
   public = list(
     initialize = function() {
@@ -44,7 +46,7 @@ LearnerClassifShapedMLP = R6::R6Class("LearnerClassifShapedMLP",
         use_embedding = FALSE, embed_dropout = 0, embed_size = NULL,
         activation = "relu",
         n_max = 128L,
-        n_layers = 2L,
+        n_layers = 3L,
         initializer = initializer_glorot_uniform(),
         optimizer = optimizer_sgd(lr = 3*10^-4, momentum = 0.9),
         regularizer = regularizer_l1_l2(),
@@ -54,35 +56,37 @@ LearnerClassifShapedMLP = R6::R6Class("LearnerClassifShapedMLP",
         metrics = "accuracy",
         output_activation = "softmax"
       )
-      arch = KerasArchitectureFF$new(build_arch_fn = build_shaped_mlp, param_set = ps)
+      arch = KerasArchitectureFF$new(build_arch_fn = build_shaped_mlp2, param_set = ps)
       super$initialize(
         feature_types = c("integer", "numeric", "factor", "ordered"),
-        man = "mlr3keras::mlr_learners_classif.smlp",
+        man = "mlr3keras::mlr_learners_classif.smlp2",
         architecture = arch
       )
     }
   )
 )
 
-#' @title Keras Feed Forward Neural Network for Regression: Shaped MLP
+#' @title Keras Feed Forward Neural Network for Regression: Shaped MLP 2
+#'
+#' Currently does not allow Shake-Shake, Shake-Drop or Mixup training as well as SVD on sparse matrices.
 #'
 #' @usage NULL
-#' @aliases mlr_learners_regr.keras_smlp
+#' @aliases mlr_learners_regr.smlp2
 #' @format [R6::R6Class()] inheriting from [mlr3keras::LearnerRegrKeras].
 #' @section Construction:
 #' ```
-#' LearnerRegrShapedMLP$new()
-#' mlr3::mlr_learners$get("regr.smlp")
-#' mlr3::lrn("regr.smlp")
+#' LearnerRegrShapedMLP2$new()
+#' mlr3::mlr_learners$get("regr.smlp2")
+#' mlr3::lrn("regr.smlp2")
 #' ```
-#' @template shaped_mlp_1_description
+#' @template shaped_mlp_2_description
 #' @template shaped_mlp_description
 #' @template learner_methods
 #' @template seealso_learner
-#' @templateVar learner_name regr.keras_smlp
+#' @templateVar learner_name regr.keras_smlp2
 #' @template example
 #' @export
-LearnerRegrShapedMLP = R6::R6Class("LearnerRegrShapedMLP",
+LearnerRegrShapedMLP2 = R6::R6Class("LearnerRegrShapedMLP2",
   inherit = LearnerRegrKeras,
   public = list(
     initialize = function() {
@@ -97,8 +101,6 @@ LearnerRegrShapedMLP = R6::R6Class("LearnerRegrShapedMLP",
         ParamUty$new("optimizer", default = "optimizer_sgd()", tags = "train"),
         ParamFct$new("activation", default = "relu", tags = "train",
           levels = c("elu", "relu", "selu", "tanh", "sigmoid","PRelU", "LeakyReLu", "linear")),
-        ParamLgl$new("use_batchnorm", default = TRUE, tags = "train"),
-        ParamLgl$new("use_dropout", default = TRUE, tags = "train"),
         ParamDbl$new("dropout", lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("input_dropout", lower = 0, upper = 1, tags = "train"),
         ParamFct$new("loss", default = "mean_squared_error", tags = "train", levels = keras_reflections$loss$regr),
@@ -109,7 +111,7 @@ LearnerRegrShapedMLP = R6::R6Class("LearnerRegrShapedMLP",
         use_embedding = TRUE, embed_dropout = 0,  embed_size = NULL,
         activation = "relu",
         n_max = 128L,
-        n_layers = 2L,
+        n_layers = 3L,
         initializer = initializer_glorot_uniform(),
         optimizer = optimizer_sgd(lr = 3*10^-4, momentum = 0.9),
         regularizer = regularizer_l1_l2(),
@@ -119,23 +121,22 @@ LearnerRegrShapedMLP = R6::R6Class("LearnerRegrShapedMLP",
         metrics = "mean_squared_logarithmic_error",
         output_activation = "linear"
       )
-      arch = KerasArchitectureFF$new(build_arch_fn = build_shaped_mlp, param_set = ps)
+      arch = KerasArchitectureFF$new(build_arch_fn = build_shaped_mlp2, param_set = ps)
       super$initialize(
         feature_types = c("integer", "numeric", "factor", "ordered"),
-        man = "mlr3keras::mlr_learners_regr.kerasff",
+        man = "mlr3keras::mlr_learners_regr.smlp2",
         architecture = arch
       )
     }
   )
 )
 
-
 # Shaped MLP as used in Zimmer et al. Auto Pytorch Tabular (2020)
 # and proposed by https://mikkokotila.github.io/slate.
 #
-# Implements 'Search Space 1' from Zimmer et al. Auto Pytorch Tabular (2020)
-# (https://arxiv.org/abs/2006.13799)
-build_shaped_mlp = function(task, pars) {
+# Implements 'Search Space 2' from Zimmer et al. Auto Pytorch Tabular (2020)
+# (https://arxiv.org/abs/2006.13799) with some extensions.
+build_shaped_mlp2 = function(task, pars) {
 
   if ("factor" %in% task$feature_types$type && !pars$use_embedding)
     stop("Factor features are only available with use_embedding = TRUE!")
@@ -149,43 +150,78 @@ build_shaped_mlp = function(task, pars) {
     if (pars$loss == "binary_crossentropy") {
       if (length(output_shape) > 2L) stop("binary_crossentropy loss is only available for binary targets")
       output_shape = 1L
+      pars$output_activation = "sigmoid"
     }
   }
 
   if (pars$use_embedding) {
     embd = make_embedding(task, pars$embed_size, pars$embed_dropout)
     model = embd$layers
+    input = embd$inputs
   } else {
-    model = keras_model_sequential()
+    model = input = layer_input(shape = input_shape)
   }
+
+  # SVD
+  model = model %>% layer_lambda(f = tf$linalg$svd)
 
   # Build hidden layers
   n_neurons_layer = pars$n_max
 
-  for (i in seq_len(pars$n_layers)) {
-    model = model %>%
-      layer_dense(
+  for (i in seq_len(pars$n_layers - 1L)) {
+    if (i == 1L) {
+      # First layer is just a dense Layer
+      model = model %>% layer_dense(
         units = n_neurons_layer,
-        input_shape = if (i == 1) input_shape else NULL,
         kernel_regularizer = pars$regularizer,
         kernel_initializer = pars$initializer,
         bias_regularizer = pars$regularizer,
         bias_initializer = pars$initializer
-      ) %>%
-      layer_activation(pars$activation)
-    # https://stackoverflow.com/questions/39691902/ordering-of-batch-normalization-and-dropout
-    # Dense -> Act -> [BN] -> [Dropout]
-    if (pars$use_batchnorm) model = model %>% layer_batch_normalization()
-    if (pars$use_dropout) model = model %>% layer_dropout(pars$dropout)
-     n_neurons_layer = ceiling(n_neurons_layer - (pars$n_max - output_shape) / (pars$n_layers - 1L))
-  }
-  # Output layer
-  if (output_shape == 1L)
-    model = model %>% layer_dense(units = output_shape, activation = "sigmoid")
-  else
-    model = model %>% layer_dense(units = output_shape, activation = pars$output_activation)
+      )
+    } else {
+      # browser()
+      # For layers >= 2, add residual blocks
+      res_block = model %>% layer_batch_normalization() %>%
+        layer_activation(pars$activation) %>%
+        layer_dense(
+          units = n_neurons_layer,
+          kernel_regularizer = pars$regularizer,
+          kernel_initializer = pars$initializer,
+          bias_regularizer = pars$regularizer,
+          bias_initializer = pars$initializer
+        ) %>%
+        layer_batch_normalization() %>%
+        layer_activation(pars$activation) %>%
+        layer_dropout(pars$dropout) %>%
+        layer_dense(
+          units = n_neurons_layer,
+          kernel_regularizer = pars$regularizer,
+          kernel_initializer = pars$initializer,
+          bias_regularizer = pars$regularizer,
+          bias_initializer = pars$initializer
+        )
 
-  if (pars$use_embedding) model = keras_model(inputs = embd$inputs, outputs = model)
+      skip_block = model %>% layer_dense(
+        units = n_neurons_layer,
+        kernel_regularizer = pars$regularizer,
+        kernel_initializer = pars$initializer,
+        bias_regularizer = pars$regularizer,
+        bias_initializer = pars$initializer
+      )
+      model = layer_add(list(res_block, skip_block))
+    }
+    # Compute n_neurons in next layer
+    n_neurons_prev = n_neurons_layer
+    n_neurons_layer = ceiling(n_neurons_layer - (pars$n_max - output_shape) / (pars$n_layers - 1L))
+  }
+
+  # Output layer (BN -> Act -> Dense)
+  model = model %>%
+        layer_batch_normalization() %>%
+        layer_activation(pars$activation) %>%
+        layer_dense(units = output_shape, activation = pars$output_activation)
+
+  model = keras_model(inputs = input, outputs = model)
 
   model %>% compile(
     optimizer = pars$optimizer,

@@ -1,12 +1,4 @@
-#' @description
-
-#' Shaped MLP as used in Zimmer et al. Auto Pytorch Tabular (2020)
-#' and proposed by https://mikkokotila.github.io/slate.
-#'
 #' Note, that some additional hyperparameters (e.g. Embeddings) are made available.
-#'
-#' Implements 'Search Space 1' from Zimmer et al. Auto Pytorch Tabular (2020)
-#' (https://arxiv.org/abs/2006.13799)
 #'
 #' This learner builds and compiles the keras model from the hyperparameters in `param_set`,
 #' and does not require a supplied and compiled model.
@@ -23,13 +15,16 @@
 #'   'linear' or 'sigmoid' for regression.
 #'
 #' Parameters:\cr
+#'
 #' Most of the parameters can be obtained from the `keras` documentation.
 #' Some exceptions are documented here.
+#'
 #' * `use_embedding`: A logical flag, should embeddings be used?
 #'   Either uses `make_embedding` (if TRUE) or if set to FALSE `model.matrix(~. - 1, data)`
 #'   to convert factor, logical and ordered factors into numeric features.
 #'
 #' * `n_layers`: An integer defining the number of layers of the shaped MLP.
+#'
 #' * `n_max`: An integer, defining the (first layer) number of neurons. The number of neurons is halved
 #'    after each layer according to formula (1) in https://arxiv.org/abs/2006.13799.
 #'
