@@ -99,7 +99,7 @@ For more info on parameters, see \code{find_lr}.
 }
 
 \examples{
-learner = mlr3::lrn("regr.keras_smlp2")
+learner = mlr3::lrn("regr.smlp2")
 print(learner)
 
 # available parameters:

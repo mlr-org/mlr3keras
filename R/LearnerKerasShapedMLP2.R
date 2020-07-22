@@ -80,7 +80,7 @@ LearnerClassifShapedMLP2 = R6::R6Class("LearnerClassifShapedMLP2",
 #' @template shaped_mlp_description
 #' @template learner_methods
 #' @template seealso_learner
-#' @templateVar learner_name regr.keras_smlp2
+#' @templateVar learner_name regr.smlp2
 #' @template example
 #' @export
 LearnerRegrShapedMLP2 = R6::R6Class("LearnerRegrShapedMLP2",
