@@ -66,11 +66,14 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
       arch = KerasArchitectureTabNet$new(build_arch_fn = build_keras_tabnet, param_set = ps)
       super$initialize(
         id = "classif.tabnet",
-        feature_types = c("integer", "numeric", "factor", "logical"),
+        feature_types = c("integer", "numeric", "factor", "logical", "ordered"),
         packages = c("keras", "tensorflow", "reticulate"),
         man = "mlr3keras::mlr_learners_classif.tabnet",
         architecture = arch)
       self$param_set$values$validation_split = 0 # Does not to work with tf_data.
+    },
+    save = function(filepath) {
+      stop("save() is currently not implemented for TabNet!")
     }
   )
 )
@@ -146,11 +149,14 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
       arch = KerasArchitectureTabNet$new(build_arch_fn = build_keras_tabnet, param_set = ps)
       super$initialize(
         id = "regr.tabnet",
-        feature_types = c("integer", "numeric", "factor", "logical"),
+        feature_types = c("integer", "numeric", "factor", "logical", "ordered"),
         packages = c("keras", "tensorflow", "reticulate"),
         man = "mlr3keras::mlr_learners_regr.tabnet",
         architecture = arch)
       self$param_set$values$validation_split = 0 # Does not to work with tf_data.
+    },
+    save = function(filepath) {
+      stop("save() is currently not implemented for TabNet!")
     }
   )
 )

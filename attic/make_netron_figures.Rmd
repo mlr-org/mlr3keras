@@ -1,0 +1,10 @@
+```{r, eval = FALSE}
+devtools::load_all()
+
+task = tsk("boston_housing")
+lrn = lrn("regr.regr.smlp2")
+lrn$train(task)
+
+fp = tempfile(fileext = ".h5")
+lrn$save(fp)
+```
