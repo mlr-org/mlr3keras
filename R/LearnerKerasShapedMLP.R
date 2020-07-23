@@ -61,6 +61,7 @@ LearnerClassifShapedMLP = R6::R6Class("LearnerClassifShapedMLP",
         man = "mlr3keras::mlr_learners_classif.smlp",
         architecture = arch
       )
+      self$param_set$values$callbacks = c(self$param_set$values$callbacks, cb_lr_scheduler_cosine_anneal())
     }
   )
 )
@@ -127,6 +128,7 @@ LearnerRegrShapedMLP = R6::R6Class("LearnerRegrShapedMLP",
         man = "mlr3keras::mlr_learners_regr.smlp",
         architecture = arch
       )
+      self$param_set$values$callbacks = c(self$param_set$values$callbacks, cb_lr_scheduler_cosine_anneal())
     }
   )
 )

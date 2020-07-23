@@ -15,7 +15,11 @@ test_that("callback early stopping", {
 test_that("Callbacks can be initialized", {
   x = cb_es()
   expect_class(x, "keras.callbacks.Callback")
-  x = cb_lr_scheduler()
+  x = cb_lr_log()
+  expect_class(x, "keras.callbacks.Callback")
+  x = cb_lr_scheduler_exponential_decay()
+  expect_class(x, "keras.callbacks.Callback")
+  x = cb_lr_scheduler_cosine_anneal()
   expect_class(x, "keras.callbacks.Callback")
   x = cb_tensorboard()
   expect_class(x, "keras.callbacks.Callback")

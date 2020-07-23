@@ -2,7 +2,8 @@
 % Please edit documentation in R/keras_callbacks.R
 \name{cb_es}
 \alias{cb_es}
-\alias{cb_lr_scheduler}
+\alias{cb_lr_scheduler_cosine_anneal}
+\alias{cb_lr_scheduler_exponential_decay}
 \alias{cb_tensorboard}
 \alias{cb_lr_log}
 \alias{LogMetrics}
@@ -11,7 +12,9 @@
 \usage{
 cb_es(monitor = "val_loss", patience = 3L)
 
-cb_lr_scheduler()
+cb_lr_scheduler_cosine_anneal(T_max = 10, T_mult = 2, eta_min = 0)
+
+cb_lr_scheduler_exponential_decay()
 
 cb_tensorboard()
 
@@ -23,20 +26,22 @@ Quantity to be monitored.}
 
 \item{patience}{\code{\link{integer}}\cr
 Number of iterations without improvement to wait before stopping.}
+
+\item{T_max}{\code{\link{integer}}\cr
+Reset learning rate every T_max epochs.  Default 10.}
+
+\item{T_mult}{\code{\link{integer}}\cr
+Multiply T_max by T_mult every T_max iterations. Default 2.}
+
+\item{eta_min}{\code{\link{numeric}}\cr
+Minimal learning rate.}
 }
 \description{
-\code{cb_es}: Early stopping callback
-
-\code{cb_lrs}: Learning rate scheduler callback
-
-\code{cb_tb}: Tensorboard callback
-
-\code{cb_lr_log}: Learning rate logger callback
-
-\code{LogMetrics}: Batch-wise Metrics Logger Callback
-Note, that the specified metric must be additionally supplied to
-'keras::compile' or as a hyperparameter of kerasff in
-order to be trackable during training.
-
-\code{SetLogLR}: Batch-wise Metrics Setter Callback
+For more information see:
+Stochastic Gradient Descent with Warm Restarts: https://arxiv.org/abs/1608.03983.
+}
+\details{
+Closed form:
+\eqn{\eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 +
+         \cos(\frac{T_{cur}}{T_{max}}\pi))}
 }

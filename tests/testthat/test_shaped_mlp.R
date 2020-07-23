@@ -22,4 +22,3 @@ test_that("autotest regr smlp", {
   expect_true(result, info = result$error)
   k_clear_session()
 })
-
