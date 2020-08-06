@@ -63,7 +63,7 @@ Learners can be used for `training` and `prediction` as follows:
   lrn$predict(mlr_tasks$get("iris"))
 ```
 
-The [vignette](https://github.com/mlr-org/mlr3keras/blob/master/vignettes/fist_steps.Rmd) has some examples on how to use some of the functionality introduces in `mlr3keras`.
+The [vignette](https://github.com/mlr-org/mlr3keras/blob/master/vignettes/mlr3keras.Rmd) has some examples on how to use some of the functionality introduces in `mlr3keras`.
 
 ## Design
 
