@@ -20,25 +20,23 @@ cb_es = function(monitor = 'val_loss', patience = 3L) {
 #'  \eqn{\eta_t = \eta_{min} + \frac{1}{2}(\eta_{max} - \eta_{min})(1 +
 #'          \cos(\frac{T_{cur}}{T_{max}}\pi))}
 #'
+#' @param eta_max [`numeric`]\cr
+#'   Max  learning rate.
 #' @param T_max [`integer`]\cr
 #'   Reset learning rate every T_max epochs.  Default 10.
 #' @param T_mult [`integer`]\cr
 #'   Multiply T_max by T_mult every T_max iterations. Default 2.
+#' @param M_mult [`numeric`]\cr
+#'   Decay learning rate by factor 'M_mult' after each learning rate reset.
 #' @param eta_min [`numeric`]\cr
 #'   Minimal learning rate.
 #'
 #' @rdname callbacks
 #' @export
-cb_lr_scheduler_cosine_anneal = function(T_max = 10, T_mult = 2, eta_min = 0) {
-  base_lr = 0
-  callback_learning_rate_scheduler(function(epoch, lr) {
-   # save initial LR
-   if (epoch == 0L) base_lr <<- lr
-   # Multiply every T_max
-   if (epoch %% T_max == 0 && epoch > 0) T_max <<- T_max * T_mult
-   # Return cosine annealed LR
-   eta_min + 0.5 * (base_lr - eta_min) * (1 + cos((epoch / T_max)*pi))
-  })
+cb_lr_scheduler_cosine_anneal = function(eta_max = 0.01, T_max = 10, T_mult = 2, M_mult = 1, eta_min = 0) {
+  callback_learning_rate_scheduler(
+    tf$keras$experimental$CosineDecayRestarts(eta_max, T_max, t_mul = T_mult, m_mul = M_mult, alpha = eta_min)
+  )
 }
 
 

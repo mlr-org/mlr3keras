@@ -11,17 +11,13 @@ system(paste0("netron ", fp))
 ```
 
 ```{r}
-T_max = 10
-T_mult = 2
-eta_min = 1e-5
-a = function(epoch, lr) {
-   if (epoch == 1L) base_lr <<- lr
-   if (epoch %% T_max == 0) {
-     T_max <<- T_max * T_mult
-   }
-   eta_min + 0.5 * (base_lr - eta_min) * (1 + cos((epoch / T_max)*pi))
-}
-
-f = sapply(1:100, function(x) a(x,1))
-plot(f)
+l = lrn("classif.smlp2")
+l$param_set$values$epochs = 300
+l$param_set$values$n_max = 24
+l$param_set$values$n_layers = 2
+l$param_set$values$validation_split = 0.1
+l$train(tsk("iris"))
+l$plot()
+l$model
+lrn$model
 ```
