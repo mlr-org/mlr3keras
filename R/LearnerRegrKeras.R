@@ -87,7 +87,29 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       self$architecture$set_transform("y", function(target, pars) {as.numeric(target)})
     },
 
-    train_internal = function(task) {
+    save = function(filepath) {
+      assert_path_for_output(filepath)
+      if (is.null(self$model)) stop("Model must be trained before saving")
+      keras::save_model_hdf5(self$model$model, filepath)
+    },
+    load_model_from_file = function(filepath) {
+      assert_file_exists(filepath)
+      self$state$model$model = keras::load_model_hdf5(filepath)
+    },
+    plot = function() {
+      if (is.null(self$model)) stop("Model must be trained before saving")
+      plot(self$model$history)
+    },
+    lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
+      data = find_lr(self$clone(), task, epochs, lr_min, lr_max, batch_size)
+      plot_lr(data)
+    },
+    keras_predict_pars = c("batch_size", "verbose")
+  ),
+
+  private = list(
+
+    .train = function(task) {
       pars = self$param_set$get_values(tags = "train")
       model = self$architecture$get_model(task, pars)
       # Custom transformation depending on the model.
@@ -131,7 +153,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       return(list(model = model, history = history))
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
 
       features = task$data(cols = task$feature_names)
@@ -142,24 +164,6 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
         p = invoke(self$model$model$predict, x = newdata, .args = pars)
         PredictionRegr$new(task = task, response = drop(p))
       }
-    },
-    save = function(filepath) {
-      assert_path_for_output(filepath)
-      if (is.null(self$model)) stop("Model must be trained before saving")
-      keras::save_model_hdf5(self$model$model, filepath)
-    },
-    load_model_from_file = function(filepath) {
-      assert_file_exists(filepath)
-      self$state$model$model = keras::load_model_hdf5(filepath)
-    },
-    plot = function() {
-      if (is.null(self$model)) stop("Model must be trained before saving")
-      plot(self$model$history)
-    },
-    lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
-      data = find_lr(self$clone(), task, epochs, lr_min, lr_max, batch_size)
-      plot_lr(data)
-    },
-    keras_predict_pars = c("batch_size", "verbose")
+    }
   )
 )

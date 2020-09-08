@@ -93,7 +93,28 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       )
     },
 
-    train_internal = function(task) {
+
+    save = function(filepath) {
+      assert_path_for_output(filepath)
+      if (is.null(self$model)) stop("Model must be trained before saving")
+      keras::save_model_hdf5(self$model$model, filepath)
+    },
+    load_model_from_file = function(filepath) {
+      assert_file_exists(filepath)
+      self$state$model$model = keras::load_model_hdf5(filepath)
+    },
+    plot = function() {
+      if (is.null(self$model)) stop("Model must be trained before saving")
+      plot(self$model$history)
+    },
+    lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
+      data = find_lr(self$clone(), task, epochs, lr_min, lr_max, batch_size)
+      plot_lr(data)
+    }
+  ),
+
+  private = list(
+    .train = function(task) {
       pars = self$param_set$get_values(tags = "train")
 
       # Construct / Get the model depending on task and hyperparams.
@@ -141,7 +162,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       return(list(model = model, history = history, class_names = task$class_names))
     },
 
-    predict_internal = function(task) {
+    .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
 
       features = task$data(cols = task$feature_names)
@@ -153,24 +174,6 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         p = invoke(self$model$model$predict, x = newdata, .args = pf_pars)
       }
       fixup_target_levels_prediction_classif(p, task, self$predict_type)
-    },
-
-    save = function(filepath) {
-      assert_path_for_output(filepath)
-      if (is.null(self$model)) stop("Model must be trained before saving")
-      keras::save_model_hdf5(self$model$model, filepath)
-    },
-    load_model_from_file = function(filepath) {
-      assert_file_exists(filepath)
-      self$state$model$model = keras::load_model_hdf5(filepath)
-    },
-    plot = function() {
-      if (is.null(self$model)) stop("Model must be trained before saving")
-      plot(self$model$history)
-    },
-    lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
-      data = find_lr(self$clone(), task, epochs, lr_min, lr_max, batch_size)
-      plot_lr(data)
     }
   )
 )

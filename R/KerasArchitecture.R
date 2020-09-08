@@ -34,7 +34,7 @@ KerasArchitecture = R6::R6Class("KerasArchitecture",
       self$param_set = assert_param_set(param_set)
     },
     #' @description
-    #'   Obtain the model. Called by Learner during `train_internal`.
+    #'   Obtain the model. Called by Learner during `train()`.
     #' @param build_arch_fun [`Task`] \cr Function that instantiates and compiles a model.
     #' @param x_transform [`list`] \cr Function used to transform the data for the model.
     get_model = function(task, pars) {
