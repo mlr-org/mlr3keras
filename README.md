@@ -1,12 +1,7 @@
 # mlr3keras
 An extension for `mlr3` to enable using various `keras` models as learners.
 
-![R CMD Check via {tic}](https://github.com/mlr-org/mlr3keras/workflows/R%20CMD%20Check%20via%20%7Btic%7D/badge.svg)
-<!--
-[![Build status](https://ci.appveyor.com/api/projects/status/m2tuhgdxo8is0nv0?svg=true)](https://ci.appveyor.com/project/mlr-org/mlr3keras)
-[![CRAN](https://www.r-pkg.org/badges/version/mlr3)](https://cran.r-project.org/package=mlr3keras)
-[![codecov](https://codecov.io/gh/mlr-org/mlr3/branch/master/graph/badge.svg)](https://codecov.io/gh/mlr-org/mlr3)
--->
+[![tic](https://github.com/mlr-org/mlr3keras/workflows/tic/badge.svg?branch=master)](https://github.com/mlr-org/mlr3keras/actions)
 
 ## Status
 
