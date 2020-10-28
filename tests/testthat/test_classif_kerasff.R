@@ -66,6 +66,7 @@ test_that("can fit with binary_crossentropy", {
   po_lrn$param_set$values$epochs = 10L
   po_lrn$param_set$values$layer_units = c(12L, 12L)
   po_lrn$param_set$values$loss = "binary_crossentropy"
+  po_lrn$param_set$values$output_activation = "sigmoid"
   pipe = po_imp %>>% po_lrn
   pipe$train(mlr_tasks$get("pima"))
 

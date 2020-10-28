@@ -7,7 +7,8 @@ test_that("entity embedding works for all tasks", {
     embds = make_embedding(task)
     expect_list(embds, len = 2L, names = "named")
     dt = task$feature_types[type %in% c("character", "factor", "ordered"), ]
-    expect_true(length(embds$inputs) == nrow(dt) + 1)
+
+    expect_true(length(embds$inputs) == nrow(dt) + (nrow(setdiff(task$feature_types, dt)) > 0))
     expect_class(embds$layers, "tensorflow.tensor")
     map(embds$inputs, expect_class, "tensorflow.tensor")
   }
@@ -21,6 +22,11 @@ test_that("entity embedding works for all tasks", {
     expect_list(embds, len = 2L, names = "named")
     dt = task$feature_types[type %in% c("character", "factor", "ordered"), ]
     expect_true(length(embds$fct_levels) == nrow(dt))
-    expect_true(length(embds$fct_levels) == length(embds$data) - 1)
+    # Is either n categ - 1 (all numerics) or 0 (no categ)
+    expect_true(
+      (length(embds$fct_levels) == length(embds$data) - (nrow(setdiff(task$feature_types, dt)) > 0)) ||
+      (length(embds$fct_levels) == 0 && length(embds$data) == 1L)
+    )
   }
+  k_clear_session()
 })

@@ -35,7 +35,7 @@ cb_es = function(monitor = 'val_loss', patience = 3L) {
 #' @export
 cb_lr_scheduler_cosine_anneal = function(eta_max = 0.01, T_max = 10, T_mult = 2, M_mult = 1, eta_min = 0) {
   callback_learning_rate_scheduler(
-    tf$keras$experimental$CosineDecayRestarts(eta_max, T_max, t_mul = T_mult, m_mul = M_mult, alpha = eta_min)
+    tensorflow::tf$keras$experimental$CosineDecayRestarts(eta_max, T_max, t_mul = T_mult, m_mul = M_mult, alpha = eta_min)
   )
 }
 
