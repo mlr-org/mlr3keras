@@ -46,20 +46,22 @@ Suggests:
     mlr3tuning (>= 0.1.2),
     rmarkdown,
     testthat (>= 2.1.0)
+Remotes:
+    mlr-org/mlr3@dtype_image
+    mlr-org/paradox
 VignetteBuilder:
     knitr
 RdMacros:
     mlr3misc
-Remotes:
-    mlr-org/bbotk,
-    mlr-org/mlr3misc,
-    mlr-org/mlr3,
-    mlr-org/mlr3pipelines,
-    mlr-org/mlr3tuning,
-    mlr-org/paradox
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE, r6 = FALSE)
 RoxygenNote: 7.1.1
-SystemRequirements: Keras >= 2.0 (https://keras.io)
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "tensorflow", pip = TRUE),
+      list(package = "keras", pip = TRUE)
+    )
+  )

@@ -12,7 +12,13 @@
 \usage{
 cb_es(monitor = "val_loss", patience = 3L)
 
-cb_lr_scheduler_cosine_anneal(T_max = 10, T_mult = 2, eta_min = 0)
+cb_lr_scheduler_cosine_anneal(
+  eta_max = 0.01,
+  T_max = 10,
+  T_mult = 2,
+  M_mult = 1,
+  eta_min = 0
+)
 
 cb_lr_scheduler_exponential_decay()
 
@@ -27,11 +33,17 @@ Quantity to be monitored.}
 \item{patience}{\code{\link{integer}}\cr
 Number of iterations without improvement to wait before stopping.}
 
+\item{eta_max}{\code{\link{numeric}}\cr
+Max  learning rate.}
+
 \item{T_max}{\code{\link{integer}}\cr
 Reset learning rate every T_max epochs.  Default 10.}
 
 \item{T_mult}{\code{\link{integer}}\cr
 Multiply T_max by T_mult every T_max iterations. Default 2.}
+
+\item{M_mult}{\code{\link{numeric}}\cr
+Decay learning rate by factor 'M_mult' after each learning rate reset.}
 
 \item{eta_min}{\code{\link{numeric}}\cr
 Minimal learning rate.}

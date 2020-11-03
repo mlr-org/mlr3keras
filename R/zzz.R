@@ -6,10 +6,10 @@
 #' @import checkmate
 #' @importFrom R6 R6Class
 #' @importFrom stats setNames
+#' @importFrom tensorflow tf
 #' @description
 #' A package that connects mlr3 to keras.
 "_PACKAGE"
-
 
 #' @title Reflections mechanism for keras
 #'
@@ -45,6 +45,7 @@ register_mlr3 = function() { # nocov start
 }
 
 .onLoad = function(libname, pkgname) {
+  reticulate::configure_environment(pkgname)
   register_mlr3()
   setHook(packageEvent("mlr3", "onLoad"), function(...) register_mlr3(), action = "append")
 }
