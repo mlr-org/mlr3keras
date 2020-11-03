@@ -46,6 +46,9 @@ Suggests:
     mlr3tuning (>= 0.1.2),
     rmarkdown,
     testthat (>= 2.1.0)
+Remotes:
+    mlr-org/mlr3@dtype_image
+    mlr-org/paradox
 VignetteBuilder:
     knitr
 RdMacros:
