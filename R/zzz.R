@@ -6,9 +6,15 @@
 #' @import checkmate
 #' @importFrom R6 R6Class
 #' @importFrom stats setNames
+#' @importFrom tensorflow tf
 #' @description
 #' A package that connects mlr3 to keras.
 "_PACKAGE"
+
+#' re-export k and tf functions
+#' @noRd
+k  = utils::getFromNamespace("keras", "keras")
+tf = utils::getFromNamespace("tf", "tensorflow")
 
 
 #' @title Reflections mechanism for keras
@@ -45,6 +51,8 @@ register_mlr3 = function() { # nocov start
 }
 
 .onLoad = function(libname, pkgname) {
+  reticulate::configure_environment(pkgname)
+  suppressMessages(try(keras::use_implementation("tensorflow"), silent = TRUE))
   register_mlr3()
   setHook(packageEvent("mlr3", "onLoad"), function(...) register_mlr3(), action = "append")
 }

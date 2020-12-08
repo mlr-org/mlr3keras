@@ -21,6 +21,13 @@ Description: Extension for the mlr3 package to incorporate
 License: LGPL-3
 URL: https://github.com/mlr-org/mlr3keras
 BugReports: https://github.com/mlr-org/mlr3keras/issues
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "tensorflow", version = "2.3.1", pip = TRUE),
+      list(package = "keras", version = "2.4", pip = TRUE)
+    )
+  )
 Depends:
     R (>= 3.2)
 Imports:
@@ -53,7 +60,7 @@ RdMacros:
 Remotes:
     mlr-org/bbotk,
     mlr-org/mlr3misc,
-    mlr-org/mlr3,
+    mlr-org/mlr3@dtype_image,
     mlr-org/mlr3pipelines,
     mlr-org/mlr3tuning,
     mlr-org/paradox

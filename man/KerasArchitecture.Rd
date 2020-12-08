@@ -37,7 +37,7 @@ It can be used to more easily and flexibly add architectures.
 
 Initialize architecture
 
-Obtain the model. Called by Learner during \code{train_internal}.
+Obtain the model. Called by Learner during \code{train()}.
 
 Setter method for 'x_transform' and 'y_transform'.
 
