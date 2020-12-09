@@ -9,7 +9,7 @@ test_that("imagepathdf_from_imagenet_dir", {
   expect_true(ftdt$id == "image")
   expect_true(ftdt$type == "imagepath")
   expect_task(t)
-  expect_data_table(dt, types = c("factor", "imagepath"), min.rows=2L, max.rows=2L)
+  expect_data_table(dt, types = c("factor", "imagepath"), min.rows=3L, max.rows=3L)
   expect_file_exists(dt$image[1])
   expect_file_exists(dt$image[2])
 })

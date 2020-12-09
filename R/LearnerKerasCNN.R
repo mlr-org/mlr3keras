@@ -121,7 +121,6 @@ LearnerClassifKerasCNN = R6::R6Class("LearnerClassifKeras",
       pf_pars = self$param_set$get_values(tags = "predict_fun")
       pf_pars = pf_pars[names(pf_pars) != "batch_size"]
       p = invoke(self$model$model$predict_generator, generator = gen, .args = pf_pars)
-      print(p)
       fixup_target_levels_prediction_classif(p, task, self$predict_type)
     }
   )

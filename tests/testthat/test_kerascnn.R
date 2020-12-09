@@ -11,7 +11,10 @@ test_that("callback early stopping", {
   l$param_set$values$optimizer = optimizer_rmsprop()
   l$param_set$values$application = application_mobilenet
   l$param_set$values$validation_fraction = 0
-  l$train(t)
-  l$predict(t)
+  suppressWarnings(l$train(t))
+  prd = suppressWarnings(l$predict(t))
+  expect_learner(l)
+  expect_true(!is.null(l$state))
+  expect_prediction(prd)
 })
 
