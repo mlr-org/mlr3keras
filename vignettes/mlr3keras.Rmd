@@ -1,9 +1,10 @@
 ---
+title: "First steps with mlr3keras"
 author: "Florian Pfisterer"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{"First Steps with mlr3keras"}
+  %\VignetteIndexEntry{First steps with mlr3keras}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,7 +15,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
 
 # Introduction to mlr3keras
 
@@ -82,6 +82,7 @@ layer_dense(units = 1L, activation = "sigmoid") %>%
     loss = "binary_crossentropy",
     metrics = "accuracy")
 ```
+
 
 Afterwards, we build up the pipeline using the `classif.keras` learner.
 We set the `model` defined above as a hyperparameter, as well as the
@@ -214,4 +215,35 @@ kr = import("keras_radam")
 radam = kr$training$RAdamOptimizer()
 lrn = lrn("classif.kerasff", predict_type = "prob", epochs = 3L, optimizer = radam)
 lrn$train(mlr_tasks$get("iris"))
+```
+
+
+## CNN on Imagenette
+
+Data was downloaded from here: [fastai/imagenette](https://github.com/fastai/imagenette) and extracted to a directory.
+The `imagepathdf_from_imagenet_dir` function converts the folder structure to a `data.table` containing
+filepaths and associated classes. The path is converted to a character string of class `imagepath` internally,
+which enables `mlr3` to recognize the character as an image path.
+This allows us to defer reading images into memory to `keras`, making large datasets manageable from
+within R.
+
+```{r, eval = FALSE}
+library(mlr3)
+library(mlr3misc)
+library(data.table)
+devtools::load_all()
+
+dir = "~/Downloads/imagenette2-160/train"
+dt = imagepathdf_from_imagenet_dir(dir)
+t = TaskClassif$new(id = "imagenette", backend = dt, target="class")
+t
+```
+
+Now we can train and predict using the `LearnerClassifKerasCNN`.
+
+```{r, eval = FALSE}
+l = LearnerClassifKerasCNN$new()
+l$param_set$values$epochs = 1L
+l$train(t$clone()$filter(1:128))
+l$predict(t$clone()$filter(129:256))
 ```
