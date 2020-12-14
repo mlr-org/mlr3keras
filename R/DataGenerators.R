@@ -31,7 +31,7 @@ make_generator_from_dataframe = function(dt, x_cols=NULL, y_cols, generator, bat
   } else {
     y = as.matrix(dt[, y_cols, with = FALSE])
   }
-  generators$Numpy2DArrayIterator(x, y, generator, batch_size=batch_size, shuffle=shuffle,seed=seed)
+  generators$Numpy2DArrayIterator(x, y, generator, batch_size=as.integer(batch_size), shuffle=assert_flag(shuffle),seed=as.integer(seed))
 }
 
 #' Make a DataGenerator that merges multiple DataGenerators into one.
@@ -47,6 +47,6 @@ make_generator_from_dataframe = function(dt, x_cols=NULL, y_cols, generator, bat
 #' @export
 combine_generators = function(gen1, gen2) {
   python_path <- system.file("python", package = "mlr3keras")
-  generators <- import_from_path("generators", path = python_path)
+  generators <- reticulate::import_from_path("generators", path = python_path)
   generators$CombinedGenerator(gen1, gen2)
 }

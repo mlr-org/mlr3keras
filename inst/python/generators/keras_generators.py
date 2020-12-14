@@ -149,14 +149,20 @@ class Numpy2DArrayIterator(Iterator):
 
 
 class CombinedGenerator(Sequence):
-    """Wrapper of 2 ImageDataGenerator"""
+    """Wraps 2 DataGenerators"""
+
+    seed=None,
+    batch_size=None,
 
     def __init__(self, gen1, gen2):
 
         # Real time multiple input data augmentation
         assert gen1.batch_size == gen2.batch_size
+        self.batch_size = gen1.batch_size
+
         if gen1.seed != gen2.seed:
             Warning("Generator seeds do not match!")
+        self.seed = gen1.seed
 
         self.gen1 = gen1
         self.gen2 = gen2
