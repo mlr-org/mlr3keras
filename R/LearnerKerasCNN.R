@@ -50,6 +50,8 @@ LearnerClassifKerasCNN = R6::R6Class("LearnerClassifKeras",
   ),
   private = list(
     .train = function(task) {
+      # CNN's as-is currently can only handle one image feature.
+      assert_true(length(task$feature_types[type == "imagepath"][["id"]]) < 2L)
       pars = self$param_set$get_values(tags = "train")
 
       # Construct / Get the model depending on task and hyperparams.
@@ -84,14 +86,15 @@ LearnerClassifKerasCNN = R6::R6Class("LearnerClassifKeras",
       # Generators for train and validation data
       train_gen = keras::flow_images_from_dataframe(
         df, generator = generator, subset = "training",
-        x_col="image", y_col="class",
+        x_col=task$feature_types[type == "imagepath"][["id"]], y_col = task$target_names,
         drop_duplicates = FALSE, batch_size = pars$batch_size, classes = task$class_names,
       )
       valid_gen = keras::flow_images_from_dataframe(
         df, generator = generator, subset = "validation",
-        x_col="image", y_col="class",
+        x_col=task$feature_types[type == "imagepath"][["id"]], y_col = task$target_names,
         drop_duplicates = FALSE, batch_size = pars$batch_size, classes = task$class_names,
       )
+
       # And then fit
       history = invoke(keras::fit_generator,
         object = model,

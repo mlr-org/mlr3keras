@@ -228,6 +228,7 @@ This allows us to defer reading images into memory to `keras`, making large data
 within R.
 
 ```{r, eval = FALSE}
+reticulate::use_condaenv("mlr3keras", required=TRUE)
 library(mlr3)
 library(mlr3misc)
 library(data.table)
@@ -235,6 +236,8 @@ devtools::load_all()
 
 dir = "~/Downloads/imagenette2-160/train"
 dt = imagepathdf_from_imagenet_dir(dir)
+dt$n = rnorm(nrow(dt))
+dt$m = rnorm(nrow(dt))
 t = TaskClassif$new(id = "imagenette", backend = dt, target="class")
 t
 ```
@@ -246,4 +249,26 @@ l = LearnerClassifKerasCNN$new()
 l$param_set$values$epochs = 1L
 l$train(t$clone()$filter(1:128))
 l$predict(t$clone()$filter(129:256))
+```
+
+## Setup keras using Conda
+
+The example below shows how to setup **reticulate** using a conda virtual environment (condaenv) and installing all packages.
+We create a new "condaenv" called **mlr3keras** with some packages already installed using Python Version `3.8`.
+Afterwards, we install keras and tensorflow into this environment again using **conda**.
+
+```{r, eval=FALSE}
+library(reticulate)
+conda_create(
+  envname = "mlr3keras",
+  packages = "pandas",
+  python_version = "3.8"
+)
+keras::install_keras("conda", tensorflow="2.3.1", envname="mlr3keras")
+```
+
+Now we can activate the environment using
+
+```{r, eval=FALSE}
+reticulate::use_condaenv("mlr3keras", required=TRUE)
 ```

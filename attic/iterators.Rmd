@@ -1,0 +1,55 @@
+```{r}
+library(reticulate)
+reticulate::use_condaenv("mlr3keras", required=TRUE)
+library(data.table)
+devtools::load_all()
+
+# Download data from [fastai/imagenette](https://github.com/fastai/imagenette)  and adjust path
+dir = "~/Downloads/imagenette2-160/train"
+dt = imagepathdf_from_imagenet_dir(dir)
+dt$n = runif(nrow(dt))
+dt$m = runif(nrow(dt))
+dt[, lapply(.SD, as.character)]
+
+
+g = image_data_generator(validation_split=0.5)
+dtgen = make_generator_from_dataframe(dt, c("m","n") ,"class" , g)
+imgen = keras::flow_images_from_dataframe(dt, x_col="image", y_col = "class", generator = g, batch_size = as.integer(32), shuffle=TRUE, seed=1L)
+cogen = combine_generators(imgen, dtgen)
+```
+
+
+
+```{r}
+  # Now try the fitting:
+  base = application_mobilenet(
+    include_top = FALSE,
+    weights = "imagenet",
+    input_tensor = NULL,
+    input_shape = NULL
+  )
+  numeric_input = layer_input(shape=c(2), name="numerics")
+  out_inter = base$output %>%
+  layer_global_average_pooling_2d() %>%
+  layer_dense(
+      units = 256L,
+      activation = "relu"
+  )
+
+  model = keras_model(
+    inputs = list(base$input, numeric_input),
+    out = layer_concatenate(c(out_inter, numeric_input)) %>%
+      layer_dense(
+        units = 10L,
+        activation = "softmax"
+      )
+  )
+  freeze_weights(base)
+  unfreeze_weights(base, from = 77)
+  model$compile(
+    optimizer = optimizer_rmsprop(),
+    loss = "categorical_crossentropy"
+  )
+
+  fit_generator(model, generator=cogen, steps_per_epoch=100L)
+```
