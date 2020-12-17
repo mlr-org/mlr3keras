@@ -31,11 +31,12 @@ One possible workflow for working with mlr3keras is described below.
 While (1.) and (2.) are one-time setup steps, (3.) now has to be called everytime mlr3keras is loaded.
 
 > *Note from the author:*
-> The workflow described below is something that works for me personally, as I have to switch between versions and projects often. 
+> The workflow described below is something that works for me personally, as I have to switch between versions and projects often.
 > It is described for the user, as I personally find it useful. It assumes, the R packages `keras`, `tensorflow` and `reticulate` are installed.
 > In order to load mlr3keras I now have to execute an additional one additional line (see 3.), but version management is heavily simplified.
+> Note, that this seems to work on Linux but has not been extensively tested on other systems.
 
-1. Install Miniconda
+1. Install Miniconda (if not already installed)
 
 ```r
 # Execute and restart R afterwards
@@ -48,8 +49,7 @@ reticulate::install_miniconda()
 # Execute and restart R afterwards
 reticulate::conda_create(
   envname = "mlr3keras",
-  packages = "pandas",
-  python_version = "3.8"
+  packages = c("pandas", "python=3.8")
 )
 keras::install_keras("conda", tensorflow="2.3.1", envname="mlr3keras")
 ```
