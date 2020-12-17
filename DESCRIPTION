@@ -4,7 +4,7 @@ Version: 0.1.2
 Authors@R:
     c(person(given = "Florian",
              family = "Pfisterer",
-             role = "aut",
+             role = c("cre", "aut"),
              email = "pfistererf@googlemail.com",
              comment = c(ORCID = "0000-0001-8867-762X")),
       person(given = "Jacky",
@@ -13,7 +13,7 @@ Authors@R:
              email = "jackypn@gmail.com"),
       person(given = "Michel",
              family = "Lang",
-             role = c("cre", "aut"),
+             role = "aut",
              email = "michellang@gmail.com",
              comment = c(ORCID = "0000-0001-9754-0393")))
 Description: Extension for the mlr3 package to incorporate
