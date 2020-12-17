@@ -23,7 +23,7 @@ remotes::install_github("mlr-org/mlr3keras")
 
 If you encounter problems using the correct python versions, see [here](https://rstudio.github.io/reticulate/articles/versions.html).
 
-`mlr3keras` is currently tested and works using the python packages `keras (2.3.1)` and `tensorflow (2.3.0)`.
+`mlr3keras` is currently tested and works using the python packages `keras (2.4)` and `tensorflow (2.3.1)`.
 
 
 ### Setting up mlr3keras with anaconda
