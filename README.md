@@ -5,12 +5,9 @@ An extension for `mlr3` to enable using various `keras` models as learners.
 
 ## Status
 
-`mlr3keras` is in very early stages of development, and currently under development.
-
+`mlr3keras` is in very early stages, and currently under development.
 Functionality is therefore experimental and we do not guarantee *correctness*, *safety* or *stability*.
-
 It builds on top of the (awesome) R packages `reticulate`, `tensorflow` and `keras`.
-
 Comments, discussion and issues/bug reports and PR's are **highly** appreciated.
 
 If you want to **contribute**, please propose / discuss adding functionality in an issue in order to avoid unnecessary or duplicate work.
@@ -26,7 +23,44 @@ remotes::install_github("mlr-org/mlr3keras")
 
 If you encounter problems using the correct python versions, see [here](https://rstudio.github.io/reticulate/articles/versions.html).
 
-`mlr3keras` is currently tested and works using the python packages `keras (2.3.1)` and `tensorflow (2.0.0)`.
+`mlr3keras` is currently tested and works using the python packages `keras (2.3.1)` and `tensorflow (2.3.0)`.
+
+
+### Setting up mlr3keras with anaconda
+One possible workflow for working with mlr3keras is described below.
+While (1.) and (2.) are one-time setup steps, (3.) now has to be called everytime mlr3keras is loaded.
+
+> *Note from the author:*
+> The workflow described below is something that works for me personally, as I have to switch between versions and projects often. 
+> It is described for the user, as I personally find it useful. It assumes, the R packages `keras`, `tensorflow` and `reticulate` are installed.
+> In order to load mlr3keras I now have to execute an additional one additional line (see 3.), but version management is heavily simplified.
+
+1. Install Miniconda
+
+```r
+# Execute and restart R afterwards
+reticulate::install_miniconda()
+```
+
+2. Install a mlr3keras conda environment together with `keras` and `tensorflow`
+
+```r
+# Execute and restart R afterwards
+reticulate::conda_create(
+  envname = "mlr3keras",
+  packages = "pandas",
+  python_version = "3.8"
+)
+keras::install_keras("conda", tensorflow="2.3.1", envname="mlr3keras")
+```
+
+3. Loading the mlr3keras package
+
+```r
+reticulate::use_condaenv("mlr3keras")
+library(mlr3keras)
+```
+
 
 ## Usage
 
