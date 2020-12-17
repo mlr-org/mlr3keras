@@ -31,7 +31,7 @@ LearnerClassifKerasCNN = R6::R6Class("LearnerClassifKeras",
         ParamDbl$new("validation_fraction", tags = "train", default = 0.2, lower = 0, upper = 1)
       ))
       ps$values = list(
-        application = keras::application_resnet50,
+        application = keras::application_mobilenet,
         optimizer = optimizer_adam(lr = 3*10^-4),
         loss = "categorical_crossentropy",
         metrics = "accuracy",

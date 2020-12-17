@@ -2,37 +2,20 @@ context("test data generator")
 
 test_that("test data generator", {
   skip_on_os("solaris")
-  skip_if_not(tensorflow::tf_version() < "2.1")
   library("reticulate")
 
   # Create a generator from the task
-  tsk = mlr_tasks$get("iris")
+  t = mlr_tasks$get("iris")
+  g = make_generator_from_task(t, shuffle = FALSE, batch_size = 20L)
+  batch_1 = g$`__getitem__`(0L)
 
-  gen = py_iterator(
-    make_data_generator(tsk, batch_size = 73), # Make generator
-    completed = NULL)
+  expect_true(all(map_lgl(batch_1, function(x) nrow(x) == 20L)))
 
-  batch1 = generator_next(gen) # Get next batch
+  x_20 = as.matrix(t$data()[1:20, 2:5])
+  # Only equal up to 10^-6 (numerics) due to py -> R conversion
+  expect_true(sum(abs(batch_1[[1]] - x_20)) < 1e-5)
 
-  expect_equal(length(batch1[[1]]), 4) # 4 features
-  expect_equal(length(batch1[[1]]$Sepal.Width), 73) # batch_size records
-  expect_equal(length(batch1[[2]]), 73) # batch_size records
+  y_20 = to_categorical(as.integer(t$data()[[1]]) - 1)[1:20,]
+  expect_true(all(batch_1[[2]] == y_20))
 
-  batch2 = generator_next(gen) # Get next batch
-
-  expect_equal(length(batch2[[1]]), 4) # 4 features
-  expect_equal(length(batch2[[1]]$Sepal.Width), 73) # batch_size records
-  expect_equal(length(batch2[[2]]), 73) # batch_size records
-
-  batch3 = generator_next(gen) # Get last batch
-
-  expect_equal(length(batch3[[1]]), 4) # 4 features
-  expect_equal(length(batch3[[1]]$Sepal.Width), 150 - 73 - 73) # remaining records
-  expect_equal(length(batch3[[2]]), 150 - 73 - 73) # remaining records
-
-  batch4 = generator_next(gen) # Get next batch - reset
-
-  expect_equal(length(batch4[[1]]), 4) # 4 features
-  expect_equal(length(batch4[[1]]$Sepal.Width), 73) # batch_size records
-  expect_equal(length(batch4[[2]]), 73) # batch_size records
 })

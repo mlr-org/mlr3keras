@@ -154,7 +154,7 @@ class CombinedGenerator(Sequence):
     seed=None,
     batch_size=None,
 
-    def __init__(self, gen1, gen2):
+    def __init__(self, gen1, gen2, gen1_y=True, gen2_y=False):
 
         # Real time multiple input data augmentation
         assert gen1.batch_size == gen2.batch_size
@@ -166,6 +166,8 @@ class CombinedGenerator(Sequence):
 
         self.gen1 = gen1
         self.gen2 = gen2
+        self.y1 = gen1_y
+        self.y2 = gen2_y
 
     def __len__(self):
         """It is mandatory to implement it on Keras Sequence"""
@@ -173,7 +175,15 @@ class CombinedGenerator(Sequence):
 
     def __getitem__(self, index):
         """Getting items from the 2 generators and packing them, dropping first target"""
-        X1_batch, Y_batch = self.gen1.__getitem__(index)
+        X1_batch, Y1_batch = self.gen1.__getitem__(index)
         X2_batch, Y2_batch = self.gen2.__getitem__(index)
+
         X_batch = [X1_batch, X2_batch]
+
+        Y_batch = []
+        if self.y1:
+            Y_batch = Y_batch + Y1_batch
+        if self.y2:
+            Y_batch = Y_batch + Y2_batch
+
         return X_batch, Y_batch
