@@ -61,6 +61,11 @@ reticulate::use_condaenv("mlr3keras")
 library(mlr3keras)
 ```
 
+4. Installing a new package
+
+```r
+conda_install("mlr3keras", packages = "tabnet", pip = TRUE)
+```
 
 ## Usage
 

@@ -59,7 +59,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         norm_type = "group",
         num_groups = 1L,
         virtual_batch_size = NULL,
-        optimizer = tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9)),
+        optimizer = NULL, #tf$keras$optimizers$Adam(tf$keras$optimizers$schedules$ExponentialDecay(0.01, decay_steps=10000, decay_rate=0.9)),
         loss = "categorical_crossentropy",
         metrics = "accuracy"
       )
