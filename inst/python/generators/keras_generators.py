@@ -39,6 +39,7 @@ class Numpy2DArrayIterator(Iterator):
             pass
         return super(Numpy2DArrayIterator, cls).__new__(cls)
 
+
     def __init__(self,
                  x,
                  y,
@@ -123,6 +124,11 @@ class Numpy2DArrayIterator(Iterator):
                                                  batch_size,
                                                  shuffle,
                                                  seed)
+
+    def __len__(self):
+        return int(np.floor(shape(self.x)[0] / self.batch_size))
+
+
 
     def _get_batches_of_transformed_samples(self, index_array):
         batch_x = self.x[index_array]

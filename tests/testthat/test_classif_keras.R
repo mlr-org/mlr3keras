@@ -19,6 +19,7 @@ test_that("autotest binary", {
   k_clear_session()
 })
 
+
 test_that("autotest low memory generator binary", {
   model = keras_model_sequential() %>%
     layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
@@ -135,6 +136,7 @@ test_that("Learner methods", {
   unlink(fp)
   k_clear_session()
 })
+
 
 test_that("Labelswitch", {
   x = data.table(matrix(runif(1000), ncol = 1))

@@ -86,13 +86,15 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       # Set y_transform: use to_categorical, if goal is binary crossentropy drop 2nd column.
       self$architecture$set_transform("y",
         function(target, pars, model_loss) {
-          y = to_categorical(as.integer(target) - 1)
+          if (is.data.frame(target)) {
+            target = unlist(target)
+          }
+          y = to_categorical(as.integer(target) - 1, num_classes = length(levels(target)))
           if (model_loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
           return(y)
         }
       )
     },
-
 
     save = function(filepath) {
       assert_path_for_output(filepath)

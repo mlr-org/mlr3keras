@@ -8,12 +8,15 @@ make_generator_from_dataframe(
   dt,
   x_cols = NULL,
   y_cols,
+  x_transform = NULL,
+  y_transform = NULL,
   generator = keras::image_data_generator(),
   batch_size = 32L,
   shuffle = TRUE,
   seed = 1L,
   y_cols_to_categorical = TRUE,
-  subset = NULL
+  subset = NULL,
+  ignore_class_split = FALSE
 )
 }
 \arguments{
@@ -25,6 +28,12 @@ Names of features to be used. Defaults to all but y_cols.}
 
 \item{y_cols}{\code{\link{character}} \cr
 Target variable. Automatically converted to one-hot if "y_cols_to_categorical" is TRUE.}
+
+\item{x_transform}{\code{\link{function}}\cr
+Function used to transform data to a keras input format for features.}
+
+\item{y_transform}{\code{\link{function}}\cr
+Function used to transform data to a keras input format for the response.}
 
 \item{generator}{\code{\link{Python Object}} \cr
 A generator as e.g. obtained from \code{keras::image_data_generator}.
@@ -41,6 +50,9 @@ Set a seed for shuffling data.}
 
 \item{y_cols_to_categorical}{\code{\link{logical}} \cr
 Should target be converted to one-hot representation?}
+
+\item{ignore_class_split}{\code{\link{logical}} \cr
+Test whether all class labels appear in all splits.}
 }
 \description{
 Creates a Python Class that internally iterates over the data.

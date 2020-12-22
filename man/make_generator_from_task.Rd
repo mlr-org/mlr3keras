@@ -6,17 +6,26 @@
 \usage{
 make_generator_from_task(
   task,
+  x_transform = NULL,
+  y_transform = NULL,
   generator = keras::image_data_generator(),
   batch_size = 32L,
   shuffle = TRUE,
   seed = 1L,
   y_cols_to_categorical = TRUE,
-  subset = NULL
+  subset = NULL,
+  ignore_class_split = FALSE
 )
 }
 \arguments{
 \item{task}{\code{\link{Task}} \cr
 Data container to iterate over.}
+
+\item{x_transform}{\code{\link{function}}\cr
+Function used to transform data to a keras input format for features.}
+
+\item{y_transform}{\code{\link{function}}\cr
+Function used to transform data to a keras input format for the response.}
 
 \item{generator}{\code{\link{Python Object}} \cr
 A generator as e.g. obtained from \code{keras::image_data_generator}.
@@ -33,6 +42,9 @@ Set a seed for shuffling data.}
 
 \item{y_cols_to_categorical}{\code{\link{logical}} \cr
 Should target be converted to one-hot representation? Defaults to \code{TRUE}.}
+
+\item{ignore_class_split}{\code{\link{logical}} \cr
+Test whether all class labels appear in all splits.}
 }
 \description{
 Creates a Python Class that internally iterates over the data.
