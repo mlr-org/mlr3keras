@@ -8,6 +8,7 @@ from keras.utils import Sequence
 
 class Numpy2DArrayIterator(Iterator):
     """Iterator yielding data from a Numpy array.
+    (adapted from https://github.com/keras-team/keras-preprocessing)
     # Arguments
         x: Numpy array of input data or tuple.
             If tuple, the second elements is either
@@ -21,15 +22,6 @@ class Numpy2DArrayIterator(Iterator):
         shuffle: Boolean, whether to shuffle the data between epochs.
         sample_weight: Numpy array of sample weights.
         seed: Random seed for data shuffling.
-        data_format: String, one of `channels_first`, `channels_last`.
-        save_to_dir: Optional directory where to save the pictures
-            being yielded, in a viewable format. This is useful
-            for visualizing the random transformations being
-            applied, for debugging purposes.
-        save_prefix: String prefix to use for saving sample
-            images (if `save_to_dir` is set).
-        save_format: Format to use for saving sample images
-            (if `save_to_dir` is set).
         subset: Subset of data (`"training"` or `"validation"`) if
             validation_split is set in ImageDataGenerator.
         ignore_class_split: Boolean (default: False), ignore difference

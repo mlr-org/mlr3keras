@@ -281,8 +281,3 @@ make_tf_feature_cols = function(task, embed_size = NULL) {
   feature_columns = pmap(.f = make_tf_feature_column, .x = task$feature_types, list(levels = task$levels(), embed_size = embed_size))
 }
 
-get_default_embed_size = function(levels) {
-    # As a default we use the fast.ai heuristic
-    as.integer(min(600L, round(1.6 * length(levels)^0.56)))
-}
-
