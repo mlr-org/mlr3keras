@@ -1,6 +1,6 @@
 Package: mlr3keras
 Title: mlr3 Keras extension
-Version: 0.1.2
+Version: 0.1.3
 Authors@R:
     c(person(given = "Florian",
              family = "Pfisterer",

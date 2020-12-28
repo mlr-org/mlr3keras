@@ -253,3 +253,27 @@ l$param_set$values$epochs = 1L
 l$train(t$clone()$filter(1:128))
 l$predict(t$clone()$filter(129:256))
 ```
+
+## Reproducibility
+
+
+The `mlr3keras_set_seeds` function allows for reproducibility of a given piece of code. Note, that reproducibility is notoriously difficult for
+neural networks, and therefore reproducibility can not always be guaranteed.
+
+
+```{r}
+mlr3keras_set_seeds(seed = 1L)
+# Instantiate Learner
+lrn = LearnerClassifKerasFF$new()
+
+# Set hyperparameters
+lrn$param_set$values$epochs = 50
+lrn$param_set$values$layer_units = c(12, 12)
+lrn$param_set$values$validation_split = 0.2
+
+# Train and predict
+lrn$train(mlr_tasks$get("iris"))
+lrn$predict(mlr_tasks$get("iris"))$score()
+
+lrn$model$history
+```

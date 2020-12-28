@@ -1,3 +1,16 @@
+# mlr3keras 0.1.3
+
+
+## Generators
+* Re-worked generators, now use a python implementation.
+  This required re-designing generator constructors and so on.
+
+
+## Learners
+* Shaped MLP 1 & 2 Learners for Regression and Classification
+* mlr3keras can now deal with images via the new `KerasCNN` learner.
+
+
 # mlr3keras 0.1.2
 
 ## Learners

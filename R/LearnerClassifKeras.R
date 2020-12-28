@@ -146,7 +146,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
         generators = make_train_valid_generators(
           task = task,
           x_transform = function(features) self$architecture$transforms$x(features, pars = pars),
-          y_transform = function(target) self$architecture$transforms$y(target,   pars = pars, model_loss = model$loss),
+          y_transform = function(target) self$architecture$transforms$y(target, pars = pars, model_loss = model$loss),
           validation_split = pars$validation_split,
           batch_size = pars$batch_size)
 

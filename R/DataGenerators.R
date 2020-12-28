@@ -82,40 +82,7 @@ make_generator_from_dataframe = function(dt, x_cols=NULL, y_cols,
   } else {
     y = y_transform(dt[, y_cols, with = FALSE])
   }
-
   make_generator_from_xy(x, y, generator, batch_size=as.integer(batch_size), shuffle=assert_flag(shuffle),seed=as.integer(seed), subset=subset, ignore_class_split=ignore_class_split)
-}
-
-
-#' Make a DataGenerator from a x,y matrices
-#'
-#' Creates a Python Class that internally iterates over the data.
-#' @param x [`matrix`] \cr
-#'   Numeric matrix of features.
-#' @param y [`matrix`] \cr
-#'   Numeric matrix of target, already one-hot transformed.
-#' @param generator [`Python Object`] \cr
-#'   A generator as e.g. obtained from `keras::image_data_generator`.
-#'   Used for consistent train-test splits.
-#' @param batch_size [`integer`] \cr
-#'   Batch size.
-#' @param shuffle [`logical`] \cr
-#'   Should data be shuffled?
-#' @param seed [`integer`] \cr
-#'   Set a seed for shuffling data.
-#' @param ignore_class_split [`logical`] \cr
-#'   Test whether all class labels appear in all splits.
-#' @export
-make_generator_from_xy = function(x, y,
-  generator = keras::image_data_generator(), batch_size=32L,
-  shuffle=TRUE, seed=1L, subset=NULL,
-  ignore_class_split=FALSE) {
-
-  python_path <- system.file("python", package = "mlr3keras")
-  generators <- reticulate::import_from_path("generators", path = python_path)
-  generators$Numpy2DArrayIterator(x, y, generator, batch_size=as.integer(batch_size),
-    shuffle=assert_flag(shuffle),seed=as.integer(seed), subset=subset,
-    ignore_class_split=ignore_class_split)
 }
 
 #' Make a DataGenerator from a [mlr3::Task]
@@ -149,6 +116,38 @@ make_generator_from_task = function(task, x_transform = NULL, y_transform = NULL
      y_cols_to_categorical = y_cols_to_categorical, subset = subset,
      ignore_class_split=ignore_class_split
   )
+}
+
+#' Make a DataGenerator from a x,y matrices
+#'
+#' Creates a Python Class that internally iterates over the data.
+#' @param x [`matrix`] \cr
+#'   Numeric matrix of features.
+#' @param y [`matrix`] \cr
+#'   Numeric matrix of target, already one-hot transformed.
+#' @param generator [`Python Object`] \cr
+#'   A generator as e.g. obtained from `keras::image_data_generator`.
+#'   Used for consistent train-test splits.
+#' @param batch_size [`integer`] \cr
+#'   Batch size.
+#' @param shuffle [`logical`] \cr
+#'   Should data be shuffled?
+#' @param seed [`integer`] \cr
+#'   Set a seed for shuffling data.
+#' @param ignore_class_split [`logical`] \cr
+#'   Test whether all class labels appear in all splits.
+#' @export
+make_generator_from_xy = function(x, y,
+  generator = keras::image_data_generator(), batch_size=32L,
+  shuffle=TRUE, seed=1L, subset=NULL,
+  ignore_class_split=FALSE) {
+
+  if(!check_matrix(x)) stop("Iterators currently only work with matrix inputs, not embeddings!")
+  python_path <- system.file("python", package = "mlr3keras")
+  generators <- reticulate::import_from_path("generators", path = python_path)
+  generators$Numpy2DArrayIterator(x, y, generator, batch_size=as.integer(batch_size),
+    shuffle=assert_flag(shuffle),seed=as.integer(seed), subset=subset,
+    ignore_class_split=ignore_class_split)
 }
 
 #' Make a DataGenerator that merges multiple DataGenerators into one.

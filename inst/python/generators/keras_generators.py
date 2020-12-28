@@ -126,7 +126,7 @@ class Numpy2DArrayIterator(Iterator):
                                                  seed)
 
     def __len__(self):
-        return int(np.floor(np.shape(self.x)[0] / self.batch_size))
+        return int(np.ceil(np.shape(self.x)[0] / self.batch_size))
 
 
 
