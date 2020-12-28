@@ -97,7 +97,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       self$state$model$model = keras::load_model_hdf5(filepath)
     },
     plot = function() {
-      if (is.null(self$model)) stop("Model must be trained before saving")
+      if (is.null(self$model)) stop("Model must be trained before plotting")
       plot(self$model$history)
     },
     lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
@@ -130,6 +130,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
           validation_split = pars$validation_split,
           verbose = as.integer(pars$verbose),
           callbacks = pars$callbacks)
+
       } else {
 
         generators = make_train_valid_generators(

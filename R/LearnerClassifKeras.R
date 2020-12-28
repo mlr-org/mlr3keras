@@ -106,7 +106,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       self$state$model$model = keras::load_model_hdf5(filepath)
     },
     plot = function() {
-      if (is.null(self$model)) stop("Model must be trained before saving")
+      if (is.null(self$model)) stop("Model must be trained before plotting")
       plot(self$model$history)
     },
     lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
@@ -129,6 +129,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
       # Either fit directly on data or create a generator and fit from there
       if (!pars$low_memory) {
+
         x = self$architecture$transforms$x(features, pars)
         y = self$architecture$transforms$y(target, pars, model_loss = model$loss)
         history = invoke(keras::fit,
@@ -141,6 +142,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
           validation_split = pars$validation_split,
           verbose = as.integer(pars$verbose),
           callbacks = pars$callbacks)
+
       } else {
 
         generators = make_train_valid_generators(
