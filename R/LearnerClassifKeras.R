@@ -111,7 +111,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
     },
     lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
       data = find_lr(self$clone(), task, epochs, lr_min, lr_max, batch_size)
-      plot_lr(data)
+      plot_find_lr(data)
     }
   ),
 
@@ -132,6 +132,7 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
         x = self$architecture$transforms$x(features, pars)
         y = self$architecture$transforms$y(target, pars, model_loss = model$loss)
+
         history = invoke(keras::fit,
           object = model,
           x = x,
@@ -141,7 +142,9 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
           batch_size = as.integer(pars$batch_size),
           validation_split = pars$validation_split,
           verbose = as.integer(pars$verbose),
-          callbacks = pars$callbacks)
+          callbacks = pars$callbacks,
+          shuffle = TRUE
+        )
 
       } else {
 
