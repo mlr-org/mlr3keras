@@ -35,7 +35,7 @@ Function used to transform data to a keras input format for features.}
 \item{y_transform}{\code{\link{function}}\cr
 Function used to transform data to a keras input format for the response.}
 
-\item{generator}{\code{\link{Python Object}} \cr
+\item{generator}{\verb{Python Object} \cr
 A generator as e.g. obtained from \code{keras::image_data_generator}.
 Used for consistent train-test splits.}
 

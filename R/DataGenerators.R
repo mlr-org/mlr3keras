@@ -43,7 +43,7 @@ make_train_valid_generators = function(task, x_transform, y_transform, validatio
 #' @param y_cols [`character`] \cr
 #'   Target variable. Automatically converted to one-hot if "y_cols_to_categorical" is TRUE.
 #' @template params_transforms
-#' @param generator [`Python Object`] \cr
+#' @param generator `Python Object` \cr
 #'   A generator as e.g. obtained from `keras::image_data_generator`.
 #'   Used for consistent train-test splits.
 #' @param batch_size [`integer`] \cr
@@ -91,7 +91,7 @@ make_generator_from_dataframe = function(dt, x_cols=NULL, y_cols,
 #' @param task [`Task`] \cr
 #'   Data container to iterate over.
 #' @template params_transforms
-#' @param generator [`Python Object`] \cr
+#' @param generator `Python Object` \cr
 #'   A generator as e.g. obtained from `keras::image_data_generator`.
 #'   Used for consistent train-test splits.
 #' @param batch_size [`integer`] \cr
@@ -125,7 +125,7 @@ make_generator_from_task = function(task, x_transform = NULL, y_transform = NULL
 #'   Numeric matrix of features.
 #' @param y [`matrix`] \cr
 #'   Numeric matrix of target, already one-hot transformed.
-#' @param generator [`Python Object`] \cr
+#' @param generator `Python Object` \cr
 #'   A generator as e.g. obtained from `keras::image_data_generator`.
 #'   Used for consistent train-test splits.
 #' @param batch_size [`integer`] \cr
@@ -166,9 +166,9 @@ make_generator_from_xy = function(x, y,
 #' or where `Y_batch` is [Y1_batch, Y2_batch] if both `gen._y` are `TRUE`, else just
 #' e.g. Y1_batch (default).
 #'
-#' @param gen1 [`DataGenerator`] \cr
+#' @param gen1 `DataGenerator` \cr
 #'   First Data Generator to  loop over.
-#' @param gen2 [`DataGenerator`] \cr
+#' @param gen2 `DataGenerator` \cr
 #'   Second Data Generator to  loop over.
 #' @param gen1_y [`logical`] \cr
 #'   Should target variable of `gen1` be returned? Default `TRUE`.

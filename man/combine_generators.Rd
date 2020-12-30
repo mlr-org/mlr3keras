@@ -7,10 +7,10 @@
 combine_generators(gen1, gen2, gen1_y = TRUE, gen2_y = FALSE)
 }
 \arguments{
-\item{gen1}{\code{\link{DataGenerator}} \cr
+\item{gen1}{\code{DataGenerator} \cr
 First Data Generator to  loop over.}
 
-\item{gen2}{\code{\link{DataGenerator}} \cr
+\item{gen2}{\code{DataGenerator} \cr
 Second Data Generator to  loop over.}
 
 \item{gen1_y}{\code{\link{logical}} \cr

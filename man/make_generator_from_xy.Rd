@@ -22,7 +22,7 @@ Numeric matrix of features.}
 \item{y}{\code{\link{matrix}} \cr
 Numeric matrix of target, already one-hot transformed.}
 
-\item{generator}{\code{\link{Python Object}} \cr
+\item{generator}{\verb{Python Object} \cr
 A generator as e.g. obtained from \code{keras::image_data_generator}.
 Used for consistent train-test splits.}
 
