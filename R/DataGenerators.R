@@ -36,7 +36,7 @@ make_train_valid_generators = function(task, x_transform, y_transform, validatio
 #' Make a DataGenerator from a data.frame or data.table
 #'
 #' Creates a Python Class that internally iterates over the data.
-#' @param dt [`data.frame`|`data.table`] \cr
+#' @param dt [`data.frame`]|[`data.table`] \cr
 #'   Data container to iterate over.
 #' @param x_cols [`character`] \cr
 #'   Names of features to be used. Defaults to all but y_cols.

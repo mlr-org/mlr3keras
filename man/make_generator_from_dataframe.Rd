@@ -20,7 +20,7 @@ make_generator_from_dataframe(
 )
 }
 \arguments{
-\item{dt}{\link[=`data.frame`|`data.table`]{\code{data.frame}|\code{data.table}} \cr
+\item{dt}{\code{\link{data.frame}}|\code{\link{data.table}} \cr
 Data container to iterate over.}
 
 \item{x_cols}{\code{\link{character}} \cr
