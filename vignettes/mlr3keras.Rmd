@@ -38,6 +38,7 @@ to look for currently working aspects of the package.
 For other aspects, we aim to sketch proposed functionality in order to enable discussion.
 
 ```{r, message=FALSE}
+library("keras")
 library("mlr3")
 library("mlr3keras")
 ```
