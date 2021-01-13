@@ -70,4 +70,4 @@ LazyData: true
 NeedsCompilation: no
 Roxygen: list(markdown = TRUE, r6 = FALSE)
 RoxygenNote: 7.1.1
-SystemRequirements: Keras >= 2.0 (https://keras.io)
+SystemRequirements: Keras >= 2.3 (https://keras.io)
