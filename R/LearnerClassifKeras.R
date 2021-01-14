@@ -171,14 +171,13 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
     .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
-
       features = task$data(cols = task$feature_names)
       newdata = self$architecture$transforms$x(features, pars)
       pf_pars = self$param_set$get_values(tags = "predict_fun")
       if (inherits(self$model$model, "keras.engine.sequential.Sequential")) {
         p = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pf_pars)
       } else {
-        p = invoke(self$model$model$predict, x = newdata, .args = pf_pars)
+        p = invoke(predict, self$model$model, x = newdata, .args = pf_pars)
       }
       fixup_target_levels_prediction_classif(p, task, self$predict_type)
     }

@@ -84,7 +84,12 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
         man = assert_character(man)
       )
       # Set y_transform
-      self$architecture$set_transform("y", function(target, pars) {as.numeric(target)})
+      self$architecture$set_transform("y", function(target, pars) {
+          if (is.data.frame(target)) {
+            target = unlist(target)
+          }
+          as.numeric(target)
+      })
     },
 
     save = function(filepath) {
@@ -114,12 +119,15 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       model = self$architecture$get_model(task, pars)
       # Custom transformation depending on the model.
       # Could be generalized at some point.
-      features = task$data(cols = task$feature_names)
-      target = task$data(cols = task$target_names)[[task$target_names]]
 
       if (!pars$low_memory) {
+
+        features = task$data(cols = task$feature_names)
+        target = task$data(cols = task$target_names)[[task$target_names]]
+
         x = self$architecture$transforms$x(features, pars)
         y = self$architecture$transforms$y(target, pars)
+
         history = invoke(keras::fit,
           object = model,
           x = x,
@@ -162,7 +170,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       pars = pars[intersect(names(pars), self$keras_predict_pars)]
 
       if (self$predict_type == "response") {
-        p = invoke(self$model$model$predict, x = newdata, .args = pars)
+        p = invoke(predict, self$model$model, x = newdata, .args = pars)
         PredictionRegr$new(task = task, response = drop(p))
       }
     }
