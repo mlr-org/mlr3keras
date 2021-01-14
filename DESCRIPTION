@@ -21,7 +21,7 @@ Description: Extension for the mlr3 package to incorporate
 License: LGPL-3
 URL: https://github.com/mlr-org/mlr3keras
 BugReports: https://github.com/mlr-org/mlr3keras/issues
-StagedInstall: yes
+StagedInstall: no
 Config/reticulate:
   list(
     packages = list(
