@@ -42,6 +42,7 @@ While (1.) and (2.) are one-time setup steps, (3.) now has to be called everytim
 # Execute and restart R afterwards
 reticulate::install_miniconda()
 ```
+> NOTE: It might make sense, to set the `RETICULATE_PYTHON` environment variable to your miniconda / Anaconda installation path as explained [here](https://rstudio.github.io/reticulate/articles/versions.html).
 
 2. Install a mlr3keras conda environment together with `keras` and `tensorflow`
 
