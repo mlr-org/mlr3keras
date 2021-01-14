@@ -55,6 +55,9 @@ make_train_valid_generators = function(task, x_transform, y_transform, validatio
 #'   Should target be converted to one-hot representation?
 #' @param ignore_class_split [`logical`] \cr
 #'   Test whether all class labels appear in all splits.
+#' @param subset [`character`] \cr
+#'   Should samples be generated from 'training' or 'validation' set?
+#'   Only applicable together with a 'generator'.
 #' @export
 make_generator_from_dataframe = function(dt, x_cols=NULL, y_cols,
   x_transform = NULL, y_transform = NULL,
@@ -103,6 +106,9 @@ make_generator_from_dataframe = function(dt, x_cols=NULL, y_cols,
 #'   Should target be converted to one-hot representation? Defaults to `TRUE`.
 #' @param ignore_class_split [`logical`] \cr
 #'   Test whether all class labels appear in all splits.
+#' @param subset [`character`] \cr
+#'   Should samples be generated from 'training' or 'validation' set?
+#'   Only applicable together with a 'generator'.
 #' @export
 make_generator_from_task = function(task, x_transform = NULL, y_transform = NULL,
   generator = keras::image_data_generator(), batch_size=32L, shuffle=TRUE,
@@ -135,6 +141,9 @@ make_generator_from_task = function(task, x_transform = NULL, y_transform = NULL
 #'   Set a seed for shuffling data.
 #' @param ignore_class_split [`logical`] \cr
 #'   Test whether all class labels appear in all splits.
+#' @param subset [`character`] \cr
+#'   Should samples be generated from 'training' or 'validation' set?
+#'   Only applicable together with a 'generator'.
 #' @export
 make_generator_from_xy = function(x, y,
   generator = keras::image_data_generator(), batch_size=32L,
@@ -162,7 +171,7 @@ make_generator_from_xy = function(x, y,
 #'   list(X1_batch, X2_batch),
 #'   Y_batch
 #' )
-#' or where `Y_batch` is [Y1_batch, Y2_batch] if both `gen._y` are `TRUE`, else just
+#' or where `Y_batch` is Y1_batch, Y2_batch if both `gen._y` are `TRUE`, else just
 #' e.g. Y1_batch (default).
 #'
 #' @param gen1 `DataGenerator` \cr

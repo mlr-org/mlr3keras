@@ -30,6 +30,6 @@ list(
 list(X1_batch, X2_batch),
 Y_batch
 )
-or where \code{Y_batch} is \link{Y1_batch, Y2_batch} if both \code{gen._y} are \code{TRUE}, else just
+or where \code{Y_batch} is Y1_batch, Y2_batch if both \code{gen._y} are \code{TRUE}, else just
 e.g. Y1_batch (default).
 }

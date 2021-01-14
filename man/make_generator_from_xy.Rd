@@ -35,6 +35,10 @@ Should data be shuffled?}
 \item{seed}{\code{\link{integer}} \cr
 Set a seed for shuffling data.}
 
+\item{subset}{\code{\link{character}} \cr
+Should samples be generated from 'training' or 'validation' set?
+Only applicable together with a 'generator'.}
+
 \item{ignore_class_split}{\code{\link{logical}} \cr
 Test whether all class labels appear in all splits.}
 }

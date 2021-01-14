@@ -1,10 +1,10 @@
 # mlr3keras 0.1.3
 
+Now works with keras > 2.3 and tensorflow > 2.3.
 
 ## Generators
 * Re-worked generators, now use a python implementation.
   This required re-designing generator constructors and so on.
-
 
 ## Learners
 * Shaped MLP 1 & 2 Learners for Regression and Classification
