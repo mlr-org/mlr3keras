@@ -10,7 +10,6 @@
 #' @export
 make_train_valid_generators = function(task, x_transform, y_transform, validation_split = 1/3, batch_size = 128L) { # nocov start
 
-
   gen = keras::image_data_generator(validation_split = validation_split)
   train_gen = make_generator_from_task(task, x_transform, y_transform, generator = gen, batch_size = batch_size, subset = "training", ignore_class_split=TRUE)
   train_steps = train_gen$`__len__`()
