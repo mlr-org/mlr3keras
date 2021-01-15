@@ -23,9 +23,9 @@ jobs:
         config:
           # use a different tic template type if you do not want to build on all listed platforms
           - { os: windows-latest, r: "release" }
-          - { os: macOS-latest, r: "release", pkgdown: "true", latex: "true" }
+          - { os: macOS-latest, r: "release"}
           - { os: ubuntu-latest, r: "devel" }
-          - { os: ubuntu-latest, r: "release" }
+          - { os: ubuntu-latest, r: "release", pkgdown: "true", latex: "true" }
 
     env:
       # otherwise remotes::fun() errors cause the build to fail. Example: Unavailability of binaries
@@ -82,9 +82,21 @@ jobs:
           Rscript -e "if (!requireNamespace('remotes')) install.packages('remotes', type = 'source')"
           Rscript -e "if (getRversion() < '3.2' && !requireNamespace('curl')) install.packages('curl', type = 'source')"
 
-      - name: "[Stage] [Linux] Install curl"
+      - name: "[Stage] [Linux] Install curl and libgit2"
         if: runner.os == 'Linux'
-        run: sudo apt install libcurl4-openssl-dev
+        run: sudo apt install libcurl4-openssl-dev libgit2-dev
+
+      - name: "[Stage] [macOS] Install libgit2"
+        if: runner.os == 'macOS'
+        run: brew install libgit2
+
+      - name: "[Stage] [macOS] Install system libs for pkgdown"
+        if: runner.os == 'macOS' && matrix.config.pkgdown != ''
+        run: brew install harfbuzz fribidi
+
+      - name: "[Stage] [Linux] Install system libs for pkgdown"
+        if: runner.os == 'Linux' && matrix.config.pkgdown != ''
+        run: sudo apt install libharfbuzz-dev libfribidi-dev
 
       - name: "[Stage] Install"
         if: matrix.config.os != 'macOS-latest' || matrix.config.r != 'devel'
