@@ -86,13 +86,15 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       # Set y_transform: use to_categorical, if goal is binary crossentropy drop 2nd column.
       self$architecture$set_transform("y",
         function(target, pars, model_loss) {
-          y = to_categorical(as.integer(target) - 1)
+          if (is.data.frame(target)) {
+            target = unlist(target)
+          }
+          y = to_categorical(as.integer(target) - 1, num_classes = length(levels(target)))
           if (model_loss == "binary_crossentropy") y = y[, 1, drop = FALSE]
           return(y)
         }
       )
     },
-
 
     save = function(filepath) {
       assert_path_for_output(filepath)
@@ -104,12 +106,12 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
       self$state$model$model = keras::load_model_hdf5(filepath)
     },
     plot = function() {
-      if (is.null(self$model)) stop("Model must be trained before saving")
+      if (is.null(self$model)) stop("Model must be trained before plotting")
       plot(self$model$history)
     },
     lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
       data = find_lr(self$clone(), task, epochs, lr_min, lr_max, batch_size)
-      plot_lr(data)
+      plot_find_lr(data)
     }
   ),
 
@@ -127,8 +129,10 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
       # Either fit directly on data or create a generator and fit from there
       if (!pars$low_memory) {
+
         x = self$architecture$transforms$x(features, pars)
         y = self$architecture$transforms$y(target, pars, model_loss = model$loss)
+
         history = invoke(keras::fit,
           object = model,
           x = x,
@@ -138,13 +142,16 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
           batch_size = as.integer(pars$batch_size),
           validation_split = pars$validation_split,
           verbose = as.integer(pars$verbose),
-          callbacks = pars$callbacks)
+          callbacks = pars$callbacks,
+          shuffle = TRUE
+        )
+
       } else {
 
         generators = make_train_valid_generators(
           task = task,
           x_transform = function(features) self$architecture$transforms$x(features, pars = pars),
-          y_transform = function(target) self$architecture$transforms$y(target,   pars = pars, model_loss = model$loss),
+          y_transform = function(target) self$architecture$transforms$y(target, pars = pars, model_loss = model$loss),
           validation_split = pars$validation_split,
           batch_size = pars$batch_size)
 
@@ -164,14 +171,13 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
     .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
-
       features = task$data(cols = task$feature_names)
       newdata = self$architecture$transforms$x(features, pars)
       pf_pars = self$param_set$get_values(tags = "predict_fun")
       if (inherits(self$model$model, "keras.engine.sequential.Sequential")) {
         p = invoke(keras::predict_proba, self$model$model, x = newdata, .args = pf_pars)
       } else {
-        p = invoke(self$model$model$predict, x = newdata, .args = pf_pars)
+        p = invoke(predict, self$model$model, x = newdata, .args = pf_pars)
       }
       fixup_target_levels_prediction_classif(p, task, self$predict_type)
     }

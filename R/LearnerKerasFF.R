@@ -133,8 +133,8 @@ KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
     initialize = function(build_arch_fn, param_set) {
       super$initialize(build_arch_fn = build_arch_fn, param_set = param_set,
         x_transform = function(features, pars) {
-          if (pars$use_embedding) keras_array(reshape_data_embedding(features)$data)
-          else as.matrix(model.matrix(~. - 1 , features))
+          if (pars$use_embedding) reshape_data_embedding(features)$data
+          else as.matrix(model.matrix(~. - 1, features))
       })
     }
   )
@@ -194,10 +194,10 @@ build_keras_ff_model = function(task, pars) {
     if (pars$use_dropout) model = model %>% layer_dropout(pars$dropout)
   }
   # Output layer
-  if (output_shape == 1L && inherits(task, "TaskClassif") && pars$output_activation != "sigmoid")
-    warning("Only one output is specified but no 'sigmoid' output for TaskClassif is specified!")
-  else
-    model = model %>% layer_dense(units = output_shape, activation = pars$output_activation)
+  # if (output_shape == 1L && inherits(task, "TaskClassif") && pars$output_activation != "sigmoid")
+  #   warning("Only one output is specified but no 'sigmoid' output for TaskClassif is specified!")
+  # else
+  model = model %>% layer_dense(units = output_shape, activation = pars$output_activation)
 
   if (pars$use_embedding) model = keras_model(inputs = embd$inputs, outputs = model)
 

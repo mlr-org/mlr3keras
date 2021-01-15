@@ -33,12 +33,11 @@ cb_es = function(monitor = 'val_loss', patience = 3L) {
 #'
 #' @rdname callbacks
 #' @export
-cb_lr_scheduler_cosine_anneal = function(eta_max = 0.01, T_max = 10, T_mult = 2, M_mult = 1, eta_min = 0) {
+cb_lr_scheduler_cosine_anneal = function(eta_max = 0.01, T_max = 10.0, T_mult = 2.0, M_mult = 1.0, eta_min = 0.0) {
   callback_learning_rate_scheduler(
-    tf$keras$experimental$CosineDecayRestarts(eta_max, T_max, t_mul = T_mult, m_mul = M_mult, alpha = eta_min)
+    k$experimental$CosineDecayRestarts(eta_max, T_max, t_mul = T_mult, m_mul = M_mult, alpha = eta_min)
   )
 }
-
 
 #' Learning rate scheduler callback: exponential decay
 #'
@@ -46,7 +45,7 @@ cb_lr_scheduler_cosine_anneal = function(eta_max = 0.01, T_max = 10, T_mult = 2,
 #' @export
 cb_lr_scheduler_exponential_decay = function() {
   callback_learning_rate_scheduler(function(epoch, lr) {
-    lr * 1/(1 * epoch)})
+    lr * 1.0/(1.0 * epoch)})
 }
 
 #' `cb_tb`: Tensorboard callback
@@ -66,7 +65,6 @@ cb_lr_log = function() {
   }
   callback_lambda(on_batch_begin=callback_lr_log)
 }
-
 
 #' `LogMetrics`: Batch-wise Metrics Logger Callback
 #' Note, that the specified metric must be additionally supplied to

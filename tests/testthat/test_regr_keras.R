@@ -21,7 +21,6 @@ test_that("autotest regression custom model", {
 })
 
 test_that("autotest low memory generator", {
-  skip_if_not(tensorflow::tf_version() < "2.1", "R Generators only work for tensorflow < 2.1")
   skip_on_os("solaris")
   model = keras_model_sequential() %>%
     layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%
@@ -42,7 +41,6 @@ test_that("autotest low memory generator", {
 })
 
 test_that("autotest low memory zero validation_split", {
-  skip_if_not(tensorflow::tf_version() < "2.1", "R Generators only work for tensorflow < 2.1")
   skip_on_os("solaris")
   model = keras_model_sequential() %>%
     layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%

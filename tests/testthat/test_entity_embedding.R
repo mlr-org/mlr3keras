@@ -7,7 +7,8 @@ test_that("entity embedding works for all tasks", {
     embds = make_embedding(task)
     expect_list(embds, len = 2L, names = "named")
     dt = task$feature_types[type %in% c("character", "factor", "ordered"), ]
-    expect_true(length(embds$inputs) == nrow(dt) + 1)
+    has_nonfactors = nrow(task$feature_types[!(type %in% c("character", "factor", "ordered")), ]) > 0
+    expect_true(length(embds$inputs) == nrow(dt) + has_nonfactors)
     expect_class(embds$layers, "tensorflow.tensor")
     map(embds$inputs, expect_class, "tensorflow.tensor")
   }
@@ -20,7 +21,8 @@ test_that("entity embedding works for all tasks", {
     embds = reshape_task_embedding(task)
     expect_list(embds, len = 2L, names = "named")
     dt = task$feature_types[type %in% c("character", "factor", "ordered"), ]
+    has_nonfactors = nrow(task$feature_types[!(type %in% c("character", "factor", "ordered")), ]) > 0
     expect_true(length(embds$fct_levels) == nrow(dt))
-    expect_true(length(embds$fct_levels) == length(embds$data) - 1)
+    expect_true(length(embds$fct_levels) == length(embds$data) - has_nonfactors)
   }
 })

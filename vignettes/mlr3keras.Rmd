@@ -1,9 +1,10 @@
 ---
+title: "First steps with mlr3keras"
 author: "Florian Pfisterer"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{"First Steps with mlr3keras"}
+  %\VignetteIndexEntry{First steps with mlr3keras}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,7 +15,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
 
 # Introduction to mlr3keras
 
@@ -38,6 +38,7 @@ to look for currently working aspects of the package.
 For other aspects, we aim to sketch proposed functionality in order to enable discussion.
 
 ```{r, message=FALSE}
+library("keras")
 library("mlr3")
 library("mlr3keras")
 ```
@@ -45,7 +46,7 @@ library("mlr3keras")
 ## mlr3keras in 5 lines
 
 `mlr3keras` offers several pre-configured learner's and model architectures.
-They can be used like any other `Learner`.
+They can be used like any other `Learner` in `mlr3`.
 
 ```{r, message=FALSE}
 # Instantiate Learner
@@ -53,21 +54,22 @@ lrn = LearnerClassifKerasFF$new()
 
 # Set hyperparameters
 lrn$param_set$values$epochs = 50
-lrn$param_set$values$layer_units = c(12, 30)
+lrn$param_set$values$optimizer = optimizer_adam(lr = 0.05)
+lrn$param_set$values$layer_units = c(8, 8)
+
 
 # Train and predict
 lrn$train(mlr_tasks$get("iris"))
 lrn$predict(mlr_tasks$get("iris"))
 ```
 
-
 ## A simple first example
 
 This first simple example showcases how to use `mlr3keras` in its simplest form.
 We use it together with `mlr3pipelines` in order to fit a model on a dataset,
-in this case `pima` with missing values.
+in this case the `pima` classification `Task` with missing values.
 
-Before we fit the model, we thus impute every missing variable with its mean.
+Before we fit the model, we thus impute every missing variable using its mean.
 
 Before we build up the pipeline, we define and `compile` the model we are going to use.
 This follows the `keras` API, see for example the [RStudio Keras Documentation](https://keras.rstudio.com/) for details.
@@ -83,6 +85,9 @@ layer_dense(units = 1L, activation = "sigmoid") %>%
     metrics = "accuracy")
 ```
 
+
+
+
 Afterwards, we build up the pipeline using the `classif.keras` learner.
 We set the `model` defined above as a hyperparameter, as well as the
 number of `epochs` we want to train our model for.
@@ -96,26 +101,45 @@ po_lrn$param_set$values$epochs = 10L
 pipe = po_imp %>>% po_lrn
 ```
 
-We now have a finished `pipe`, a `Pipeline` which can be used, either as a `Learner` in
+We now have a finished `Pipeline`, which can be used, either as a `Learner` in
 conjunction with `GraphLearner` or simply to train and predict.
 
 ```{r,message=FALSE}
 pipe$train(mlr_tasks$get("pima"))
 ```
 
+or
+
+```{r, eval=FALSE, message=FALSE}
+l = GraphLearner$new(pipe)
+l$train(mlr_tasks$get("pima"))
+```
+
 The trained model gives us access to different methods for further inspection:
 
+
+
+## Utilities and plots
+
+
 ```{r}
-pipe$pipeops$classif.keras
+lrn$plot()
+```
+
+```{r}
+lrn$lr_find(mlr_tasks$get("iris"), epochs = 20L, batch_size = 32L)
+```
+
+
+```{r, eval=FALSE}
+lrn$save("nnet.hdf5")
 ```
 
 ## Tuning over model architectures
 
 Consider the following scenario:
-We define multiple `architectures`, and now we aim to find out which
-architecture works best.
-`mlr3tuning` does not directly allow to tune over architectures, and we have to use a little
-trick for now:
+We define multiple `architectures`, and now we aim to find out which architecture works best. As architecture
+designs very often can not be flattened to a table, but `mlr3tuning` expects a somewhat tabular space to optimize over, we create a function, that generates a `keras` model from our inputs.
 
 Assume our architectures can be obtained from a function that looks as follows:
 
@@ -161,7 +185,7 @@ ps = ParamSet$new(list(
 ))
 ps$trafo = function(x, param_set) {
       x$model = get_keras_model(x$arch, x$lr)
-      x$lr = x$arch = NULL
+      x$lr = x$arch = NULL # delete temp. params
       return(x)
 }
 ```
@@ -189,7 +213,7 @@ tuner$optimize(instance)
 
 ## Entity Embeddings
 
-Entity embeddings are naturally embedded into the `kerasff` learners.
+Entity embeddings (Guo et al., 2016) are naturally embedded into the `kerasff` learners. Embeddings can be enabled in `kerasff`by setting the `use_embeddings` parameter to `TRUE` (default), settings can be adjusted via the `embed_*` hyperparameters.
 
 ## Custom Optimizers & Activation Functions
 
@@ -214,4 +238,60 @@ kr = import("keras_radam")
 radam = kr$training$RAdamOptimizer()
 lrn = lrn("classif.kerasff", predict_type = "prob", epochs = 3L, optimizer = radam)
 lrn$train(mlr_tasks$get("iris"))
+```
+
+
+## CNN on Imagenette
+
+Data was downloaded from here: [fastai/imagenette](https://github.com/fastai/imagenette) and extracted to a directory.
+The `imagepathdf_from_imagenet_dir` function converts the folder structure to a `data.table` containing
+filepaths and associated classes. The path is converted to a character string of class `imagepath` internally,
+which enables `mlr3` to recognize the character as an image path.
+This allows us to defer reading images into memory to `keras`, making large datasets manageable from
+within R.
+
+```{r, eval = FALSE}
+library(mlr3)
+library(mlr3misc)
+library(data.table)
+
+# dir is a path to the extracted images
+dir = "~/Downloads/imagenette2-160/train"
+dt = imagepathdf_from_imagenet_dir(dir)
+t = TaskClassif$new(id = "imagenette", backend = dt, target="class")
+dplyr::tibble(head(t$data()))
+```
+
+Now we can train and predict using the `LearnerClassifKerasCNN`.
+
+```{r, eval = FALSE}
+l = LearnerClassifKerasCNN$new()
+l$param_set$values$epochs = 1L
+l$param_set$values$application = keras::application_mobilenet
+l$train(t$clone()$filter(1:128))
+l$predict(t$clone()$filter(129:256))
+```
+
+## Reproducibility
+
+
+The `mlr3keras_set_seeds` function allows for reproducibility of a given piece of code. Note, that reproducibility is notoriously difficult for
+neural networks, and therefore reproducibility can not always be guaranteed.
+
+
+```{r}
+mlr3keras_set_seeds(seed = 1L)
+# Instantiate Learner
+lrn = LearnerClassifKerasFF$new()
+
+# Set hyperparameters
+lrn$param_set$values$epochs = 50
+lrn$param_set$values$layer_units = c(12, 12)
+lrn$param_set$values$validation_split = 0.2
+
+# Train and predict
+lrn$train(mlr_tasks$get("iris"))
+lrn$predict(mlr_tasks$get("iris"))$score()
+
+lrn$model$history
 ```

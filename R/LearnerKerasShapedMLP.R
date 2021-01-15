@@ -184,10 +184,11 @@ build_shaped_mlp = function(task, pars) {
      n_neurons_layer = ceiling(n_neurons_layer - (pars$n_max - output_shape) / (pars$n_layers - 1L))
   }
   # Output layer
-  if (output_shape == 1L)
+  if (output_shape == 1L && inherits(task, "TaskClassif")) {
     model = model %>% layer_dense(units = output_shape, activation = "sigmoid")
-  else
+  } else {
     model = model %>% layer_dense(units = output_shape, activation = pars$output_activation)
+  }
 
   if (pars$use_embedding) model = keras_model(inputs = embd$inputs, outputs = model)
 

@@ -53,8 +53,8 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         relaxation_factor = 1.0,
         sparsity_coefficient = 10^-5,
         num_decision_steps = 2L,
-        output_dim = 4L,
-        feature_dim = 4L,
+        output_dim = 32L,
+        feature_dim = 64L,
         epsilon = 10^-5,
         norm_type = "group",
         num_groups = 1L,
@@ -135,8 +135,8 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
         relaxation_factor = 1.0,
         sparsity_coefficient = 10^-5,
         num_decision_steps = 2L,
-        output_dim = 4L,
-        feature_dim = 4L,
+        output_dim = 32L,
+        feature_dim = 64L,
         epsilon = 10^-5,
         norm_type = "group",
         num_groups = 1L,
@@ -202,13 +202,20 @@ build_keras_tabnet = function(task, pars) {
     "sparsity_coefficient", "virtual_batch_size", "norm_type", "num_groups")
   if (pars$stacked) tabnet_param_names = c(tabnet_param_names, "num_layers")
 
+  if (pars$feature_dim <= pars$output_dim) {
+    warning("feature_dim needs to be greater than output_dim!\n
+              Setting output_dim to feature_dim - 1.")
+    pars$output_dim = pars$feature_dim - 1L
+  }
   if (inherits(task, "TaskClassif")) {
     if (pars$stacked) clf = tabnet$StackedTabNetClassifier
     else clf = tabnet$TabNetClassifier
     model = invoke(clf,
       num_features = get_tf_num_features(task, pars),
-      feature_columns = feature_columns, num_classes = length(task$class_names),
-      .args = pars[tabnet_param_names])
+      feature_columns = feature_columns,
+      num_classes = length(task$class_names),
+      .args = pars[tabnet_param_names]
+    )
   } else if (inherits(task, "TaskRegr")) {
     if (pars$stacked) regr = tabnet$StackedTabNetRegressor
     else regr = tabnet$TabNetRegressor
@@ -281,8 +288,4 @@ make_tf_feature_cols = function(task, embed_size = NULL) {
   feature_columns = pmap(.f = make_tf_feature_column, .x = task$feature_types, list(levels = task$levels(), embed_size = embed_size))
 }
 
-get_default_embed_size = function(levels) {
-    # As a default we use the fast.ai heuristic
-    as.integer(min(600L, round(1.6 * length(levels)^0.56)))
-}
-
+R6::R6Class("CondLeq", )
