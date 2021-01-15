@@ -4,7 +4,7 @@ author: "Henri Funk"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Boston Housing Task}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,11 +22,20 @@ library(mlr3book)
 # Intro
 
 This use case shows how to use `r gh_pkg("mlr-org/mlr3keras")` on simple [Boston Housing Regression Task](https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html).
-Therefore, code from [Keras Basic Regression Tutorial](https://keras.rstudio.com/articles/tutorial_basic_regression.html) is translated to `r mlr_pkg("mlr3")`. respectively `r gh_pkg("mlr-org/mlr3keras")` syntax.
-Moreover, this use case extends the tutorial mentioned above by
- 
+Therefore, code from [Keras Basic Regression Tutorial](https://keras.rstudio.com/articles/tutorial_basic_regression.html) is translated to `r mlr_pkg("mlr3")`, respectively `r gh_pkg("mlr-org/mlr3keras")` syntax.
+
+
+Note, that this tutorial describes how to fit a custom, neural network architecture.
+This approach can help dealing with specific situations or with incorporating special network structures.
+`r gh_pkg("mlr-org/mlr3keras")` also offers a few "ready-made" learners that, given that hyperparameters are properly tuned
+might often yield good performance. Examples for such learners include the `kerasff, smlp, smlp2 and tabnet` learners.
+Those methods often also include approaches for handling categorical variables.
+
+
+This use case extends the tutorial mentioned above by
+
  * giving an introduction to callbacks and how they can be used
- * generating reproducible results with `r gh_pkg("mlr-org/mlr3keras")` 
+ * generating reproducible results with `r gh_pkg("mlr-org/mlr3keras")`
 
 As `r gh_pkg("mlr-org/mlr3keras")` is still under heavy development, this might be a good place to look for currently working aspects of the package.
 
@@ -52,21 +61,19 @@ The `r ref("mlr_tasks_boston_housing", "Boston Housing Task")` is accessible dir
 ```{r train}
 boston_task = tsk("boston_housing")
 paste(
-  "This data set contains", boston_task$nrow, "observations and", 
+  "This data set contains", boston_task$nrow, "observations and",
   boston_task$ncol - 1, "features."
-  )
+)
 ```
-
 
 ## Feature selection
 
-Keras regression learner only supports numeric features.
+The custom keras regression learner we want to show here only supports numeric features.
 Consequently we drop all non-numeric features from `boston_task`.
 
 ```{r featureselection}
 boston_task$select(subset(boston_task$feature_types, type == "numeric")$id)
 ```
-
 
 The preprocessed data set contains 13 different numeric features:
 
@@ -98,7 +105,7 @@ po_scale = PipeOpScale$new()
 
 # Create the model
 
-As creation of models is very convenient and intuitive in [keras](https://keras.rstudio.com/), `r gh_pkg("mlr-org/mlr3keras")` relies on this syntax for model creation.  
+As creation of models is very convenient and intuitive in [keras](https://keras.rstudio.com/), `r gh_pkg("mlr-org/mlr3keras")` relies on this syntax for model creation.
 We wrap our model in a function `build_modell`.
 That has several advantages:
 
@@ -122,7 +129,7 @@ build_model = function(seed = 123L) {
                 input_shape = boston_task$ncol - 1L) %>%
       layer_dense(units = 64L, activation = "relu") %>%
       layer_dense(units = 1L)
-  
+
     model %>% compile(
     loss = "mse",
     optimizer = optimizer_rmsprop(),
@@ -176,7 +183,7 @@ print_dot_callback = callback_lambda(
     if (epoch %% 80 == 0) cat("\n")
     cat(".")
   }
-) 
+)
 
 learner$param_set$values$callbacks = list(print_dot_callback)
 ```
@@ -198,7 +205,7 @@ early_stop = cb_es(monitor = "val_loss", patience = 20) # mlr3 syntax
 ```
 
 
-### Set Up the Learner
+### Setting up the learner
 
 We initialize our learner.
 Note, that we clone the `R6` object `keras_500` learner to a second object `keras_es` that we will use later on.
@@ -231,6 +238,7 @@ history = keras_500$model$regr.keras$model$history
 plot(history, metrics = "mean_absolute_error", smooth = FALSE) +
   coord_cartesian(ylim = c(0, 5))
 ```
+
 
 The validation curve noticeably flattens after about 200 epochs.
 So `epochs = 500L` seems to be set to high.
@@ -273,9 +281,9 @@ paste0(
 ```
 
 
-# Set Seed
+# Reproducibility - Setting a seed
 
-`Keras` has mutiple sources of stochasticity. 
+`Keras` has mutiple sources of stochasticity.
 Pseudo Random Numbers can be gernerated while
 
 * initializing weights
@@ -317,7 +325,7 @@ If you did you might have to restart the session before proceeding.
 
 For more information see [Stackoverflow Reset Seeds](https://stackoverflow.com/questions/59075244/if-keras-results-are-not-reproducible-whats-the-best-practice-for-comparing-mo).
 
-### Non deterministic Executions
+### Non-deterministic execution
 
 GPU computations and CPU parallelize can be another source of non-reproducible results, since both can result in non-deterministic execution patterns.
 In this case the only way to provide the modell from non-reproducible results is to disable GPU and CPU parallelism.
