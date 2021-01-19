@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
   R.options = list(width = 80),
   cache.extra = knitr::rand_seed
 )
+library(mlr3book)
 ```
 
 # Intro
