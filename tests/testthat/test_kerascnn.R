@@ -1,6 +1,6 @@
 test_that("Keras CNN", {
   skip_on_os("solaris")
-  dir = system.file("extdata/images", package = "mlr3keras")
+  dir = system.file(file.path("extdata", "images"), package = "mlr3keras")
   dt = imagepathdf_from_imagenet_dir(dir)
   t = TaskClassif$new(id = "internal", backend = dt, target="class")
   # Learner
