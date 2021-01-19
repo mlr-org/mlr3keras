@@ -1,5 +1,3 @@
-context("Image Helpers")
-
 test_that("imagepathdf_from_imagenet_dir", {
   skip_on_os("solaris")
   dir = system.file("extdata/images", package = "mlr3keras")

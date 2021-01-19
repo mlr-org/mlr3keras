@@ -1,5 +1,3 @@
-context("keras regression custom model")
-
 test_that("autotest regression custom model", {
   skip_on_os("solaris")
 
@@ -60,9 +58,6 @@ test_that("autotest low memory zero validation_split", {
   expect_true(result, info = result$error)
   k_clear_session()
 })
-
-# ----------------------------------------------------------------------------------------
-context("keras regression feed forward model")
 
 test_that("autotest feed forward", {
   skip_on_os("solaris")

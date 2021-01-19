@@ -1,6 +1,4 @@
-context("Keras CNN")
-
-test_that("callback early stopping", {
+test_that("Keras CNN", {
   skip_on_os("solaris")
   dir = system.file("extdata/images", package = "mlr3keras")
   dt = imagepathdf_from_imagenet_dir(dir)
@@ -17,4 +15,3 @@ test_that("callback early stopping", {
   expect_true(!is.null(l$state))
   expect_prediction(prd)
 })
-

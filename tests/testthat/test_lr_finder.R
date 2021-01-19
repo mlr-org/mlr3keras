@@ -1,5 +1,3 @@
-context("lr finder")
-
 test_that("lr finder works", {
   skip_on_os("solaris")
   learner = mlr3::lrn("classif.kerasff")

@@ -1,5 +1,3 @@
-context("smlp2 classification and regression")
-
 test_that("autotest classif smlp 2", {
   skip_on_os("solaris")
   learner = LearnerClassifShapedMLP2$new()

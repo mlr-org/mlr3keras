@@ -6,13 +6,14 @@
 #'   with columns "image" (an imagepath) and "class" (the class).
 imagepathdf_from_imagenet_dir = function(dirs) {
   rbindlist(map(dirs, function(y) {
-    dt = rbindlist(map(list.dirs(y, recursive=FALSE), function(x) {
+    dt = rbindlist(map(list.dirs(y, recursive = FALSE), function(x) {
       data.table(
         class = basename(x),
-        image = list.files(x, full.names=TRUE)
+        image = list.files(x, full.names = TRUE)
       )
     }))
-    dt[, class := as.factor(class)][, "image" := as.imagepath("image"), with = FALSE]
+    dt[, class := as.factor(class)]
+    set(dt, j = "image", value = as.imagepath(dt$image))
     return(dt)
   }))
 }

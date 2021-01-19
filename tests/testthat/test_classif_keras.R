@@ -1,5 +1,3 @@
-context("keras classif custom model")
-
 test_that("autotest binary", {
   model = keras_model_sequential() %>%
   layer_dense(units = 12L, input_shape = 2L, activation = "relu") %>%

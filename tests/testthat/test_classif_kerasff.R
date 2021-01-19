@@ -1,5 +1,3 @@
-context("keras classification feed forward model")
-
 test_that("autotest", {
   skip_on_os("solaris")
   learner = mlr3::lrn("classif.kerasff")

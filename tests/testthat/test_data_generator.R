@@ -1,5 +1,3 @@
-context("test data generator")
-
 test_that("test data generator", {
   skip_on_os("solaris")
   library("reticulate")
