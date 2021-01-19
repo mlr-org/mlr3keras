@@ -16,8 +16,10 @@ knitr::opts_chunk$set(
   R.options = list(width = 80),
   cache.extra = knitr::rand_seed
 )
-library(mlr3book)
+source(system.file("R/vignette_link_helpers.R", package = "mlr3keras"))
 ```
+
+
 
 # Intro
 
@@ -56,7 +58,7 @@ library(ggplot2)
 
 In this use case, we build a model that predicts the Median value of owner-occupied homes in Boston in $1000's (`medv`).
 
-The `r ref("mlr_tasks_boston_housing", "Boston Housing Task")` is accessible directly from `mlr3tasks`.
+The `"Boston Housing Task"` is accessible directly from `mlr3tasks`.
 
 ```{r train}
 boston_task = tsk("boston_housing")
@@ -97,7 +99,7 @@ boston_task$head(n = 3)
 
 Notice that each one of these input data features is stored using a different scale.
 Although the model might converge without feature normalization, it makes training more difficult, and it makes the resulting model more dependent on the choice of units used in the input.
-Tp scale the data we create a `r ref("mlr_pipeops_scale", "PipeOpScale")` that is going to be connected to the learner before training.
+Tp scale the data we create a `"PipeOpScale"` that is going to be connected to the learner before training.
 
 ```{r normalize}
 po_scale = PipeOpScale$new()
