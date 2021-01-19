@@ -12,7 +12,7 @@ imagepathdf_from_imagenet_dir = function(dirs) {
         image = list.files(x, full.names = TRUE)
       )
     }))
-    dt[, class := as.factor(class)]
+    set(dt, j = "class", value = as.factor(dt$class))
     set(dt, j = "image", value = as.imagepath(dt$image))
     return(dt)
   }))
