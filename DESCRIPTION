@@ -65,8 +65,7 @@ Remotes:
     mlr-org/mlr3misc,
     mlr-org/mlr3@dtype_image,
     mlr-org/mlr3pipelines,
-    mlr-org/mlr3tuning,
-    mlr-org/paradox@convert
+    mlr-org/mlr3tuning
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: no
