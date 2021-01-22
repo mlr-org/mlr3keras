@@ -39,7 +39,6 @@ cb_lr_scheduler_cosine_anneal = function(eta_max = 0.01, T_max = 10.0, T_mult = 
   )
 }
 
-
 #' Learning rate scheduler callback: exponential decay
 #'
 #' @rdname callbacks
@@ -66,7 +65,6 @@ cb_lr_log = function() {
   }
   callback_lambda(on_batch_begin=callback_lr_log)
 }
-
 
 #' `LogMetrics`: Batch-wise Metrics Logger Callback
 #' Note, that the specified metric must be additionally supplied to

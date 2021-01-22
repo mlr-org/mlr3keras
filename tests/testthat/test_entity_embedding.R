@@ -1,5 +1,3 @@
-context("entity embedding")
-
 test_that("entity embedding works for all tasks", {
   skip_on_os("solaris")
   for (k in mlr_tasks$keys()) {

@@ -1,5 +1,3 @@
-context("set_seeds")
-
 test_that("random.random reproducible", {
   skip_on_os("solaris")
   # random seed python:

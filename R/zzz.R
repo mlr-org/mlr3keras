@@ -40,6 +40,7 @@ register_mlr3 = function() { # nocov start
   x$add("regr.smlp", LearnerRegrShapedMLP)
   x$add("classif.smlp2", LearnerClassifShapedMLP2)
   x$add("regr.smlp2", LearnerRegrShapedMLP2)
+  x$add("classif.kerascnn", LearnerClassifKerasCNN)
 
   local({
     keras_reflections$loss = list(

@@ -1,5 +1,3 @@
-context("conversion to tf_feature_cols works")
-
 test_that("classif tabnet with logical or factor features", {
   skip_on_os("solaris")
   skip_if_not(reticulate::py_module_available("tabnet"))
@@ -45,4 +43,3 @@ test_that("get_default_embed_size", {
   expect_integerish(get_default_embed_size(as.factor(letters[seq_len(26)])), lower = 2L)
   expect_integerish(get_default_embed_size(as.factor(1:10^5)), lower = 2L, upper = 600L)
 })
-

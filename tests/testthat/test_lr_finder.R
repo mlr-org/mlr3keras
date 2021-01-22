@@ -1,5 +1,3 @@
-context("lr finder")
-
 test_that("lr finder works", {
   skip_on_os("solaris")
   learner = mlr3::lrn("classif.kerasff")
@@ -10,7 +8,6 @@ test_that("lr finder works", {
   expect_true(inherits(p, "ggplot"))
 })
 
-
 test_that("lr finder works", {
   skip_on_os("solaris")
   learner = mlr3::lrn("regr.kerasff")
@@ -20,4 +17,3 @@ test_that("lr finder works", {
   p = plot_find_lr(data)
   expect_true(inherits(p, "ggplot"))
 })
-

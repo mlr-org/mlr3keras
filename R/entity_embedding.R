@@ -175,3 +175,8 @@ reshape_data_embedding = function(data) {
 
   list(data = out_data, fct_levels = fct_levels)
 }
+
+get_default_embed_size = function(levels) {
+    # As a default we use the fast.ai heuristic
+    as.integer(min(600L, round(1.6 * length(levels)^0.56)))
+}

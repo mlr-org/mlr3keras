@@ -1,0 +1,128 @@
+```{r}
+library(reticulate)
+reticulate::use_condaenv("mlr3keras", required=TRUE)
+library(data.table)
+devtools::load_all()
+
+# Download data from [fastai/imagenette](https://github.com/fastai/imagenette)  and adjust path
+dir = "~/Downloads/imagenette2-160/train"
+dt = imagepathdf_from_imagenet_dir(dir)
+dt$n = runif(nrow(dt))
+dt$m = runif(nrow(dt))
+dt[, lapply(.SD, as.character)]
+
+
+g = image_data_generator(validation_split=0.5)
+dtgen = make_generator_from_dataframe(dt, c("m","n") ,"class" , g)
+imgen = keras::flow_images_from_dataframe(dt, x_col="image", y_col = "class", generator = g, batch_size = as.integer(32), shuffle=TRUE, seed=1L)
+cogen = combine_generators(imgen, dtgen)
+```
+
+
+
+```{r}
+  # Now try the fitting:
+  base = application_mobilenet(
+    include_top = FALSE,
+    weights = "imagenet",
+    input_tensor = NULL,
+    input_shape = NULL
+  )
+  numeric_input = layer_input(shape=c(2), name="numerics")
+  out_inter = base$output %>%
+  layer_global_average_pooling_2d() %>%
+  layer_dense(
+      units = 256L,
+      activation = "relu"
+  )
+
+  model = keras_model(
+    inputs = list(base$input, numeric_input),
+    out = layer_concatenate(c(out_inter, numeric_input)) %>%
+      layer_dense(
+        units = 10L,
+        activation = "softmax"
+      )
+  )
+  freeze_weights(base)
+  unfreeze_weights(base, from = 77)
+  model$compile(
+    optimizer = optimizer_rmsprop(),
+    loss = "categorical_crossentropy"
+  )
+
+  fit_generator(model, generator=cogen, steps_per_epoch=100L)
+```
+
+
+
+### AIRBNB DATA
+
+
+```{r}
+reticulate::use_condaenv("mlr3keras", required=TRUE)
+devtools::load_all()
+dt = readRDS("~/Documents/repos/airbnb/munich_clean.RDS")
+
+# For now we build our model only from four features:
+x = c("host_is_superhost", "longitude", "latitude", "bedrooms", "price")
+dt$bedrooms = as.integer(dt$bedrooms) - 1L
+dt$host_is_superhost = as.integer(dt$host_is_superhost)
+dt$image = paste0(dt$id, ".jpg")
+dt$review_scores_rating = dt$review_scores_rating / 100
+
+
+# Build the generators
+g = image_data_generator(validation_split=0.5)
+# All following generators need equal seeds and equal batch_size.
+dtgen = make_generator_from_dataframe(data.table(dt), x, "review_scores_rating" , g, shuffle=TRUE, seed=1L, subset="training")
+imgen = keras::flow_images_from_dataframe(dt, x_col="image", y_col = "review_scores_rating",
+  generator = g, batch_size = as.integer(32),
+  shuffle=TRUE, seed=1L, class_mode="raw", drop_duplicates=NULL, subset="training",
+  directory="~/Documents/repos/airbnb/data/pictures/32")
+cogen = combine_generators(imgen, dtgen)
+
+dtgen2 = make_generator_from_dataframe(data.table(dt), x, "review_scores_rating" , g, shuffle=TRUE, seed=1L, subset="validation")
+imgen2 = keras::flow_images_from_dataframe(dt, x_col="image", y_col = "review_scores_rating",
+  generator = g, batch_size = as.integer(32),
+  shuffle=TRUE, seed=1L, class_mode="raw", drop_duplicates=NULL, subset="validation",
+  directory="~/Documents/repos/airbnb/data/pictures/32")
+cogen2 = combine_generators(imgen2, dtgen2)
+
+# Build the model
+base = application_mobilenet(
+  include_top = FALSE,
+  weights = "imagenet",
+  input_tensor = NULL,
+  input_shape = NULL
+)
+numeric_input = layer_input(shape=length(x), name="numerics")
+out_inter = base$output %>%
+layer_global_average_pooling_2d() %>%
+layer_dense(
+    units = 1024L,
+    activation = "relu"
+) %>%
+layer_dense(
+    units = 1024L,
+    activation = "relu"
+)
+model = keras_model(
+  inputs = list(base$input, numeric_input),
+  out = layer_concatenate(c(out_inter, numeric_input)) %>%
+    layer_dense(
+      units = 1L,
+      activation = "linear"
+    )
+)
+freeze_weights(base)
+unfreeze_weights(base, from = 80)
+model$compile(
+  optimizer = optimizer_adam(),
+  loss = "mean_squared_error"
+)
+
+fit_generator(model, generator=cogen, steps_per_epoch=50L, epochs = 10L, validation_data=cogen2, validation_steps=50L)
+fit_generator(model, generator=cogen, steps_per_epoch=100L)
+fit_generator(model, generator=cogen, steps_per_epoch=100L)
+```

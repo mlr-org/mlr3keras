@@ -1,5 +1,3 @@
-context("tabnet classification and regression")
-
 test_that("autotest classif tabnet", {
   skip_on_os("solaris")
   skip_if_not(reticulate::py_module_available("tabnet"))

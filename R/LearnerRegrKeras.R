@@ -84,7 +84,12 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
         man = assert_character(man)
       )
       # Set y_transform
-      self$architecture$set_transform("y", function(target, pars) {as.numeric(target)})
+      self$architecture$set_transform("y", function(target, pars) {
+          if (is.data.frame(target)) {
+            target = unlist(target)
+          }
+          as.numeric(target)
+      })
     },
 
     save = function(filepath) {
@@ -97,12 +102,12 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       self$state$model$model = keras::load_model_hdf5(filepath)
     },
     plot = function() {
-      if (is.null(self$model)) stop("Model must be trained before saving")
+      if (is.null(self$model)) stop("Model must be trained before plotting")
       plot(self$model$history)
     },
     lr_find = function(task, epochs = 5L, lr_min = 10^-4, lr_max = 0.8, batch_size = 128L) {
       data = find_lr(self$clone(), task, epochs, lr_min, lr_max, batch_size)
-      plot_lr(data)
+      plot_find_lr(data)
     },
     keras_predict_pars = c("batch_size", "verbose")
   ),
@@ -114,12 +119,15 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       model = self$architecture$get_model(task, pars)
       # Custom transformation depending on the model.
       # Could be generalized at some point.
-      features = task$data(cols = task$feature_names)
-      target = task$data(cols = task$target_names)[[task$target_names]]
 
       if (!pars$low_memory) {
+
+        features = task$data(cols = task$feature_names)
+        target = task$data(cols = task$target_names)[[task$target_names]]
+
         x = self$architecture$transforms$x(features, pars)
         y = self$architecture$transforms$y(target, pars)
+
         history = invoke(keras::fit,
           object = model,
           x = x,
@@ -130,6 +138,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
           validation_split = pars$validation_split,
           verbose = as.integer(pars$verbose),
           callbacks = pars$callbacks)
+
       } else {
 
         generators = make_train_valid_generators(
@@ -161,7 +170,7 @@ LearnerRegrKeras = R6::R6Class("LearnerRegrKeras",
       pars = pars[intersect(names(pars), self$keras_predict_pars)]
 
       if (self$predict_type == "response") {
-        p = invoke(self$model$model$predict, x = newdata, .args = pars)
+        p = invoke(predict, self$model$model, x = newdata, .args = pars)
         PredictionRegr$new(task = task, response = drop(p))
       }
     }

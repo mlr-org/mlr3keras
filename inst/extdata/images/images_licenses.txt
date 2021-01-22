@@ -1,0 +1,13 @@
+Images in the 'images' folder are obtained from the following sources with provided licenses
+
+bass/bass.jpg:
+Resized to 224x224 from: https://commons.wikimedia.org/wiki/File:Giant_Black_Sea_Bass,_San_Clemente_Island,_Channel_Islands,_California.jpg
+License: https://creativecommons.org/licenses/by-sa/2.5/deed.en
+
+trout/trout.jpg:
+Resized and cut to 224x224 from: https://commons.wikimedia.org/wiki/File:Kern_River_Rainbow_Trout.jpg
+License: https://creativecommons.org/licenses/by-sa/4.0/deed.en
+
+tuna/tuna.jpg:
+Resized to 224x224 from https://www.fishbase.se/photos/UploadedBy.php?autoctr=18670&win=uploaded
+License: https://creativecommons.org/licenses/by/3.0/deed.en

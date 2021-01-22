@@ -1,5 +1,3 @@
-context("global learner methods")
-
 test_that("save/plot/serialize works kerasff", {
   skip_on_os("solaris")
 
