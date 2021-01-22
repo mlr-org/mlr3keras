@@ -11,6 +11,8 @@
 #'   The heuristic is `round(1.6 * n_cat^0.56)` where n_cat is the number of levels.
 #' @param embed_dropout [`numeric`]\cr
 #'   Dropout fraction for the embedding layer.
+#' @param factors_jointly [`logical`]\cr
+#'   Embed factors together? Default `FALSE`
 #'
 #' @references Guo, Berkhan, 2016 Entity Embeddings of Categorical Variables
 #'
@@ -19,7 +21,7 @@
 #' make_embedding(task)
 #' @return A `list` of input tensors and `layer`: the concatenated embeddings.
 #' @export
-make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
+make_embedding = function(task, embed_size = NULL, embed_dropout = 0, factors_jointly = FALSE) {
   assert_task(task)
   assert_numeric(embed_size, null.ok = TRUE)
   assert_number(embed_dropout)
@@ -29,34 +31,56 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
   target = task$data(cols = task$target_names)
 
   embed_vars = typedt[typedt$type %in% c("ordered", "factor", "character"),]$id
-  n_cont = nrow(typedt) - length(embed_vars)
+
 
   # Embeddings for categorical variables: for each categorical:
   # - create a layer_input
   # - create an embedding
   # - apply dropout
-  embds = list()
-  if (length(embed_vars) > 0) {
-    embds = map(.f = function(feat_name) {
-      x = data[,feat_name]
-      if (is.factor(x)) n_cat = length(levels(x)) else n_cat = length(unique(x))
-      # Use heuristic from fast.ai https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py
-      # or a user supplied value
-      if (length(embed_size) >= 2) embed_size = embed_size[feat_name]
-      if (length(embed_size) == 0) embed_size = min(600L, round(1.6 * n_cat^0.56))
-      input = layer_input(shape = 1, dtype = "int32", name = feat_name)
-      layers = input %>%
-      layer_embedding(input_dim = as.numeric(n_cat), output_dim = as.numeric(embed_size),
-        input_length = 1L, name = paste0("embed_", feat_name),
-        embeddings_initializer = initializer_he_uniform()) %>%
-      layer_dropout(embed_dropout, input_shape = as.numeric(embed_size)) %>%
-      layer_flatten()
-      return(list(input = input, layers = layers))
-    }, embed_vars)
+
+  if (factors_jointly) {
+    x = data[,embed_vars]
+    n_cat = sum(map_dbl(x, function(x){
+      if (is.factor(x)) length(levels(x)) else length(unique(x))
+    }))
+    # Use heuristic from fast.ai https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py
+    # or a user supplied value
+    if (length(embed_size) >= 2) embed_size = embed_size[feat_name]
+    if (length(embed_size) == 0) embed_size = min(600L, round(1.6 * n_cat^0.56))
+
+    input = layer_input(shape = ncol(x), dtype = "int32", name = "factors")
+    layers = input %>%
+    layer_embedding(input_dim = as.numeric(n_cat), output_dim = as.numeric(embed_size),
+      input_length = ncol(x), name = "embed_factors",
+      embeddings_initializer = initializer_he_uniform()) %>%
+    layer_dropout(embed_dropout, input_shape = as.numeric(embed_size)) %>%
+    layer_flatten()
+    embds = list(list(input = input, layers = layers))
+  } else {
+    embds = list()
+    if (length(embed_vars) > 0) {
+      embds = map(.f = function(feat_name) {
+        x = data[,feat_name]
+        if (is.factor(x)) n_cat = length(levels(x)) else n_cat = length(unique(x))
+        # Use heuristic from fast.ai https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py
+        # or a user supplied value
+        if (length(embed_size) >= 2) embed_size = embed_size[feat_name]
+        if (length(embed_size) == 0) embed_size = min(600L, round(1.6 * n_cat^0.56))
+        input = layer_input(shape = 1, dtype = "int32", name = feat_name)
+        layers = input %>%
+        layer_embedding(input_dim = as.numeric(n_cat), output_dim = as.numeric(embed_size),
+          input_length = 1L, name = paste0("embed_", feat_name),
+          embeddings_initializer = initializer_he_uniform()) %>%
+        layer_dropout(embed_dropout, input_shape = as.numeric(embed_size)) %>%
+        layer_flatten()
+        return(list(input = input, layers = layers))
+      }, embed_vars)
+    }
   }
 
   # Layer for the continuous variables
   # - apply batchnorm
+  n_cont = nrow(typedt) - length(embed_vars)
   if (n_cont > 0) {
     input = layer_input(shape = n_cont, dtype = "float32", name = "continuous")
     layers = input %>% layer_batch_normalization(input_shape = n_cont, axis = 1)
@@ -88,10 +112,10 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
 #' @family reshape_task_embedding
 #' @return A `list` with slots `data`:the reshaped data and `fct_levels`: the levels corresponding to each factor feature.
 #' @export
-reshape_task_embedding = function(task) {
+reshape_task_embedding = function(task, factors_jointly = FALSE) {
   assert_task(task)
   data = task$data(cols = task$feature_names)
-  reshape_data_embedding(data)
+  reshape_data_embedding(data, factors_jointly = factors_jointly)
 }
 
 #' Reshape data for use with entity embeddings.
@@ -100,22 +124,39 @@ reshape_task_embedding = function(task) {
 #'   data.table containing the features (without target variable).
 #'
 #' @export
-reshape_data_embedding = function(data) {
+reshape_data_embedding = function(data, factors_jointly = FALSE) {
   assert_data_table(data)
+  assert_flag(factors_jointly)
 
   types = map_chr(data, function(x) class(x)[[1]])
   embed_vars = names(types)[types %in% c("ordered", "factor")]
 
   fct_levels = NULL
   if (length(embed_vars) > 0)
-    fct_levels = map(as.list(data[, embed_vars, with = FALSE]), function(x) levels(x))
+    if (factors_jointly) {
+      fct_levels = unlist(unique(map(as.list(data[, embed_vars, with = FALSE]), function(x) levels(x))))
+    } else {
+      fct_levels = map(as.list(data[, embed_vars, with = FALSE]), function(x) levels(x))
+    }
   out_data = list()
-  if (length(embed_vars)  > 0)
-    out_data = setNames(
-      map(as.list(data[, embed_vars, with = FALSE]), function(x) {
-        as.integer(x) - 1L
-      }),
-      embed_vars)
+  if (length(embed_vars)  > 0) {
+    if (factors_jointly) {
+      dt = data[, embed_vars, with = FALSE]
+      # share levels across factor
+      lvls = levels(unlist(dt))
+      dt = map_dtc(dt, function(x) factor(x, levels = lvls))
+      out_data = setNames(
+        list(as.matrix(map_dtc(dt, function(x) {
+          as.integer(x) - 1L
+        }))), "factors")
+    } else {
+      out_data = setNames(
+        map(as.list(data[, embed_vars, with = FALSE]), function(x) {
+          as.integer(x) - 1L
+        }),
+        embed_vars)
+     }
+   }
   if (length(embed_vars) < ncol(data))
     out_data$continuous = as.matrix(data[,setdiff(colnames(data), embed_vars), with = FALSE])
 
@@ -123,6 +164,6 @@ reshape_data_embedding = function(data) {
 }
 
 get_default_embed_size = function(levels) {
-    # As a default we use the fast.ai heuristic
-    as.integer(min(600L, round(1.6 * length(levels)^0.56)))
+  # As a default we use the fast.ai heuristic
+  as.integer(min(600L, round(1.6 * length(levels)^0.56)))
 }

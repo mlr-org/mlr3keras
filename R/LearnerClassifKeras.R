@@ -216,3 +216,28 @@ fixup_target_levels_prediction_classif = function(prob, task, out = "response") 
     PredictionClassif$new(task = task, prob = prob, response = NULL)
   }
 }
+
+
+if (FALSE) {
+library(data.table)
+library(mlr3)
+library(mlr3pipelines)
+l# ibrary(mlr3keras)
+
+gen_text = function() {
+  c(
+    replicate(50, paste0(sample(letters[1:10], 5, TRUE), collapse = "")),
+    replicate(50, paste0(sample(letters[8:19], 5, TRUE), collapse = "")),
+    replicate(50, paste0(sample(letters[17:26], 5, TRUE), collapse = ""))
+  )
+}
+
+
+dt = data.table(iris)[, char := gen_text()]
+
+t = TaskClassif$new("iris", backend = dt, target = "Species")
+
+p = po("textvectorizer", what="character", n=3, return_type = "factor_sequence")
+g = GraphLearner$new(p %>>% po(lrn("classif.kerasff", validation_split = 0L)))
+g$train(t)
+}

@@ -133,7 +133,7 @@ KerasArchitectureFF = R6::R6Class("KerasArchitectureFF",
     initialize = function(build_arch_fn, param_set) {
       super$initialize(build_arch_fn = build_arch_fn, param_set = param_set,
         x_transform = function(features, pars) {
-          if (pars$use_embedding) reshape_data_embedding(features)$data
+          if (pars$use_embedding) reshape_data_embedding(features, factors_jointly = TRUE)$data
           else as.matrix(model.matrix(~. - 1, features))
       })
     }
@@ -166,8 +166,10 @@ build_keras_ff_model = function(task, pars) {
     }
   }
 
+
+  factors_jointly = TRUE
   if (pars$use_embedding) {
-    embd = make_embedding(task, pars$embed_size, pars$embed_dropout)
+    embd = make_embedding(task, pars$embed_size, pars$embed_dropout, factors_jointly = TRUE)
     model = embd$layers
   } else {
     model = keras_model_sequential()
