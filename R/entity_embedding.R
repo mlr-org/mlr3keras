@@ -11,6 +11,17 @@
 #'   The heuristic is `round(1.6 * n_cat^0.56)` where n_cat is the number of levels.
 #' @param embed_dropout [`numeric`]\cr
 #'   Dropout fraction for the embedding layer.
+#' @param embed_text_char_level [`logical`]\cr
+#'   If `TRUE`, text embedding is based on character level. Default is `TRUE`.
+#' @param embed_text_max_len [`integer`]\cr
+#'   An integer determining the maximal number of characters/words used
+#'   as input for the embedding. Default is `20`.
+#' @param embed_word_index [`list`]\cr
+#'   Named list of character/word dictionary. If not provided `fit_text_tokenizer()`
+#'   is applied to automatically determine the dictionary. Default is `NULL`.
+#' @param embed_text_oov_token [`character`]\cr
+#'   If given, it will be added to word_index and used to replace
+#'   out-of-vocabulary words during text_to_sequence calls. Default is `NULL`
 #'
 #' @references Guo, Berkhan, 2016 Entity Embeddings of Categorical Variables
 #'
@@ -19,16 +30,34 @@
 #' make_embedding(task)
 #' @return A `list` of input tensors and `layer`: the concatenated embeddings.
 #' @export
-make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
+make_embedding = function(task, embed_size = NULL, embed_dropout = 0,  embed_text_char_level = TRUE,
+  embed_text_max_len = 20, embed_word_index = NULL, embed_text_oov_token = NULL) {
   assert_task(task)
   assert_numeric(embed_size, null.ok = TRUE)
   assert_number(embed_dropout)
+  assert_logical(embed_text_char_level)
+  assert_number(embed_text_max_len)
+  assert_character(embed_text_oov_token, null.ok = TRUE)
 
   typedt = task$feature_types
   data = as.matrix(task$data(cols = task$feature_names))
-  target = task$data(cols = task$target_names)
+  if ("multilabel %in% task$properties")
+    target = as.matrix(task$data(cols = task$target_names))
+  else
+    target = task$data(cols = task$target_names)
 
   embed_vars = typedt[typedt$type %in% c("ordered", "factor", "character"),]$id
+
+  if (any(typedt$type == "character")) {
+    tokenizer = text_tokenizer(
+      lower = FALSE,
+      char_level = embed_text_char_level,
+      oov_token = embed_text_oov_token
+    )
+  } else {
+    tokenizer = NULL
+  }
+
   n_cont = nrow(typedt) - length(embed_vars)
 
   # Embeddings for categorical variables: for each categorical:
@@ -39,18 +68,43 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
   if (length(embed_vars) > 0) {
     embds = map(.f = function(feat_name) {
       x = data[,feat_name]
-      if (is.factor(x)) n_cat = length(levels(x)) else n_cat = length(unique(x))
-      # Use heuristic from fast.ai https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py
-      # or a user supplied value
-      if (length(embed_size) >= 2) embed_size = embed_size[feat_name]
-      if (length(embed_size) == 0) embed_size = min(600L, round(1.6 * n_cat^0.56))
-      input = layer_input(shape = 1, dtype = "int32", name = feat_name)
-      layers = input %>%
-      layer_embedding(input_dim = as.numeric(n_cat), output_dim = as.numeric(embed_size),
-        input_length = 1L, name = paste0("embed_", feat_name),
-        embeddings_initializer = initializer_he_uniform()) %>%
-      layer_dropout(embed_dropout, input_shape = as.numeric(embed_size)) %>%
-      layer_flatten()
+      if (is.character(x)) {
+        if (is.null(embed_word_index)) tokenizer %>% fit_text_tokenizer(x) else tokenizer$word_index = embed_word_index
+        x = tk$texts_to_sequences(x)
+        x = pad_sequences(x, maxlen = max_char_len, padding = "post")
+
+        vocab_dim = length(dict)
+        input_dim = ncol(x)
+        # Use heuristic from fast.ai https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py
+        # or a user supplied value
+        if (length(embed_size) >= 2) embed_size = embed_size[feat_name]
+        if (length(embed_size) == 0) embed_size = min(600L, round(1.6 * input_dim^0.56))
+
+        input = layer_input(shape = nrow(x), dtype = "int32", name = feat_name)
+        layers = input %>%
+          layer_embedding(
+            input_dim = as.numeric(vocab_dim),
+            output_dim = as.numeric(embed_size),
+            input_length = input_dim,
+            name = paste0("embed_", feat_name),
+            embeddings_regularizer = regularizer_l2(l = regularization)
+          ) %>%
+          layer_dropout(embed_dropout, input_shape = as.numeric(embed_size)) %>%
+          layer_flatten()
+      } else {
+        if (is.factor(x)) n_cat = length(levels(x)) else n_cat = length(unique(x))
+        # Use heuristic from fast.ai https://github.com/fastai/fastai/blob/master/fastai/tabular/data.py
+        # or a user supplied value
+        if (length(embed_size) >= 2) embed_size = embed_size[feat_name]
+        if (length(embed_size) == 0) embed_size = min(600L, round(1.6 * n_cat^0.56))
+        input = layer_input(shape = 1, dtype = "int32", name = feat_name)
+        layers = input %>%
+        layer_embedding(input_dim = as.numeric(n_cat), output_dim = as.numeric(embed_size),
+          input_length = 1L, name = paste0("embed_", feat_name),
+          embeddings_initializer = initializer_he_uniform()) %>%
+        layer_dropout(embed_dropout, input_shape = as.numeric(embed_size)) %>%
+        layer_flatten()
+      }
       return(list(input = input, layers = layers))
     }, embed_vars)
   }
@@ -68,7 +122,7 @@ make_embedding = function(task, embed_size = NULL, embed_dropout = 0) {
     layers = layer_concatenate(unname(lapply(embds, function(x) x$layers)))
   else
     layers = unname(embds[[1]]$layers)
-   return(list(inputs = lapply(embds, function(x) x$input), layers = layers))
+   return(list(inputs = lapply(embds, function(x) x$input), layers = layers, tokenizer = tokenizer))
 }
 
 #' Reshape a Task for use with entity embeddings.
