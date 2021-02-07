@@ -125,7 +125,7 @@
       <h1 data-toc-skip>First steps with mlr3keras</h1>
                         <h4 class="author">Florian Pfisterer</h4>
             
-            <h4 class="date">2021-02-06</h4>
+            <h4 class="date">2021-02-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlr3keras/blob/master/vignettes/mlr3keras.Rmd"><code>vignettes/mlr3keras.Rmd</code></a></small>
       <div class="hidden name"><code>mlr3keras.Rmd</code></div>
@@ -173,9 +173,9 @@
 <span class="va">lrn</span><span class="op">$</span><span class="fu">predict</span><span class="op">(</span><span class="va">mlr_tasks</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"iris"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; &lt;PredictionClassif&gt; for 150 observations:</span>
 <span class="co">#&gt;     row_id     truth   response</span>
-<span class="co">#&gt;          1    setosa     setosa</span>
-<span class="co">#&gt;          2    setosa     setosa</span>
-<span class="co">#&gt;          3    setosa     setosa</span>
+<span class="co">#&gt;          1    setosa versicolor</span>
+<span class="co">#&gt;          2    setosa versicolor</span>
+<span class="co">#&gt;          3    setosa versicolor</span>
 <span class="co">#&gt; ---                            </span>
 <span class="co">#&gt;        148 virginica versicolor</span>
 <span class="co">#&gt;        149 virginica versicolor</span>
@@ -284,7 +284,7 @@
 <span class="op">)</span>
 <span class="va">tuner</span><span class="op">$</span><span class="fu">optimize</span><span class="op">(</span><span class="va">instance</span><span class="op">)</span>
 <span class="co">#&gt;     arch    lr learner_param_vals  x_domain regr.mse</span>
-<span class="co">#&gt; 1: arch1 1e-05          &lt;list[7]&gt; &lt;list[1]&gt; 672.6877</span></code></pre></div>
+<span class="co">#&gt; 1: arch1 1e-05          &lt;list[7]&gt; &lt;list[1]&gt; 328.7314</span></code></pre></div>
 </div>
 <div id="entity-embeddings" class="section level2">
 <h2 class="hasAnchor">
