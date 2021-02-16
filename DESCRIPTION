@@ -60,7 +60,7 @@ VignetteBuilder:
 RdMacros:
     mlr3misc
 Remotes:
-    Rdatatable/data.table,
+    data.table,
     rstudio/keras,
     mlr-org/bbotk,
     mlr-org/mlr3misc,

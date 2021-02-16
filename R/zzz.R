@@ -16,17 +16,6 @@
 k  = utils::getFromNamespace("keras", "keras")
 tf = utils::getFromNamespace("tf", "tensorflow")
 
-
-#' @title Reflections mechanism for keras
-#'
-#' @details
-#' Used to store / extend available hyperparameter levels for options used throughout keras,
-#' e.g. the available 'loss' for a given Learner.
-#'
-#' @format [environment].
-#' @export
-keras_reflections = new.env(parent = emptyenv()) # nocov
-
 register_mlr3 = function() { # nocov start
   # Add Learners
   x = utils::getFromNamespace("mlr_learners", ns = "mlr3")
