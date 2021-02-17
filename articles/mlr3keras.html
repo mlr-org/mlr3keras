@@ -125,7 +125,7 @@
       <h1 data-toc-skip>First steps with mlr3keras</h1>
                         <h4 class="author">Florian Pfisterer</h4>
             
-            <h4 class="date">2021-02-16</h4>
+            <h4 class="date">2021-02-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mlr-org/mlr3keras/blob/master/vignettes/mlr3keras.Rmd"><code>vignettes/mlr3keras.Rmd</code></a></small>
       <div class="hidden name"><code>mlr3keras.Rmd</code></div>
@@ -164,22 +164,22 @@
 
 <span class="co"># Set hyperparameters</span>
 <span class="va">lrn</span><span class="op">$</span><span class="va">param_set</span><span class="op">$</span><span class="va">values</span><span class="op">$</span><span class="va">epochs</span> <span class="op">=</span> <span class="fl">50</span>
-<span class="va">lrn</span><span class="op">$</span><span class="va">param_set</span><span class="op">$</span><span class="va">values</span><span class="op">$</span><span class="va">optimizer</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html">optimizer_adam</a></span><span class="op">(</span>lr <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
-<span class="va">lrn</span><span class="op">$</span><span class="va">param_set</span><span class="op">$</span><span class="va">values</span><span class="op">$</span><span class="va">layer_units</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">8</span><span class="op">)</span>
+<span class="va">lrn</span><span class="op">$</span><span class="va">param_set</span><span class="op">$</span><span class="va">values</span><span class="op">$</span><span class="va">optimizer</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/keras/man/optimizer_adam.html">optimizer_adam</a></span><span class="op">(</span>lr <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>
+<span class="va">lrn</span><span class="op">$</span><span class="va">param_set</span><span class="op">$</span><span class="va">values</span><span class="op">$</span><span class="va">layer_units</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">32</span>, <span class="fl">16</span><span class="op">)</span>
 
 
 <span class="co"># Train and predict</span>
-<span class="va">lrn</span><span class="op">$</span><span class="fu">train</span><span class="op">(</span><span class="va">mlr_tasks</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"iris"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">lrn</span><span class="op">$</span><span class="fu">predict</span><span class="op">(</span><span class="va">mlr_tasks</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"iris"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; &lt;PredictionClassif&gt; for 150 observations:</span>
-<span class="co">#&gt;     row_id     truth   response</span>
-<span class="co">#&gt;          1    setosa     setosa</span>
-<span class="co">#&gt;          2    setosa     setosa</span>
-<span class="co">#&gt;          3    setosa     setosa</span>
-<span class="co">#&gt; ---                            </span>
-<span class="co">#&gt;        148 virginica versicolor</span>
-<span class="co">#&gt;        149 virginica versicolor</span>
-<span class="co">#&gt;        150 virginica versicolor</span></code></pre></div>
+<span class="va">lrn</span><span class="op">$</span><span class="fu">train</span><span class="op">(</span><span class="va">mlr_tasks</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"sonar"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">lrn</span><span class="op">$</span><span class="fu">predict</span><span class="op">(</span><span class="va">mlr_tasks</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"sonar"</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; &lt;PredictionClassif&gt; for 208 observations:</span>
+<span class="co">#&gt;     row_id truth response</span>
+<span class="co">#&gt;          1     R        M</span>
+<span class="co">#&gt;          2     R        R</span>
+<span class="co">#&gt;          3     R        M</span>
+<span class="co">#&gt; ---                      </span>
+<span class="co">#&gt;        206     M        M</span>
+<span class="co">#&gt;        207     M        M</span>
+<span class="co">#&gt;        208     M        M</span></code></pre></div>
 </div>
 <div id="a-simple-first-example" class="section level2">
 <h2 class="hasAnchor">
@@ -223,7 +223,7 @@
 <span class="co">#&gt; `geom_smooth()` using formula 'y ~ x'</span></code></pre></div>
 <p><img src="mlr3keras_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">lrn</span><span class="op">$</span><span class="fu">lr_find</span><span class="op">(</span><span class="va">mlr_tasks</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"iris"</span><span class="op">)</span>, epochs <span class="op">=</span> <span class="fl">20L</span>, batch_size <span class="op">=</span> <span class="fl">32L</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">lrn</span><span class="op">$</span><span class="fu">lr_find</span><span class="op">(</span><span class="va">mlr_tasks</span><span class="op">$</span><span class="fu">get</span><span class="op">(</span><span class="st">"sonar"</span><span class="op">)</span>, epochs <span class="op">=</span> <span class="fl">20L</span>, batch_size <span class="op">=</span> <span class="fl">32L</span><span class="op">)</span></code></pre></div>
 <p><img src="mlr3keras_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lrn</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="st">"nnet.hdf5"</span><span class="op">)</span></code></pre></div>
@@ -283,8 +283,8 @@
   terminator <span class="op">=</span> <span class="va">terminator</span>
 <span class="op">)</span>
 <span class="va">tuner</span><span class="op">$</span><span class="fu">optimize</span><span class="op">(</span><span class="va">instance</span><span class="op">)</span>
-<span class="co">#&gt;     arch    lr learner_param_vals  x_domain regr.mse</span>
-<span class="co">#&gt; 1: arch2 1e-05          &lt;list[7]&gt; &lt;list[1]&gt; 668.2233</span></code></pre></div>
+<span class="co">#&gt;     arch   lr learner_param_vals  x_domain regr.mse</span>
+<span class="co">#&gt; 1: arch2 0.01          &lt;list[7]&gt; &lt;list[1]&gt;  423.457</span></code></pre></div>
 </div>
 <div id="entity-embeddings" class="section level2">
 <h2 class="hasAnchor">
@@ -351,10 +351,10 @@
 <span class="va">lrn</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">history</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Final epoch (plot to see history):</span>
-<span class="co">#&gt;         loss: 1.675</span>
-<span class="co">#&gt;     accuracy: 0.2583</span>
-<span class="co">#&gt;     val_loss: 0.8885</span>
-<span class="co">#&gt; val_accuracy: 1</span></code></pre></div>
+<span class="co">#&gt;         loss: 1.581</span>
+<span class="co">#&gt;     accuracy: 0.4167</span>
+<span class="co">#&gt;     val_loss: 2.665</span>
+<span class="co">#&gt; val_accuracy: 0.2333</span></code></pre></div>
 </div>
 </div>
   </div>
