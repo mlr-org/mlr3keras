@@ -53,7 +53,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         relaxation_factor = 1.0,
         sparsity_coefficient = 10^-5,
         num_decision_steps = 2L,
-        output_dim = 32L,
+        output_dim = 64L,
         feature_dim = 64L,
         epsilon = 10^-5,
         norm_type = "group",
@@ -135,7 +135,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
         relaxation_factor = 1.0,
         sparsity_coefficient = 10^-5,
         num_decision_steps = 2L,
-        output_dim = 32L,
+        output_dim = 64L,
         feature_dim = 64L,
         epsilon = 10^-5,
         norm_type = "group",
@@ -289,5 +289,3 @@ make_tf_feature_cols = function(task, embed_size = NULL) {
   assert_r6(task, "Task")
   feature_columns = pmap(.f = make_tf_feature_column, .x = task$feature_types, list(levels = task$levels(), embed_size = embed_size))
 }
-
-R6::R6Class("CondLeq", )
