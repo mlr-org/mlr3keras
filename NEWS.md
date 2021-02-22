@@ -1,6 +1,6 @@
 # mlr3keras 0.1.3
 
-Now works with keras > 2.3 and tensorflow > 2.3.
+Now works with `keras > 2.3` and `tensorflow > 2.3`.
 
 ## Generators
 * Re-worked generators, now use a python implementation.
