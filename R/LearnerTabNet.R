@@ -200,8 +200,10 @@ build_keras_tabnet = function(task, pars) {
   feature_columns = make_tf_feature_cols(task, pars$embed_size)
   tabnet_param_names = c("feature_dim", "output_dim", "num_decision_steps", "relaxation_factor",
     "sparsity_coefficient", "virtual_batch_size", "norm_type", "num_groups")
-  if (pars$stacked) tabnet_param_names = c(tabnet_param_names, "num_layers")
-
+  if (pars$stacked) {
+    tabnet_param_names = c(tabnet_param_names, "num_layers")
+    if(is.null(pars$num_layers)) pars$num_layers = 1L
+  }
   if (pars$feature_dim <= pars$output_dim) {
     warning("feature_dim needs to be greater than output_dim!\n
               Setting output_dim to feature_dim - 1.")

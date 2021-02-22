@@ -81,6 +81,7 @@ overall batch size should be an integer multiple of virtual_batch_size. \cr
 \item \code{num_groups}: Number of groups used for group normalization. The number of groups
 should be a divisor of the number of input features (\code{num_features}) \cr
 \item \code{epsilon}: A small number for numerical stability of the entropy calculations. \cr
+\item \code{num_layers}: Required for stacked tabnet. Automatically set to \code{1L} if not provided. \cr
 }
 }
 
