@@ -256,6 +256,7 @@ overall batch size should be an integer multiple of virtual_batch_size. <br /></
 <li><p><code>num_groups</code>: Number of groups used for group normalization. The number of groups
 should be a divisor of the number of input features (<code>num_features</code>) <br /></p></li>
 <li><p><code>epsilon</code>: A small number for numerical stability of the entropy calculations. <br /></p></li>
+<li><p><code>num_layers</code>: Required for stacked tabnet. Automatically set to <code>1L</code> if not provided. <br /></p></li>
 </ul>
 
     <h2 class="hasAnchor" id="learner-methods"><a class="anchor" href="#learner-methods"></a>Learner Methods</h2>
@@ -296,7 +297,7 @@ For more info on parameters, see <code>find_lr</code>.</p></li>
 #&gt;   callbacks=&lt;list&gt;, low_memory=FALSE, verbose=0, embed_size=&lt;NULL&gt;,
 #&gt;   stacked=FALSE, batch_momentum=0.98, relaxation_factor=1,
 #&gt;   sparsity_coefficient=1e-05, num_decision_steps=2, feature_dim=64,
-#&gt;   output_dim=32, num_groups=1, epsilon=1e-05, norm_type=group,
+#&gt;   output_dim=64, num_groups=1, epsilon=1e-05, norm_type=group,
 #&gt;   virtual_batch_size=&lt;NULL&gt;, optimizer=&lt;keras.optimizer_v2.adam.Adam&gt;,
 #&gt;   loss=mean_squared_error, metrics=mean_squared_logarithmic_error
 #&gt; * Packages: keras, tensorflow, reticulate
