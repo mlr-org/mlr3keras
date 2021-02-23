@@ -13,6 +13,9 @@
     <loc>https://mlr3keras.mlr-org.com/reference/LearnerClassifKerasCNN.html</loc>
   </url>
   <url>
+    <loc>https://mlr3keras.mlr-org.com/reference/LearnerClassifKerasDeepWide.html</loc>
+  </url>
+  <url>
     <loc>https://mlr3keras.mlr-org.com/reference/LearnerClassifKerasFF.html</loc>
   </url>
   <url>
@@ -26,6 +29,9 @@
   </url>
   <url>
     <loc>https://mlr3keras.mlr-org.com/reference/LearnerRegrKeras.html</loc>
+  </url>
+  <url>
+    <loc>https://mlr3keras.mlr-org.com/reference/LearnerRegrKerasDeepWide.html</loc>
   </url>
   <url>
     <loc>https://mlr3keras.mlr-org.com/reference/LearnerRegrKerasFF.html</loc>
