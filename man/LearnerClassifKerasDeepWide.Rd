@@ -2,7 +2,7 @@
 % Please edit documentation in R/LearnerKerasDeepWideFF.R
 \name{LearnerClassifKerasDeepWide}
 \alias{LearnerClassifKerasDeepWide}
-\alias{mlr_learners_classif.kerasdeepwide}
+\alias{mlr_learners_classif.deep_wide}
 \title{Keras Feed Forward Neural Network for Classification with a deep and wide part}
 \format{
 \code{\link[R6:R6Class]{R6::R6Class()}} inheriting from \link{LearnerClassifKeras}.
@@ -63,8 +63,8 @@ See \code{?callbacks}.
 }
 \section{Construction}{
 \preformatted{LearnerClassifKerasDeepWide$new()
-mlr3::mlr_learners$get("classif.deep_wide)
-mlr3::lrn("classif.kerasdeepwide")
+mlr3::mlr_learners$get("classif.deep_wide")
+mlr3::lrn("classif.deep_wide")
 }
 }
 
@@ -98,7 +98,7 @@ For more info on parameters, see \code{find_lr}.
 }
 
 \examples{
-learner = mlr3::lrn("classif.kerasdeepwide")
+learner = mlr3::lrn("classif.deep_wide")
 print(learner)
 
 # available parameters:

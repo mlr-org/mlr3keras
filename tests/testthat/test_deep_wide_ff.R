@@ -7,9 +7,7 @@ test_that("autotest classif deep_wide", {
   result = run_autotest(learner, exclude = "(feat_single|sanity)", check_replicable = FALSE)
   expect_true(result, info = result$error)
   k_clear_session()
-  learner$train(tsk('iris'))
 })
-
 
 test_that("autotest regr deep_wide", {
   skip_on_os("solaris")

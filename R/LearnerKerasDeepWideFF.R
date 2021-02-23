@@ -58,7 +58,7 @@ LearnerClassifKerasDeepWide = R6::R6Class("LearnerClassifKerasDeepWide",
       arch = KerasArchitectureFF$new(build_arch_fn = build_keras_deep_wide_model, param_set = ps)
       super$initialize(
         feature_types = c("integer", "numeric", "factor", "ordered"),
-        man = "mlr3keras::mlr_learners_classif.keras",
+        man = "mlr3keras::mlr_learners_classif.deep_wide",
         architecture = arch
       )
     }
@@ -82,7 +82,7 @@ LearnerClassifKerasDeepWide = R6::R6Class("LearnerClassifKerasDeepWide",
 #' @templateVar learner_name regr.deep_wide
 #' @template example
 #' @export
-LearnerRegrKerasDeepWide = R6::R6Class("LearnerRegrKerasDeepWideFF",
+LearnerRegrKerasDeepWide = R6::R6Class("LearnerRegrKerasDeepWide",
   inherit = LearnerRegrKeras,
   public = list(
     initialize = function() {
@@ -120,7 +120,7 @@ LearnerRegrKerasDeepWide = R6::R6Class("LearnerRegrKerasDeepWideFF",
       arch = KerasArchitectureFF$new(build_arch_fn = build_keras_deep_wide_model, param_set = ps)
       super$initialize(
         feature_types = c("integer", "numeric", "factor", "ordered"),
-        man = "mlr3keras::mlr_learners_regr.kerasff",
+        man = "mlr3keras::mlr_learners_regr.deep_wide",
         architecture = arch
       )
     }
