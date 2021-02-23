@@ -79,6 +79,7 @@ conda_install("mlr3keras", packages = "tabnet", pip = TRUE)
 | [regr/classif.tabNet]()  | An implementation of `TabNet`                      | Sercan, A. and Pfister, T. (2019): TabNet |
 | [regr/classif.smlp]()    | Shaped MLP inspired by Configuration Space 1*  | Zimmer, L. et al. (2020): Auto PyTorch Tabular |
 | [regr/classif.smlp2]()   | Shaped MLP inspired by Configuration Space 2* | Zimmer, L. et al. (2020): Auto PyTorch Tabular |
+| [regr/classif.deep_wide]()   | Deep and Wide Architecture inspired by | Ericson et al., 2020 AutoGluon-Tabular: Robust and Accurate AutoML for Structured Data |
 | [classif.kerascnn]()     | Various CNN Applications via Transfer-learning | Uses `keras::application_XXX` (e.g. mobilenet) |
 
 * with some slight changes, namely no Shake-Shake, Shake-Drop, Mixup Training.
