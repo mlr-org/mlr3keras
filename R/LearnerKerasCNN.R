@@ -42,7 +42,7 @@ LearnerClassifKerasCNN = R6::R6Class("LearnerClassifKeras",
       )
       arch = KerasArchitectureFF$new(build_arch_fn = build_keras_pretrained_cnn_model, param_set = ps)
       super$initialize(
-        feature_types = "imagepath",
+        feature_types = character(),
         man = "mlr3keras::mlr_learners_classif.keras",
         architecture = arch
       )
@@ -56,7 +56,7 @@ LearnerClassifKerasCNN = R6::R6Class("LearnerClassifKeras",
 
       # Construct / Get the model depending on task and hyperparams.
       model = self$architecture$get_model(task, pars)
-      df = task$data()[, lapply(.SD, as.character)]
+      df = cbind(task$data(), uri = task$uris$uri)
 
       # Data Augmentation Generator. FIXME:
       generator = image_data_generator(
@@ -86,12 +86,12 @@ LearnerClassifKerasCNN = R6::R6Class("LearnerClassifKeras",
       # Generators for train and validation data
       train_gen = keras::flow_images_from_dataframe(
         df, generator = generator, subset = "training",
-        x_col=task$feature_types[type == "imagepath"][["id"]], y_col = task$target_names,
+        x_col = "uri", y_col = task$target_names,
         drop_duplicates = FALSE, batch_size = pars$batch_size, classes = task$class_names,
       )
       valid_gen = keras::flow_images_from_dataframe(
         df, generator = generator, subset = "validation",
-        x_col=task$feature_types[type == "imagepath"][["id"]], y_col = task$target_names,
+        x_col= "uri", y_col = task$target_names,
         drop_duplicates = FALSE, batch_size = pars$batch_size, classes = task$class_names,
       )
 
@@ -111,10 +111,10 @@ LearnerClassifKerasCNN = R6::R6Class("LearnerClassifKeras",
     },
     .predict = function(task) {
       pars = self$param_set$get_values(tags = "predict")
-      df = task$data()
-      df$image = as.character(df$image)
+      df = cbind(task$data(), uri = task$uris$uri)
+
       gen = keras::flow_images_from_dataframe(df,
-        x_col="image",
+        x_col="uri",
         y_col="class",
         drop_duplicates = FALSE,
         batch_size = pars$batch_size,

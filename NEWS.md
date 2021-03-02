@@ -9,6 +9,10 @@ Now works with `keras > 2.3` and `tensorflow > 2.3`.
 ## Learners
 * Shaped MLP 1 & 2 Learners for Regression and Classification
 * mlr3keras can now deal with images via the new `KerasCNN` learner.
+* Added a deep-wide architecture inspired by Ericson et al., 2020 AutoGluon-Tabular: Robust and Accurate AutoML for Structured Data.
+
+## Bugfixes
+* TabNet now defaults to `num_layers = 1L` for `stack = TRUE`.
 
 
 # mlr3keras 0.1.2
