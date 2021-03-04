@@ -206,7 +206,7 @@ build_keras_tabnet = function(task, pars) {
   }
   if (pars$feature_dim <= pars$output_dim) {
     warning("feature_dim needs to be greater than output_dim!\n
-              Setting output_dim to feature_dim - 1.")
+             Setting output_dim = feature_dim - 1.")
     pars$output_dim = pars$feature_dim - 1L
   }
   if (inherits(task, "TaskClassif")) {

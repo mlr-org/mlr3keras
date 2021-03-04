@@ -42,7 +42,7 @@ test_that("test tabnet on pima", {
   po_lrn$param_set$values$epochs = 3L
   pipe = po_enc %>>% po_lrn
   expect_true(!pipe$is_trained)
-  pipe$train(mlr_tasks$get("pima"))
+  expect_warning(pipe$train(mlr_tasks$get("pima")), "feature_dim")
   expect_true(pipe$is_trained)
   prd = pipe$predict(mlr_tasks$get("pima"))
   expect_class(prd[[1]], "PredictionClassif")
