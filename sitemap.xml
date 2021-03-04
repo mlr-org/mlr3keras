@@ -52,6 +52,9 @@
     <loc>https://mlr3keras.mlr-org.com/reference/combine_generators.html</loc>
   </url>
   <url>
+    <loc>https://mlr3keras.mlr-org.com/reference/df_from_imagenet_dir.html</loc>
+  </url>
+  <url>
     <loc>https://mlr3keras.mlr-org.com/reference/find_lr.html</loc>
   </url>
   <url>
@@ -59,9 +62,6 @@
   </url>
   <url>
     <loc>https://mlr3keras.mlr-org.com/reference/get_tf_num_features.html</loc>
-  </url>
-  <url>
-    <loc>https://mlr3keras.mlr-org.com/reference/imagepathdf_from_imagenet_dir.html</loc>
   </url>
   <url>
     <loc>https://mlr3keras.mlr-org.com/reference/keras_reflections.html</loc>

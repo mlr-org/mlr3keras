@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a dataframe with imagepaths from dirs — imagepathdf_from_imagenet_dir • mlr3keras</title>
+<title>Create a dataframe from a directory with the imagenet
+directory structure. — df_from_imagenet_dir • mlr3keras</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -53,8 +54,13 @@
 
 
 
-<meta property="og:title" content="Create a dataframe with imagepaths from dirs — imagepathdf_from_imagenet_dir" />
-<meta property="og:description" content="Create a dataframe with imagepaths from dirs" />
+<meta property="og:title" content="Create a dataframe from a directory with the imagenet
+directory structure. — df_from_imagenet_dir" />
+<meta property="og:description" content="The imagenet directory structure is laid out as follows
+Top-level dirs: train, test, valid 
+(you should provide path to those dirs as input) 
+Mid-level dirs: class1, class2, ... 
+One directory for each class. The folders directly contain the images." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -168,16 +174,21 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a dataframe with imagepaths from dirs</h1>
+    <h1>Create a dataframe from a directory with the imagenet
+directory structure.</h1>
     <small class="dont-index">Source: <a href='https://github.com/mlr-org/mlr3keras/blob/master/R/images_helpers.R'><code>R/images_helpers.R</code></a></small>
-    <div class="hidden name"><code>imagepathdf_from_imagenet_dir.Rd</code></div>
+    <div class="hidden name"><code>df_from_imagenet_dir.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create a dataframe with imagepaths from dirs</p>
+    <p>The imagenet directory structure is laid out as follows
+Top-level dirs: <code>train</code>, <code>test</code>, <code>valid</code> <br />
+(you should provide path to those dirs as input) <br />
+Mid-level dirs: <code>class1</code>, <code>class2</code>, <code>...</code> <br />
+One directory for each class. The folders directly contain the images.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>imagepathdf_from_imagenet_dir</span><span class='op'>(</span><span class='va'>dirs</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>df_from_imagenet_dir</span><span class='op'>(</span><span class='va'>dirs</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -192,7 +203,7 @@ List of dirs to create dataframes from.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p><code><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></code><br />
-with columns "image" (an imagepath) and "class" (the class).</p>
+with columns "image" and "class" (the class).</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
