@@ -124,8 +124,9 @@ LearnerClassifKeras = R6::R6Class("LearnerClassifKeras", inherit = LearnerClassi
 
       # Custom transformation depending on the model.
       # Could be generalized at some point.
-      features = task$data(cols = task$feature_names)
-      target = task$data(cols = task$target_names)[[task$target_names]]
+      rows = sample(task$row_roles$use)
+      features = task$data(cols = task$feature_names, rows = rows)
+      target = task$data(cols = task$target_names, rows = rows)[[task$target_names]]
 
       # Either fit directly on data or create a generator and fit from there
       if (!pars$low_memory) {

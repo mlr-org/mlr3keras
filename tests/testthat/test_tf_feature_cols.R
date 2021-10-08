@@ -10,7 +10,7 @@ test_that("classif tabnet with logical or factor features", {
   expect_true("factor" %in% learner$feature_types)
   tsk = mlr_tasks$get("german_credit")
   tsk$select(c("age", "amount", "foreign_worker", "job"))
-  learner$train(tsk)
+  expect_warning(learner$train(tsk))
   prd = learner$predict(tsk)
   expect_r6(prd, "Prediction")
 
@@ -19,7 +19,7 @@ test_that("classif tabnet with logical or factor features", {
   learner$param_set$values$num_groups = 1L
   tsk = mlr_tasks$get("zoo")
   tsk$select(c("legs", "aquatic"))
-  learner$train(tsk)
+  expect_warning(learner$train(tsk))
   prd = learner$predict(tsk)
   expect_r6(prd, "Prediction")
   k_clear_session()

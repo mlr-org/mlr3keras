@@ -1,11 +1,17 @@
-#' Create a dataframe with imagepaths from dirs
+#' Create a dataframe from a directory with the imagenet
+#' directory structure.
 #'
+#' The imagenet directory structure is laid out as follows
+#' Top-level dirs: `train`, `test`, `valid` \cr
+#' (you should provide path to those dirs as input) \cr
+#' Mid-level dirs: `class1`, `class2`, `...` \cr
+#' One directory for each class. The folders directly contain the images.
 #' @param dirs [`character`]\cr
 #'   List of dirs to create dataframes from.
 #' @return [`data.frame`]\cr
-#'   with columns "image" (an imagepath) and "class" (the class).
+#'   with columns "image" and "class" (the class).
 #' @export
-imagepathdf_from_imagenet_dir = function(dirs) {
+df_from_imagenet_dir = function(dirs) {
   rbindlist(map(dirs, function(y) {
     dt = rbindlist(map(list.dirs(y, recursive = FALSE), function(x) {
       data.table(
@@ -14,7 +20,6 @@ imagepathdf_from_imagenet_dir = function(dirs) {
       )
     }))
     set(dt, j = "class", value = as.factor(dt$class))
-    set(dt, j = "image", value = as.imagepath(dt$image))
     return(dt)
   }))
 }
