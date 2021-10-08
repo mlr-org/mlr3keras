@@ -53,7 +53,7 @@ LearnerClassifTabNet = R6::R6Class("LearnerClassifTabNet",
         relaxation_factor = 1.0,
         sparsity_coefficient = 10^-5,
         num_decision_steps = 2L,
-        output_dim = 32L,
+        output_dim = 64L,
         feature_dim = 64L,
         epsilon = 10^-5,
         norm_type = "group",
@@ -135,7 +135,7 @@ LearnerRegrTabNet = R6::R6Class("LearnerRegrTabNet",
         relaxation_factor = 1.0,
         sparsity_coefficient = 10^-5,
         num_decision_steps = 2L,
-        output_dim = 32L,
+        output_dim = 64L,
         feature_dim = 64L,
         epsilon = 10^-5,
         norm_type = "group",
@@ -200,11 +200,13 @@ build_keras_tabnet = function(task, pars) {
   feature_columns = make_tf_feature_cols(task, pars$embed_size)
   tabnet_param_names = c("feature_dim", "output_dim", "num_decision_steps", "relaxation_factor",
     "sparsity_coefficient", "virtual_batch_size", "norm_type", "num_groups")
-  if (pars$stacked) tabnet_param_names = c(tabnet_param_names, "num_layers")
-
+  if (pars$stacked) {
+    tabnet_param_names = c(tabnet_param_names, "num_layers")
+    if(is.null(pars$num_layers)) pars$num_layers = 1L
+  }
   if (pars$feature_dim <= pars$output_dim) {
     warning("feature_dim needs to be greater than output_dim!\n
-              Setting output_dim to feature_dim - 1.")
+             Setting output_dim = feature_dim - 1.")
     pars$output_dim = pars$feature_dim - 1L
   }
   if (inherits(task, "TaskClassif")) {
@@ -287,5 +289,3 @@ make_tf_feature_cols = function(task, embed_size = NULL) {
   assert_r6(task, "Task")
   feature_columns = pmap(.f = make_tf_feature_column, .x = task$feature_types, list(levels = task$levels(), embed_size = embed_size))
 }
-
-R6::R6Class("CondLeq", )

@@ -54,13 +54,13 @@ lrn = LearnerClassifKerasFF$new()
 
 # Set hyperparameters
 lrn$param_set$values$epochs = 50
-lrn$param_set$values$optimizer = optimizer_adam(lr = 0.05)
-lrn$param_set$values$layer_units = c(8, 8)
+lrn$param_set$values$optimizer = optimizer_adam(lr = 0.01)
+lrn$param_set$values$layer_units = c(32, 16)
 
 
 # Train and predict
-lrn$train(mlr_tasks$get("iris"))
-lrn$predict(mlr_tasks$get("iris"))
+lrn$train(mlr_tasks$get("sonar"))
+lrn$predict(mlr_tasks$get("sonar"))
 ```
 
 ## A simple first example
@@ -126,8 +126,9 @@ The trained model gives us access to different methods for further inspection:
 lrn$plot()
 ```
 
+
 ```{r}
-lrn$lr_find(mlr_tasks$get("iris"), epochs = 20L, batch_size = 32L)
+lrn$lr_find(mlr_tasks$get("sonar"), epochs = 20L, batch_size = 32L)
 ```
 
 
@@ -257,9 +258,10 @@ library(data.table)
 
 # dir is a path to the extracted images
 dir = "~/Downloads/imagenette2-160/train"
-dt = imagepathdf_from_imagenet_dir(dir)
+dt = df_from_imagenet_dir(dir)
 t = TaskClassif$new(id = "imagenette", backend = dt, target="class")
-dplyr::tibble(head(t$data()))
+t$set_col_roles("image", "uri")
+dplyr::tibble(cbind(t$data(), t$uris))
 ```
 
 Now we can train and predict using the `LearnerClassifKerasCNN`.

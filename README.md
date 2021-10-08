@@ -79,6 +79,7 @@ conda_install("mlr3keras", packages = "tabnet", pip = TRUE)
 | [regr/classif.tabNet]()  | An implementation of `TabNet`                      | Sercan, A. and Pfister, T. (2019): TabNet |
 | [regr/classif.smlp]()    | Shaped MLP inspired by Configuration Space 1*  | Zimmer, L. et al. (2020): Auto PyTorch Tabular |
 | [regr/classif.smlp2]()   | Shaped MLP inspired by Configuration Space 2* | Zimmer, L. et al. (2020): Auto PyTorch Tabular |
+| [regr/classif.deep_wide]()   | Deep and Wide Architecture inspired by | Ericson et al., 2020 AutoGluon-Tabular: Robust and Accurate AutoML for Structured Data |
 | [classif.kerascnn]()     | Various CNN Applications via Transfer-learning | Uses `keras::application_XXX` (e.g. mobilenet) |
 
 * with some slight changes, namely no Shake-Shake, Shake-Drop, Mixup Training.
@@ -87,6 +88,7 @@ and added Entity Embeddings for categorical variables.
 Learners can be used for `training` and `prediction` as follows:
 
 ```r
+  library("mlr3")
   # Instantiate Learner
   lrn = LearnerClassifKerasFF$new()
 
@@ -95,8 +97,8 @@ Learners can be used for `training` and `prediction` as follows:
   lrn$param_set$values$layer_units = 12
 
   # Train and Predict
-  lrn$train(mlr_tasks$get("iris"))
-  lrn$predict(mlr_tasks$get("iris"))
+  lrn$train(tsk("iris"))
+  lrn$predict(tsk("iris"))
 ```
 
 The [vignette](https://github.com/mlr-org/mlr3keras/blob/master/vignettes/mlr3keras.Rmd) has some examples on how to use some of the functionality introduces in `mlr3keras`.
