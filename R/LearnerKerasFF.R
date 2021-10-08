@@ -22,6 +22,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
     initialize = function() {
       ps = ParamSet$new(list(
         ParamLgl$new("use_embedding", default = TRUE, tags = c("train", "predict")),
+        ParamLgl$new("factors_jointly", default = TRUE, tags = c("train", "predict")),
         ParamDbl$new("embed_dropout", default = 0, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("embed_size", default = NULL, lower = 1, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamUty$new("layer_units", default = c(32, 32, 32), tags = "train"),
@@ -39,7 +40,7 @@ LearnerClassifKerasFF = R6::R6Class("LearnerClassifKerasFF",
         ParamUty$new("metrics", tags = "train")
       ))
       ps$values = list(
-        use_embedding = TRUE, embed_dropout = 0, embed_size = NULL,
+        use_embedding = TRUE, embed_dropout = 0, embed_size = NULL, factors_jointly = FALSE,
         activation = "relu",
         layer_units = c(32, 32, 32),
         initializer = initializer_glorot_uniform(),
@@ -84,6 +85,7 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
     initialize = function() {
       ps = ParamSet$new(list(
         ParamLgl$new("use_embedding", default = TRUE, tags = c("train", "predict")),
+        ParamLgl$new("factors_jointly", default = FALSE, tags = c("train", "predict")),
         ParamDbl$new("embed_dropout", default = 0, lower = 0, upper = 1, tags = "train"),
         ParamDbl$new("embed_size", default = NULL, lower = 1, upper = Inf, tags = "train", special_vals = list(NULL)),
         ParamUty$new("layer_units", default = c(32, 32, 32), tags = "train"),
@@ -101,7 +103,7 @@ LearnerRegrKerasFF = R6::R6Class("LearnerRegrKerasFF",
         ParamUty$new("metrics", default = "mean_squared_logarithmic_error", tags = "train")
       ))
       ps$values = list(
-        use_embedding = TRUE, embed_dropout = 0,  embed_size = NULL,
+        use_embedding = TRUE, embed_dropout = 0,  embed_size = NULL, factors_jointly = FALSE,
         activation = "relu",
         layer_units = c(32, 32, 32),
         initializer = initializer_glorot_uniform(),
@@ -167,9 +169,8 @@ build_keras_ff_model = function(task, pars) {
   }
 
 
-  factors_jointly = TRUE
   if (pars$use_embedding) {
-    embd = make_embedding(task, pars$embed_size, pars$embed_dropout, factors_jointly = TRUE)
+    embd = make_embedding(task, pars$embed_size, pars$embed_dropout, pars$factors_jointly)
     model = embd$layers
   } else {
     model = keras_model_sequential()
